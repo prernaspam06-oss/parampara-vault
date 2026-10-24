@@ -66,7 +66,13 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon --stacktrace
+          set -o pipefail
+          if ! ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 | tee "$RUNNER_TEMP/gradle.log"; then
+            # Surface the error as annotations (readable without log access).
+            sed -n '/What went wrong/,/Try:/p' "$RUNNER_TEMP/gradle.log" | head -40 | tr '\n' ' ' | sed 's/^/::error title=Gradle::/' ; echo
+            grep -E "^e: |error:|FAILURE|Could not|not found" "$RUNNER_TEMP/gradle.log" | head -15 | while read -r l; do echo "::error title=Gradle detail::$l"; done
+            exit 1
+          fi
 
       - name: Name the APK
         run: |
