@@ -757,7 +757,9 @@ function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clea
 function addXP(n,why,noCoins){const base=n,fe=todayEvent();if(fe){n*=2;why+=" · ×2 "+(fe.kind==="ekadashi"?"Ekadashi":"festival");}const before=lvl(progress.xp||0);progress.xp=(progress.xp||0)+n;save();renderRank();toast(`+${n} XP · ${why}`);
   checkAwards();renderChart();if(!noCoins)earn(coinsFor(base,why),why.replace(/^\d+ /,""));
   const after=lvl(progress.xp);if(after>before)setTimeout(()=>{give("freeze");give("hint",2);toast(`Rank up! You are now ${RANKS[after][1]} · gift: 🧊 + 💡💡`);earn(150,"Rank up: "+RANKS[after][1]);burstAt($("#badge"));save();renderBag();},1400);}
-function streak(){const past=days.filter(d=>d.date<=localDate());let s=0;for(let i=past.length-1;i>=0;i--){if(isOpen(past[i]))s++;else break;}return s;}
+// A new scroll and fresh pack open every evening at 18:00: before 6 pm you are still on yesterday's.
+const scrollDay=()=>{const d=new Date();if(d.getHours()<18)d.setDate(d.getDate()-1);return localDate(d);};
+function streak(){const past=days.filter(d=>d.date<=scrollDay());let s=0;for(let i=past.length-1;i>=0;i--){if(isOpen(past[i]))s++;else break;}return s;}
 function renderRank(){const xp=progress.xp||0,l=lvl(xp),cur=RANKS[l][0],nxt=RANKS[l+1]?.[0];
   $("#rankName").textContent=RANKS[l][1];$("#xpbar").style.width=nxt?((xp-cur)/(nxt-cur)*100)+"%":"100%";
   $("#xpText").textContent=nxt?`${xp} XP · ${nxt-xp} to ${RANKS[l+1][1]}`:`${xp} XP · highest rank`;$("#streak").textContent=streak();drawBadge(l);
@@ -774,7 +776,7 @@ function nextSeal(){const n=new Date(),t=new Date(n);t.setHours(18,0,0,0);if(t<=
 const numOf=d=>d.prologue?0:days.filter(x=>!x.prologue).indexOf(d)+1;
 function stableOrder(d){const idx=(d.options||[]).map((_,i)=>i);let s=[...d.date].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7);for(let i=idx.length-1;i>0;i--){s=(s*1103515245+12345)>>>0;const j=s%(i+1);[idx[i],idx[j]]=[idx[j],idx[i]];}return idx;}
 
-function renderArchive(){const shown=days.filter(d=>d.date<=localDate()).reverse(),ol=$("#archive");
+function renderArchive(){const shown=days.filter(d=>d.date<=scrollDay()).reverse(),ol=$("#archive");
   if(!shown.length){ol.innerHTML=`<li style="padding:12px 14px;color:var(--dim)">Opened scrolls collect here.</li>`;return;}
   ol.innerHTML=shown.map(d=>isOpen(d)?`<li><details><summary><span class="n">#${numOf(d)}</span><span class="t">${esc(d.title)}</span><span class="d">${pretty(d.date)}</span></summary><div class="body fact">${paras(d.fact)}</div></details></li>`
     :`<li class="sealed"><summary><span class="n">#${numOf(d)}</span><span class="t">🔒 Sealed scroll</span><span class="d">${pretty(d.date)}</span></summary></li>`).join("");}
@@ -806,7 +808,7 @@ function showLock(today,prev){clearInterval(timer);attempts=0;sealCrack=0;const 
       if(attempts>=2&&!$("#peek")){$("#peekwrap").innerHTML=`<div style="margin-top:10px"><button class="linkbtn" id="peekbtn">Re-read yesterday's scroll</button></div>`;
         $("#peekbtn").onclick=()=>{$("#peekwrap").innerHTML=`<div class="peek" id="peek"><b>${esc(prev.title)}</b>${paras(prev.fact)}</div>`;};}}});}
 
-function renderStage(){const past=days.filter(d=>d.date<=localDate());
+function renderStage(){const past=days.filter(d=>d.date<=scrollDay());
   if(!past.length){$("#stage").innerHTML=`<canvas id="seal" width="400" height="400" aria-hidden="true"></canvas><h2 class="center">The first scroll arrives at 6 pm</h2><p class="center" style="color:var(--dim)">Each evening a new piece of hidden history is sealed in here.</p>`;requestAnimationFrame(sealLoop);return;}
   const today=past[past.length-1],prev=past[past.length-2];if(isOpen(today)||!prev)showScroll(today,false);else showLock(today,prev);}
 
@@ -930,7 +932,7 @@ const BOOKS={
 const BASE=Object.fromEntries(Object.entries(BOOKS).map(([k,b])=>[k,b.qs.slice()]));let PACKS=[];
 function mergePacks(){Object.keys(BOOKS).forEach(k=>BOOKS[k].qs=BASE[k].slice());const seen=new Set(Object.values(BOOKS).flatMap(b=>b.qs.map(q=>q[0])));
   PACKS.forEach(p=>(p.questions||[]).forEach(q=>{if(!BOOKS[q.book]||!q.q||!Array.isArray(q.options)||q.options.length<2||seen.has(q.q))return;seen.add(q.q);BOOKS[q.book].qs.push([q.q,q.options,q.answer|0,q.note||""]);}));}
-const todayPack=()=>PACKS.filter(p=>p.date<=localDate()).slice(-1)[0];
+const todayPack=()=>PACKS.filter(p=>p.date<=scrollDay()).slice(-1)[0];
 function renderBooks(){const tp=todayPack();$("#books").innerHTML=(tp?`<button class="book" style="--hue:#ffd27a;grid-column:1/-1;min-height:96px" data-book="today" id="b-today"><span class="t">✦ Fresh pack · ${pretty(tp.date)}</span><span><span class="d">${(tp.questions||[]).length} brand-new questions, renewed every evening</span><br><span class="s">${progress.best?.["q_today_"+tp.date]!=null?"Your score: "+progress.best["q_today_"+tp.date]+"/5":"Not tried yet"}</span></span></button>`:"")+Object.entries(BOOKS).map(([k,b])=>{const best=progress.best?.["q_"+k];
   return `<button class="book" style="--hue:${b.hue}" data-book="${k}" id="b-${k}"><span class="t">${b.name}</span><span><span class="d">${b.qs.length} questions · 5 per round</span><br><span class="s">${best!=null?"Best: "+best+"/5":"Not tried yet"}</span></span></button>`;}).join("")+
   `<button class="book" style="--hue:#f29a2e" data-book="mixed" id="b-mixed"><span class="t">Grand Mix</span><span><span class="d">All six books shuffled</span><br><span class="s">${progress.best?.q_mixed!=null?"Best: "+progress.best.q_mixed+"/5":"Not tried yet"}</span></span></button>`;}
@@ -1322,7 +1324,7 @@ $("#album").addEventListener("click",e=>{const b=e.target.closest("[data-card]")
   $("#pinBtn").onclick=()=>{let sc=(progress.showcase||[]).filter(x=>x!==c[0]);if(!pinned){sc.unshift(c[0]);sc=sc.slice(0,6);}progress.showcase=sc;save();toast(pinned?"Unpinned":"Pinned to your profile");$("#pinBtn").textContent=pinned?"📌 Pin to profile showcase":"Unpin from profile";};});
 
 /* ================= sunday boss ================= */
-function bossPool(){const ws=localDate(new Date(Date.now()-6*864e5)),today=localDate(),out=[];
+function bossPool(){const ws=localDate(new Date(Date.now()-7*864e5)),today=scrollDay(),out=[];
   PACKS.filter(p=>p.date>=ws&&p.date<=today).forEach(p=>(p.questions||[]).forEach(q=>{if(BOOKNAME[q.book])out.push([q.q,q.options,q.answer|0,q.note||"",BOOKNAME[q.book]]);}));
   days.filter(d=>d.date>=ws&&d.date<today&&d.question).forEach(d=>out.push([d.question,d.options,d.answer|0,d.title+": "+String(d.fact).split("\n")[0],"This week's scrolls"]));
   if(out.length<10){const extra=shuffle(Object.values(BOOKS).flatMap(b=>b.qs.map(q=>[...q,b.name])));while(out.length<10&&extra.length)out.push(extra.pop());}
@@ -1653,6 +1655,8 @@ $("#modeBtn").addEventListener("click",()=>{mode={auto:"light",light:"dark",dark
 matchMedia("(prefers-color-scheme: light)").addEventListener?.("change",()=>applyMode(mode));
 new MutationObserver(()=>applyMode(mode)).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
 applyMode(mode);
+
+let _sd=scrollDay();setInterval(()=>{const n=scrollDay();if(n!==_sd){_sd=n;try{renderAll();}catch(e){}}},30000);
 
 /* ---------- boot ---------- */
 function renderAll(){collectDonations();renderDham();renderFest();renderAlbum();renderBoss();renderWrapped();renderBoard();if(progress.mode==="log"){$("#mChant").setAttribute("aria-selected",false);$("#mLog").setAttribute("aria-selected",true);$("#modeChant").hidden=true;$("#modeLog").hidden=false;}renderJapa();checkAwards(true);renderBooks();renderRank();renderArchive();renderStage();}

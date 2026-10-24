@@ -21,6 +21,8 @@ const K = { progress: "pv.progress", start: "pv.start", uid: "pv.uid", remote: "
 
 const pad = (n) => String(n).padStart(2, "0");
 const localDate = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+// Scrolls and packs change at 18:00, when the evening's content arrives.
+const scrollDay = () => { const d = new Date(); if (d.getHours() < 18) d.setDate(d.getDate() - 1); return localDate(d); };
 const addDays = (iso, n) => { const d = new Date(iso + "T12:00:00"); d.setDate(d.getDate() + n); return localDate(d); };
 const daysBetween = (a, b) => Math.round((new Date(b + "T12:00:00") - new Date(a + "T12:00:00")) / 864e5);
 const ls = {
@@ -32,7 +34,7 @@ const ls = {
 let uid = ls.get(K.uid);
 if (!uid) { uid = "dev_" + Math.random().toString(36).slice(2, 12); ls.set(K.uid, uid); }
 let start = ls.get(K.start);
-if (!start) { start = localDate(); ls.set(K.start, start); }
+if (!start) { start = scrollDay(); ls.set(K.start, start); }
 
 /* ---------- durable progress ---------- */
 let restored = (async () => {
@@ -64,7 +66,7 @@ try { remote = { ...remote, ...JSON.parse(ls.get(K.remote) || "{}") }; } catch {
 const listeners = { days: new Set(), packs: new Set(), events: new Set() };
 
 function contentDays() {
-  const today = localDate(), n = Math.max(0, daysBetween(start, today)), out = new Map();
+  const today = scrollDay(), n = Math.max(0, daysBetween(start, today)), out = new Map();
   for (let k = 0; k <= n; k++) {
     const date = addDays(start, k);
     out.set(date, { ...SCROLLS[k % SCROLLS.length], date });
@@ -73,7 +75,7 @@ function contentDays() {
   return [...out.values()].sort((a, b) => (a.date < b.date ? -1 : 1));
 }
 function contentPacks() {
-  const today = localDate(), n = Math.max(0, daysBetween(start, today)), out = new Map();
+  const today = scrollDay(), n = Math.max(0, daysBetween(start, today)), out = new Map();
   for (let k = 0; k <= n; k++) {
     const date = addDays(start, k);
     out.set(date, { date, questions: PACKS[k % PACKS.length], remix: k >= PACKS.length });
@@ -108,8 +110,8 @@ async function fetchRemote() {
   } catch {}
 }
 // Refresh when the day rolls over while the app stays open, and when it comes back to the front.
-let lastDay = localDate();
-setInterval(() => { if (localDate() !== lastDay) { lastDay = localDate(); emit("days"); emit("packs"); emit("events"); } }, 30000);
+let lastDay = scrollDay();
+setInterval(() => { if (scrollDay() !== lastDay) { lastDay = scrollDay(); fetchRemote(); emit("days"); emit("packs"); emit("events"); } }, 30000);
 
 /* ---------- the db / user interface the app expects ---------- */
 const db = {
@@ -212,7 +214,7 @@ if (isNative) {
   });
   App.addListener("appStateChange", ({ isActive }) => {
     if (!isActive) window.Native.flush();
-    else { fetchRemote(); if (localDate() !== lastDay) { lastDay = localDate(); emit("days"); emit("packs"); emit("events"); } }
+    else { fetchRemote(); if (scrollDay() !== lastDay) { lastDay = scrollDay(); emit("days"); emit("packs"); emit("events"); } }
   });
   LocalNotifications.addListener("localNotificationActionPerformed", () => { try { window.__onOpenScroll && window.__onOpenScroll(); } catch {} });
 }

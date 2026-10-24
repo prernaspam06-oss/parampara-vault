@@ -1,1 +1,297 @@
-{"days":[],"packs":[],"events":[]}
+{
+ "days": [
+  {
+   "date": "2026-10-24",
+   "title": "The deity who stole sweet rice",
+   "era": "c. 1500 · Remuna, Orissa",
+   "fact": "Madhavendra Puri, the grand-guru of Chaitanya, once stopped at the Gopinatha temple in Remuna. He wondered what the deity's famous sweet rice tasted like, then felt ashamed of the thought and left.\nThat night the priest dreamed that Gopinatha had hidden a pot of sweet rice behind his dress for Madhavendra Puri. Ever since, the deity has been called Khira-chora Gopinatha, the thief of sweet rice. Chaitanya himself told the story when he passed through Remuna.",
+   "question": "What did the Remuna deity hide for Madhavendra Puri?",
+   "options": [
+    "A pot of sweet rice",
+    "A garland of tulasi",
+    "A silver flute",
+    "A bag of sandalwood"
+   ],
+   "answer": 0,
+   "disputed": false
+  }
+ ],
+ "packs": [
+  {
+   "date": "2026-10-24",
+   "questions": [
+    {
+     "book": "gita",
+     "q": "Which chapter of the Bhagavad Gita is called Bhakti Yoga?",
+     "options": [
+      "Chapter 12",
+      "Chapter 6",
+      "Chapter 9",
+      "Chapter 18"
+     ],
+     "answer": 0,
+     "note": "Chapter 12 describes the qualities of a devotee dear to Krishna."
+    },
+    {
+     "book": "gita",
+     "q": "In verse 2.13, Krishna compares death to which ordinary change?",
+     "options": [
+      "Passing from boyhood to youth to old age",
+      "The sun setting and rising",
+      "A river reaching the sea",
+      "A seed growing into a tree"
+     ],
+     "answer": 0,
+     "note": "The soul passes into another body just as it passes through the stages of one life."
+    },
+    {
+     "book": "mbh",
+     "q": "Who sat on the flag of Arjuna's chariot during the war?",
+     "options": [
+      "Hanuman",
+      "Garuda",
+      "Jatayu",
+      "Nandi"
+     ],
+     "answer": 0,
+     "note": "Hanuman's presence on the flag is mentioned at the start of the Gita."
+    },
+    {
+     "book": "mbh",
+     "q": "Which queen blindfolded herself for life because her husband was blind?",
+     "options": [
+      "Gandhari",
+      "Kunti",
+      "Madri",
+      "Satyavati"
+     ],
+     "answer": 0,
+     "note": "She was the wife of Dhritarashtra and mother of the hundred Kauravas."
+    },
+    {
+     "book": "ram",
+     "q": "What was the name of Ravana's flying chariot?",
+     "options": [
+      "Pushpaka",
+      "Vimana Shakti",
+      "Garuda-ratha",
+      "Swarna-ratha"
+     ],
+     "answer": 0,
+     "note": "Ravana took it from his half-brother Kubera. Rama later flew home to Ayodhya in it."
+    },
+    {
+     "book": "ram",
+     "q": "Who was Lakshmana's wife, who stayed behind in Ayodhya?",
+     "options": [
+      "Urmila",
+      "Mandavi",
+      "Shrutakirti",
+      "Tara"
+     ],
+     "answer": 0,
+     "note": "She was Sita's younger sister."
+    },
+    {
+     "book": "bhag",
+     "q": "Who was the elephant Gajendra in his previous life?",
+     "options": [
+      "King Indradyumna",
+      "King Bharata",
+      "King Nriga",
+      "King Chitraketu"
+     ],
+     "answer": 0,
+     "note": "The sage Agastya cursed him to become an elephant."
+    },
+    {
+     "book": "bhag",
+     "q": "Who cursed Jaya and Vijaya, the gatekeepers of Vaikuntha?",
+     "options": [
+      "The four Kumaras",
+      "Narada Muni",
+      "Lord Brahma",
+      "Durvasa Muni"
+     ],
+     "answer": 0,
+     "note": "The gatekeepers stopped the Kumaras at the door, and were cursed to be born as demons."
+    },
+    {
+     "book": "krsna",
+     "q": "Which demon came to Vraja in the form of a huge bull?",
+     "options": [
+      "Arishtasura",
+      "Vatsasura",
+      "Keshi",
+      "Pralambasura"
+     ],
+     "answer": 0,
+     "note": "Krishna seized him by the horns and killed him."
+    },
+    {
+     "book": "krsna",
+     "q": "Which demon did Balarama kill in the Talavana palm forest?",
+     "options": [
+      "Dhenukasura, a donkey",
+      "Bakasura, a crane",
+      "Aghasura, a python",
+      "Trinavarta, a whirlwind"
+     ],
+     "answer": 0,
+     "note": "The cowherd boys wanted the forest's palm fruits, which the donkey demon guarded."
+    },
+    {
+     "book": "iskcon",
+     "q": "In which year did Srila Prabhupada pass away?",
+     "options": [
+      "1977",
+      "1975",
+      "1980",
+      "1972"
+     ],
+     "answer": 0,
+     "note": "He left this world in Vrindavan in November 1977."
+    },
+    {
+     "book": "iskcon",
+     "q": "What are the presiding deities of ISKCON Juhu in Mumbai called?",
+     "options": [
+      "Sri Sri Radha Rasabihari",
+      "Sri Sri Radha Madhava",
+      "Sri Sri Gaura Nitai",
+      "Sri Sri Radha Gopinatha"
+     ],
+     "answer": 0,
+     "note": "Prabhupada worked for years to establish this temple, opened in 1978."
+    }
+   ]
+  }
+ ],
+ "events": [
+  {
+   "date": "2026-11-05",
+   "kind": "ekadashi",
+   "name": "Ekadashi"
+  },
+  {
+   "date": "2026-11-10",
+   "kind": "festival",
+   "name": "Govardhana Puja"
+  },
+  {
+   "date": "2026-11-13",
+   "kind": "festival",
+   "name": "Srila Prabhupada's disappearance day"
+  },
+  {
+   "date": "2026-11-21",
+   "kind": "ekadashi",
+   "name": "Ekadashi · Gaura Kishora das Babaji's disappearance"
+  },
+  {
+   "date": "2026-12-04",
+   "kind": "ekadashi",
+   "name": "Ekadashi"
+  },
+  {
+   "date": "2026-12-20",
+   "kind": "festival",
+   "name": "Gita Jayanti · Vaikuntha Ekadashi"
+  },
+  {
+   "date": "2026-12-27",
+   "kind": "festival",
+   "name": "Bhaktisiddhanta Sarasvati Thakura's disappearance"
+  },
+  {
+   "date": "2027-01-03",
+   "kind": "ekadashi",
+   "name": "Ekadashi"
+  },
+  {
+   "date": "2027-01-19",
+   "kind": "ekadashi",
+   "name": "Ekadashi"
+  },
+  {
+   "date": "2027-02-02",
+   "kind": "ekadashi",
+   "name": "Ekadashi"
+  },
+  {
+   "date": "2027-02-13",
+   "kind": "festival",
+   "name": "Advaita Acharya's appearance"
+  },
+  {
+   "date": "2027-02-17",
+   "kind": "ekadashi",
+   "name": "Ekadashi"
+  },
+  {
+   "date": "2027-02-19",
+   "kind": "festival",
+   "name": "Nityananda Trayodashi"
+  },
+  {
+   "date": "2027-02-25",
+   "kind": "festival",
+   "name": "Bhaktisiddhanta Sarasvati Thakura's appearance"
+  },
+  {
+   "date": "2027-03-04",
+   "kind": "ekadashi",
+   "name": "Ekadashi"
+  },
+  {
+   "date": "2027-03-18",
+   "kind": "ekadashi",
+   "name": "Ekadashi"
+  },
+  {
+   "date": "2027-03-22",
+   "kind": "festival",
+   "name": "Gaura Purnima"
+  },
+  {
+   "date": "2027-04-14",
+   "kind": "festival",
+   "name": "Rama Navami"
+  },
+  {
+   "date": "2027-05-19",
+   "kind": "festival",
+   "name": "Narasimha Chaturdashi"
+  },
+  {
+   "date": "2027-06-18",
+   "kind": "festival",
+   "name": "Snana Yatra"
+  },
+  {
+   "date": "2027-07-05",
+   "kind": "festival",
+   "name": "Ratha Yatra"
+  },
+  {
+   "date": "2027-08-16",
+   "kind": "festival",
+   "name": "Balarama Jayanti"
+  },
+  {
+   "date": "2027-08-25",
+   "kind": "festival",
+   "name": "Sri Krishna Janmashtami"
+  },
+  {
+   "date": "2027-08-26",
+   "kind": "festival",
+   "name": "Srila Prabhupada's appearance (Vyasa Puja)"
+  },
+  {
+   "date": "2027-09-07",
+   "kind": "festival",
+   "name": "Radhashtami"
+  }
+ ]
+}
