@@ -324,6 +324,39 @@ body{background:radial-gradient(90% 50% at 100% 0%,var(--violet),transparent 70%
 .book .t{font-family:var(--f-display);font-size:1.12rem;line-height:1.1}
 .book .d{font-family:var(--f-mono);font-size:.7rem;color:var(--dim)}
 .book .s{font-family:var(--f-mono);font-size:.7rem;color:var(--hue)}
+.city{display:flex;flex-direction:column;gap:12px}
+.cityhead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap}
+.cityhead h2{font-family:var(--f-display);font-weight:400;font-size:1.7rem;line-height:1.1}
+.btn.sm{padding:8px 12px;font-size:.75rem}
+.mapwrap{border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+#cityMap{display:block;width:100%;aspect-ratio:3/4;max-width:100%;touch-action:none;cursor:grab}
+.selbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:14px;background:var(--stone);border:1px solid var(--gold)}
+.selbar b{font-family:var(--f-display);font-weight:400;font-size:1.05rem}
+.daily{flex:1;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--saffron));color:#1a1208}
+.daily b{font-family:var(--f-display);font-weight:400;font-size:1.05rem;display:block}
+.daily span{font-size:.82rem}
+.daily .btn{background:#1a1208;color:#ffd27a}
+.daily.done{background:var(--stone);color:var(--leaf);border:1px solid var(--line)}
+.cityrow{display:flex;gap:10px}
+.stored{display:flex;gap:8px;overflow-x:auto}
+.stored:empty{display:none}
+.stored button{all:unset;cursor:pointer;flex:0 0 auto;padding:8px 12px;border-radius:12px;border:1px dashed var(--gold);font-family:var(--f-mono);font-size:.75rem;background:var(--stone)}
+.setshop{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.setcard{display:flex;flex-direction:column;border-radius:14px;overflow:hidden;background:var(--stone-2);border:1px solid var(--line);min-width:0}
+.setcard canvas{display:block;width:100%;aspect-ratio:1/0.8;max-width:100%;background:linear-gradient(180deg,#bfe3f5,#e8f4d8)}
+.setcard .sb{padding:10px;display:flex;flex-direction:column;gap:4px;flex:1}
+.setcard .nm{font-family:var(--f-display);font-size:1rem;line-height:1.15}
+.setcard .meta{display:flex;gap:6px;flex-wrap:wrap;font-family:var(--f-mono);font-size:.64rem;color:var(--dim)}
+.setcard .meta span{padding:2px 6px;border-radius:999px;background:var(--stone);border:1px solid var(--line)}
+.setcard .meta .lv{color:var(--indigo)} .setcard .meta .lim{color:var(--kumkum)}
+.setcard .pc{font-size:.95rem;letter-spacing:1px}
+.setcard .buy{margin-top:auto}
+.setcard .btn{width:100%;padding:9px;font-size:.78rem}
+.setcard.locked{opacity:.6}
+.swatches{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.swatches button{all:unset;cursor:pointer;width:44px;height:44px;border-radius:12px;border:2px solid var(--line)}
+.swatches button[aria-pressed="true"]{border-color:var(--leaf);box-shadow:0 0 0 2px var(--gold)}
+.cpick{width:100%;height:44px;border:none;background:none;margin-top:4px}
 .studycta{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:16px;border-radius:16px;
   background:linear-gradient(135deg,var(--indigo),var(--violet));color:#fff;box-shadow:0 8px 24px rgba(80,60,200,.25)}
 .studycta .ic{font-size:2rem}.studycta b{display:block;font-family:var(--f-display);font-weight:400;font-size:1.3rem;line-height:1.1}
@@ -554,19 +587,34 @@ input,textarea,.fact,.note{user-select:text;-webkit-user-select:text}
 
   <!-- DHAM -->
   <div class="tab" data-tab="dham" hidden>
-    <section class="panel dhampanel" aria-label="My Dham">
-      <div class="row"><div><div class="eyebrow">My Dham · <span id="dLevel">Village</span></div><h2 style="margin:4px 0 0">Build your holy place</h2></div>
-        <div class="jstat"><b id="dCoins">0</b><span>🪙 coins</span></div></div>
-      <div class="dstats"><span>Dham value <b id="dValue">0</b> 🪙</span><span>Streak bonus <b id="dMult">×1.00</b></span></div>
-      <canvas id="dhamCv" aria-label="Your dham. Tap a tile to place or pick up."></canvas>
-      <div class="eyebrow center" id="dHint">Pick something from the shop, then tap a tile.</div>
-      <div class="row" style="margin-top:10px">
-        <div class="seg" id="dTools" style="margin:0;min-width:200px"><button data-tool="place" aria-selected="true">🧱 Place</button><button data-tool="remove" aria-selected="false">✋ Pick up</button></div>
-        <button class="btn ghost" id="dExpand">Expand</button>
+    <section class="city" aria-label="My Dham">
+      <div class="cityhead">
+        <div style="min-width:0"><div class="eyebrow" id="cityLevel">Level 1 dham</div><h2 id="cityName" style="margin:2px 0 0">My Dham</h2></div>
+        <div class="jbtns" style="margin:0"><button class="btn ghost sm" id="cityRename">Rename</button><button class="btn ghost sm" id="cityCustom">Customize</button></div>
       </div>
-      <div class="seg cats" id="dCats" role="tablist"></div>
-      <div class="dshop" id="dShop"></div>
+      <div class="mapwrap"><canvas id="cityMap" aria-label="Your dham map. Drag a set to move it; tap it for options."></canvas></div>
+      <div class="selbar" id="selBar" hidden></div>
+      <div class="cityrow">
+        <div class="daily" id="cityDaily"></div>
+      </div>
+      <div class="stored" id="cityStored"></div>
     </section>
+    <section class="panel" aria-label="Set shop">
+      <div class="row"><div><div class="eyebrow">Set shop</div><h2 style="margin:4px 0 0">Scale models of holy places</h2></div><div class="jstat"><b id="cityCoins">0</b><span>🪙 coins</span></div></div>
+      <p style="color:var(--dim);margin:6px 0 10px;font-size:.92rem">Buy sets with coins. Every set you own adds to your daily dham reward and can drop its photocards.</p>
+      <div class="setshop" id="setShop"></div>
+    </section>
+    <div class="sheet" id="cityCustomSheet" hidden>
+      <div class="sheet-in">
+        <div class="row"><h2 style="font-family:var(--f-display);font-weight:400;margin:0">Customize your dham</h2><button class="btn ghost" id="ccDone">Done</button></div>
+        <h3 class="sec-h" style="margin-top:16px">Background</h3><div class="swatches" id="ccBg"></div>
+        <label class="eyebrow" for="ccBgPick">Or pick your own</label><input type="color" id="ccBgPick" class="cpick">
+        <h3 class="sec-h" style="margin-top:16px">Sign colour</h3><div class="swatches" id="ccSign"></div>
+        <label class="eyebrow" for="ccSignPick">Or pick your own</label><input type="color" id="ccSignPick" class="cpick">
+        <h3 class="sec-h" style="margin-top:16px">Name sign size</h3><input type="range" id="ccSize" min="0.6" max="1.6" step="0.05" style="width:100%">
+        <p class="eyebrow" style="margin-top:12px">To move the sign, drag it on your map.</p>
+      </div>
+    </div>
     <section class="panel spin" aria-label="Daily wheel">
       <div class="row"><div><div class="eyebrow">Sudarshana wheel · once a day</div><h2 style="margin:4px 0 0">Spin for a gift</h2></div><button class="btn" id="spinBtn">Spin the wheel</button></div>
       <canvas id="wheel" aria-hidden="true"></canvas>
@@ -582,7 +630,7 @@ input,textarea,.fact,.note{user-select:text;-webkit-user-select:text}
         <li><b>Rewards unlocked:</b> 60 🪙 each. Rank-ups pay 150.</li>
         <li><b>Streak bonus:</b> each day of japa streak adds 5% to all coins, up to ×2.</li>
         <li><b>Festival days</b> double everything.</li>
-        <li><b>Pilgrim donations:</b> your dham earns 2% of its value every day you visit.</li>
+        <li><b>Daily dham reward:</b> each set you own adds coins and a chance at its photocards. Claim once a day.</li>
         <li><b>Duplicate cards</b> trade for 30 🪙 each in the Learn tab.</li>
       </ul>
     </section>
@@ -1530,112 +1578,9 @@ function drawWheel(rot=0){const cv=$("#wheel");if(!cv||cv.offsetParent===null)re
   x.fillStyle="#ffd27a";x.beginPath();x.moveTo(cx-9,cy-R-8);x.lineTo(cx+9,cy-R-8);x.lineTo(cx,cy-R+10);x.closePath();x.fill();}
 function renderSpin(){const done=progress.spun===localDate();$("#spinBtn").disabled=done;$("#spinBtn").textContent=done?"Spun today ✓":"Spin the wheel";}
 /* daily dham donations: your dham earns coins from pilgrims each day */
-function collectDonations(){if(progress.donated===localDate())return;const v=dhamValue();if(!v)return;const c=Math.max(5,Math.round(v*0.02));progress.coins=coinBal()+c;progress.donated=localDate();save();
-  setTimeout(()=>toast(`🛕 Pilgrims visited your dham overnight: +${fmt(c)} 🪙 in donations`),2200);}
+function collectDonations(){ /* replaced by the daily dham reward */ }
 
-/* ================= My Dham: isometric builder ================= */
-const DITEMS={
- // grounds
- grass:["ground","Grass","🟩",5,{top:"#4f8a4a"}],garden:["ground","Flower garden","🌼",15,{top:"#4f8a4a",dots:["#ffd27a","#ff8fb8","#ffffff"]}],
- road:["ground","Sand path","🟫",8,{top:"#c9a56a"}],marble:["ground","Marble courtyard","⬜",30,{top:"#e8e3da",grid:true}],
- water:["ground","Lotus pond","🌊",25,{top:"#3b6fb6",lotus:true}],kund:["ground","Sacred kund","💧",90,{top:"#2d5fa8",steps:true}],
- // trees
- tulsi:["object","Tulsi on a pedestal","🌿",40,{kind:"tulsi"}],kadamba:["object","Kadamba tree","🌳",70,{kind:"tree",c:"#3f7d3a",fruit:"#f2a33a"}],
- banyan:["object","Banyan tree","🌲",120,{kind:"tree",c:"#2f6a35",big:true}],
- // buildings
- kutir:["object","Bhajan kutir","🛖",150,{kind:"hut"}],goshala:["object","Goshala","🏚️",250,{kind:"barn"}],
- lamp:["object","Deepa lamp post","🪔",35,{kind:"lamp"}],gate:["object","Gopuram gate","⛩️",900,{kind:"gate"}],
- temple:["object","Village temple","🛕",600,{kind:"temple"}],grand:["object","Grand Radha-Krishna temple","🏯",1500,{kind:"grand"}],
- govardhan:["object","Govardhan Hill","⛰️",1200,{kind:"hill"}],ratha:["object","Ratha Yatra chariot","🎪",1000,{kind:"ratha"}],
- // beings
- cow:["object","Cow","🐄",80,{kind:"cow"}],calf:["object","Calf","🐮",50,{kind:"cow",small:true}],peacock:["object","Peacock","🦚",120,{kind:"peacock"}],
- parrot:["object","Parrot","🦜",40,{kind:"bird"}],devotee:["object","Devotee","🧘",60,{kind:"person",c:"#f29a2e"}],
- cowherd:["object","Cowherd boy","🧑‍🌾",70,{kind:"person",c:"#ffd27a",stick:true}],kirtan:["object","Kirtan party","🎶",200,{kind:"kirtan"}]};
-const SIZES=[[6,0],[8,500],[10,1500],[12,4000]];
-const dham=()=>progress.dham||(progress.dham={size:6,tiles:{}});
-function dhamValue(){let v=0;Object.values(dham().tiles).forEach(t=>{if(t.g)v+=DITEMS[t.g][3];if(t.o)v+=DITEMS[t.o][3];});return v;}
-let dSel="grass",dTool="place",dhamCat="ground";
-function renderDhamHUD(){try{renderHeader();}catch(e){}if(!$("#dCoins"))return;$("#dCoins").textContent=fmt(coinBal());$("#dValue").textContent=fmt(dhamValue());$("#dMult").textContent="×"+comboMult().toFixed(2);
-  const lvl2=dhamValue()<500?"Village":dhamValue()<3000?"Holy village":dhamValue()<10000?"Tirtha town":"Dham";$("#dLevel").textContent=lvl2;}
-function renderDhamShop(){const cats={ground:"Grounds",nature:"Trees",build:"Buildings",beings:"Cows & people"};
-  const catOf=k=>DITEMS[k][0]==="ground"?"ground":["tulsi","kadamba","banyan"].includes(k)?"nature":["cow","calf","peacock","parrot","devotee","cowherd","kirtan"].includes(k)?"beings":"build";
-  $("#dCats").innerHTML=Object.entries(cats).map(([k,n])=>`<button role="tab" aria-selected="${dhamCat===k}" data-cat="${k}">${n}</button>`).join("");
-  $("#dShop").innerHTML=Object.entries(DITEMS).filter(([k])=>catOf(k)===dhamCat).map(([k,[ty,nm,ic,p]])=>`<button class="ditem ${dSel===k&&dTool==="place"?"on":""} ${coinBal()<p?"poor":""}" data-item="${k}" id="di-${k}"><span class="ic">${ic}</span><span class="nm">${nm}</span><span class="p">${p} 🪙</span></button>`).join("");
-  const nx=SIZES.find(s=>s[0]>dham().size);$("#dExpand").textContent=nx?`Expand to ${nx[0]}×${nx[0]} · ${nx[1]} 🪙`:"Max size reached";$("#dExpand").disabled=!nx;
-  document.querySelectorAll("#dTools button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tool===dTool));}
-$("#dCats").addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if(!b)return;dhamCat=b.dataset.cat;renderDhamShop();});
-$("#dShop").addEventListener("click",e=>{const b=e.target.closest("[data-item]");if(!b)return;dSel=b.dataset.item;dTool="place";renderDhamShop();$("#dHint").textContent=`Tap a tile to place: ${DITEMS[dSel][1]} (${DITEMS[dSel][3]} 🪙)`;});
-$("#dTools").addEventListener("click",e=>{const b=e.target.closest("[data-tool]");if(!b)return;dTool=b.dataset.tool;renderDhamShop();$("#dHint").textContent=dTool==="remove"?"Tap something to pick it up. You get a full refund.":`Tap a tile to place: ${DITEMS[dSel][1]}`;});
-$("#dExpand").addEventListener("click",()=>{const nx=SIZES.find(s=>s[0]>dham().size);if(!nx)return;if(coinBal()<nx[1]){toast(`You need ${nx[1]-coinBal()} more 🪙 to expand.`);return;}progress.coins-=nx[1];dham().size=nx[0];progress.dham={...dham()};save();renderDham();toast(`Your dham grew to ${nx[0]}×${nx[0]}!`);});
-let dGeo=null;
-function isoGeo(w,h){const n=dham().size,head=70,tw=Math.min((w-16)/n,(h-head-16)*2/n),th=tw/2;return {n,tw,th,ox:w/2,oy:head+Math.max(0,(h-head-16-n*th)/2)};}
-const isoPt=(g,i,j)=>[g.ox+(i-j)*g.tw/2,g.oy+(i+j)*g.th/2];
-function prism(x,X,Y,w2,h2,hgt,top,left,right){ // diamond footprint centred at X,Y (ground), height hgt
-  x.fillStyle=left;x.beginPath();x.moveTo(X-w2,Y);x.lineTo(X,Y+h2);x.lineTo(X,Y+h2-hgt);x.lineTo(X-w2,Y-hgt);x.closePath();x.fill();
-  x.fillStyle=right;x.beginPath();x.moveTo(X+w2,Y);x.lineTo(X,Y+h2);x.lineTo(X,Y+h2-hgt);x.lineTo(X+w2,Y-hgt);x.closePath();x.fill();
-  x.fillStyle=top;x.beginPath();x.moveTo(X,Y-h2-hgt);x.lineTo(X+w2,Y-hgt);x.lineTo(X,Y+h2-hgt);x.lineTo(X-w2,Y-hgt);x.closePath();x.fill();}
-function pyramid(x,X,Y,w2,h2,hgt,left,right){x.fillStyle=left;x.beginPath();x.moveTo(X-w2,Y);x.lineTo(X,Y+h2);x.lineTo(X,Y-hgt);x.closePath();x.fill();x.fillStyle=right;x.beginPath();x.moveTo(X+w2,Y);x.lineTo(X,Y+h2);x.lineTo(X,Y-hgt);x.closePath();x.fill();}
-function flag(x,X,Y,t){x.strokeStyle="#8a7a5a";x.lineWidth=1.2;x.beginPath();x.moveTo(X,Y);x.lineTo(X,Y-12);x.stroke();const wv=RM?0:Math.sin(t/250+X)*2;x.fillStyle="#f29a2e";x.beginPath();x.moveTo(X,Y-12);x.lineTo(X+9,Y-9+wv);x.lineTo(X,Y-6);x.fill();}
-function drawObj(x,k,X,Y,g,t){const s=g.tw/64,d=DITEMS[k][4],bob=RM?0:Math.sin(t/400+X*.1)*1;
-  const w2=g.tw/2,h2=g.th/2;
-  switch(d.kind){
-  case "tulsi":prism(x,X,Y,w2*.3,h2*.3,10*s,"#e8d9b8","#b59c74","#cfb88f");for(let i=0;i<7;i++){x.fillStyle=i%2?"#4fa864":"#5cc97f";x.beginPath();x.arc(X+Math.cos(i)*5*s,Y-16*s-Math.sin(i*2)*4*s,4*s,0,7);x.fill();}break;
-  case "tree":{const r=(d.big?22:15)*s;x.fillStyle="#6b4a2a";x.fillRect(X-2*s,Y-(d.big?22:16)*s,4*s,(d.big?22:16)*s);x.fillStyle=d.c;x.beginPath();x.arc(X,Y-(d.big?30:24)*s,r,0,7);x.fill();
-    x.fillStyle="rgba(255,255,255,.08)";x.beginPath();x.arc(X-r*.3,Y-(d.big?34:28)*s,r*.5,0,7);x.fill();if(d.fruit){x.fillStyle=d.fruit;for(let i=0;i<6;i++){x.beginPath();x.arc(X+Math.cos(i*1.7)*r*.6,Y-24*s+Math.sin(i*2.3)*r*.5,2.2*s,0,7);x.fill();}}break;}
-  case "hut":prism(x,X,Y,w2*.6,h2*.6,14*s,"#d6b98a","#a8875a","#c4a372");pyramid(x,X,Y-14*s,w2*.7,h2*.7,16*s,"#b08a3e","#d0aa55");x.fillStyle="#2a1f18";x.fillRect(X+2*s,Y-8*s,5*s,8*s);break;
-  case "barn":prism(x,X,Y,w2*.85,h2*.85,12*s,"#cdb98f","#9f7a4f","#b98f5f");pyramid(x,X,Y-12*s,w2*.9,h2*.9,10*s,"#8f3e2a","#a84a32");break;
-  case "lamp":x.fillStyle="#8a7a5a";x.fillRect(X-1*s,Y-22*s,2*s,22*s);{const f=RM?0:Math.sin(t/150+X)*.8;const gl=x.createRadialGradient(X,Y-24*s,0,X,Y-24*s,10*s);gl.addColorStop(0,"rgba(255,220,140,.9)");gl.addColorStop(1,"rgba(242,154,46,0)");x.fillStyle=gl;x.beginPath();x.arc(X,Y-24*s,10*s,0,7);x.fill();x.fillStyle="#fff1c9";x.beginPath();x.ellipse(X,Y-25*s-f,1.6*s,3*s,0,0,7);x.fill();}break;
-  case "gate":prism(x,X-w2*.45,Y,w2*.18,h2*.18,26*s,"#e7d6b0","#b8a582","#d2bf97");prism(x,X+w2*.45,Y,w2*.18,h2*.18,26*s,"#e7d6b0","#b8a582","#d2bf97");
-    prism(x,X,Y-26*s,w2*.75,h2*.3,6*s,"#f0b25a","#c27a2a","#d98f3a");pyramid(x,X,Y-32*s,w2*.6,h2*.25,16*s,"#c27a2a","#e09a45");flag(x,X,Y-48*s,t);break;
-  case "temple":prism(x,X,Y,w2*.7,h2*.7,16*s,"#efe2c4","#c9b48a","#ddc9a0");x.fillStyle="#2a1f18";x.fillRect(X+2*s,Y-10*s,5*s,9*s);
-    x.fillStyle="#f2e3c0";x.beginPath();x.moveTo(X-w2*.5,Y-16*s);x.quadraticCurveTo(X-w2*.45,Y-38*s,X,Y-48*s);x.quadraticCurveTo(X+w2*.45,Y-38*s,X+w2*.5,Y-16*s);x.fill();
-    x.fillStyle="#ffd27a";x.beginPath();x.arc(X,Y-50*s,3*s,0,7);x.fill();flag(x,X,Y-52*s,t);break;
-  case "grand":prism(x,X,Y,w2*.92,h2*.92,20*s,"#f5ecd8","#cdb98f","#e4d2ab");
-    [[-.5,30],[.5,30],[0,52]].forEach(([o,hh])=>{const cx2=X+o*w2*.9;x.fillStyle="#fbf3e2";x.beginPath();x.moveTo(cx2-w2*.25,Y-20*s);x.quadraticCurveTo(cx2-w2*.22,Y-(20+hh*.7)*s,cx2,Y-(20+hh)*s);x.quadraticCurveTo(cx2+w2*.22,Y-(20+hh*.7)*s,cx2+w2*.25,Y-20*s);x.fill();x.fillStyle="#ffd27a";x.beginPath();x.arc(cx2,Y-(22+hh)*s,2.6*s,0,7);x.fill();});
-    flag(x,X,Y-74*s,t);x.fillStyle="#2a1f18";x.beginPath();x.moveTo(X-4*s,Y-2*s);x.lineTo(X-4*s,Y-11*s);x.arc(X,Y-11*s,4*s,Math.PI,0);x.lineTo(X+4*s,Y-2*s);x.fill();break;
-  case "hill":x.fillStyle="#7b6146";x.beginPath();x.ellipse(X,Y-4*s,w2*.95,h2*.95+10*s,0,Math.PI,0);x.fill();x.fillStyle="#8d7253";x.beginPath();x.ellipse(X-6*s,Y-12*s,w2*.55,22*s,0,Math.PI,0);x.fill();
-    x.fillStyle="#4f8a4a";[[-14,-18],[8,-24],[18,-10],[-4,-30]].forEach(([a,b])=>{x.beginPath();x.arc(X+a*s,Y+b*s,4*s,0,7);x.fill();});break;
-  case "ratha":prism(x,X,Y-6*s,w2*.55,h2*.55,10*s,"#c94a3a","#8a2e24","#a8382c");x.fillStyle="#3a2a1a";[[-.4,0],[.4,0]].forEach(([o])=>{x.beginPath();x.ellipse(X+o*w2,Y-2*s,5*s,6*s,0,0,7);x.fill();});
-    pyramid(x,X,Y-16*s,w2*.45,h2*.45,26*s,"#d9a62a","#f2c54a");x.fillStyle="#2d5fa8";x.fillRect(X-w2*.3,Y-20*s,w2*.6,4*s);flag(x,X,Y-42*s,t);break;
-  case "cow":{const sc=d.small?.7:1;x.fillStyle="#f4efe6";x.beginPath();x.ellipse(X,Y-8*s*sc+bob,9*s*sc,5*s*sc,0,0,7);x.fill();x.fillStyle="#d9cfc0";x.beginPath();x.ellipse(X+9*s*sc,Y-11*s*sc+bob,3.5*s*sc,3*s*sc,0,0,7);x.fill();
-    x.fillStyle="#8a6a4a";x.fillRect(X-6*s*sc,Y-4*s*sc,1.5*s,4*s*sc);x.fillRect(X+5*s*sc,Y-4*s*sc,1.5*s,4*s*sc);x.fillStyle="#b07040";x.beginPath();x.ellipse(X-2*s*sc,Y-9*s*sc+bob,3*s*sc,2*s*sc,0,0,7);x.fill();break;}
-  case "peacock":x.fillStyle="#2a8a7a";for(let i=-3;i<=3;i++){x.save();x.translate(X-3*s,Y-6*s);x.rotate(-Math.PI/2+i*.28);x.beginPath();x.ellipse(0,-9*s,2.4*s,9*s,0,0,7);x.fill();x.fillStyle="#ffd27a";x.beginPath();x.arc(0,-16*s,1.4*s,0,7);x.fill();x.fillStyle="#2a8a7a";x.restore();}
-    x.fillStyle="#2a5ab0";x.beginPath();x.ellipse(X+2*s,Y-6*s+bob,3.5*s,5*s,0,0,7);x.fill();x.beginPath();x.arc(X+3*s,Y-12*s+bob,2*s,0,7);x.fill();break;
-  case "bird":x.fillStyle="#4fbf5f";x.beginPath();x.ellipse(X,Y-10*s+bob*2,3.5*s,4.5*s,0,0,7);x.fill();x.fillStyle="#e0566a";x.beginPath();x.arc(X+2.5*s,Y-13*s+bob*2,1.4*s,0,7);x.fill();break;
-  case "person":{x.fillStyle=d.c;x.beginPath();x.moveTo(X-5*s,Y);x.lineTo(X+5*s,Y);x.lineTo(X,Y-14*s);x.fill();x.fillStyle="#c68a5a";x.beginPath();x.arc(X,Y-16*s+bob,3.2*s,0,7);x.fill();
-    x.fillStyle="#fff";x.fillRect(X-.5*s,Y-18.5*s+bob,1*s,2*s);if(d.stick){x.strokeStyle="#8a6a4a";x.lineWidth=1.2*s;x.beginPath();x.moveTo(X+5*s,Y);x.lineTo(X+7*s,Y-18*s);x.stroke();}break;}
-  case "kirtan":[[-8,"#f29a2e"],[0,"#ffffff"],[8,"#ffd27a"]].forEach(([o,c],i)=>{const b2=RM?0:Math.sin(t/200+i)*1.5;x.fillStyle=c;x.beginPath();x.moveTo(X+o*s-4*s,Y);x.lineTo(X+o*s+4*s,Y);x.lineTo(X+o*s,Y-12*s);x.fill();x.fillStyle="#c68a5a";x.beginPath();x.arc(X+o*s,Y-14*s+b2,2.8*s,0,7);x.fill();});
-    x.fillStyle="#8a4a2a";x.beginPath();x.ellipse(X,Y-6*s,4*s,2*s,0,0,7);x.fill();break;}}
-let dhamRAF=0,dHover=null;
-function drawDham(t=performance.now()){const cv=$("#dhamCv");if(!cv||cv.offsetParent===null)return;const [x,w,h]=fit(cv);const g=isoGeo(w,h);dGeo=g;const D=dham();x.clearRect(0,0,w,h);
-  // sky glow
-  const sk=x.createLinearGradient(0,0,0,h);sk.addColorStop(0,"rgba(242,154,46,.08)");sk.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=sk;x.fillRect(0,0,w,h);
-  // base slab
-  const c0=isoPt(g,0,0),c1=isoPt(g,g.n,0),c2=isoPt(g,g.n,g.n),c3=isoPt(g,0,g.n);x.fillStyle="#3a2c22";x.beginPath();x.moveTo(c3[0],c3[1]);x.lineTo(c2[0],c2[1]);x.lineTo(c2[0],c2[1]+10);x.lineTo(c3[0],c3[1]+10);x.closePath();x.fill();
-  x.fillStyle="#4a3a2c";x.beginPath();x.moveTo(c1[0],c1[1]);x.lineTo(c2[0],c2[1]);x.lineTo(c2[0],c2[1]+10);x.lineTo(c1[0],c1[1]+10);x.closePath();x.fill();
-  x.fillStyle="#d9c094";x.beginPath();x.moveTo(c0[0],c0[1]);x.lineTo(c1[0],c1[1]);x.lineTo(c2[0],c2[1]);x.lineTo(c3[0],c3[1]);x.closePath();x.fill();
-  for(let s2=0;s2<=2*(g.n-1);s2++)for(let i=0;i<g.n;i++){const j=s2-i;if(j<0||j>=g.n)continue;const T=D.tiles[i+","+j]||{},[X,Y]=isoPt(g,i+.5,j+.5),gd=T.g?DITEMS[T.g][4]:{top:"rgba(150,120,80,.28)",empty:true};
-    x.fillStyle=gd.top;x.beginPath();x.moveTo(X,Y-g.th/2);x.lineTo(X+g.tw/2,Y);x.lineTo(X,Y+g.th/2);x.lineTo(X-g.tw/2,Y);x.closePath();x.fill();
-    x.strokeStyle=T.g?"rgba(0,0,0,.18)":"rgba(140,105,60,.55)";x.lineWidth=1;x.stroke();
-    if(gd.dots){const r=seeded(i*31+j);gd.dots.forEach(c=>{for(let k=0;k<3;k++){x.fillStyle=c;x.beginPath();x.arc(X+(r()-.5)*g.tw*.6,Y+(r()-.5)*g.th*.6,1.6,0,7);x.fill();}});}
-    if(gd.grid){x.strokeStyle="rgba(0,0,0,.08)";x.beginPath();x.moveTo(X-g.tw/4,Y-g.th/4);x.lineTo(X+g.tw/4,Y+g.th/4);x.moveTo(X+g.tw/4,Y-g.th/4);x.lineTo(X-g.tw/4,Y+g.th/4);x.stroke();}
-    if(gd.lotus){const rp=RM?0:(t/900+i+j)%1;x.strokeStyle=`rgba(255,255,255,${.3*(1-rp)})`;x.beginPath();x.ellipse(X,Y,g.tw*.2*rp+2,g.th*.2*rp+1,0,0,7);x.stroke();x.fillStyle="#ff8fb8";x.beginPath();x.arc(X+g.tw*.12,Y-g.th*.05,2.4,0,7);x.fill();x.fillStyle="#4fa864";x.beginPath();x.ellipse(X-g.tw*.1,Y+g.th*.1,3.5,2,0,0,7);x.fill();}
-    if(gd.steps){x.strokeStyle="rgba(232,227,218,.7)";x.lineWidth=1.5;x.beginPath();x.moveTo(X,Y-g.th/2+3);x.lineTo(X+g.tw/2-5,Y);x.lineTo(X,Y+g.th/2-3);x.lineTo(X-g.tw/2+5,Y);x.closePath();x.stroke();}
-    if(dHover&&dHover[0]===i&&dHover[1]===j){x.fillStyle=dTool==="remove"?"rgba(224,86,106,.35)":"rgba(255,210,122,.35)";x.beginPath();x.moveTo(X,Y-g.th/2);x.lineTo(X+g.tw/2,Y);x.lineTo(X,Y+g.th/2);x.lineTo(X-g.tw/2,Y);x.closePath();x.fill();}
-    if(T.o)drawObj(x,T.o,X,Y+g.th*.1,g,t);}
-  if(!RM&&curTab==="dham"){cancelAnimationFrame(dhamRAF);dhamRAF=requestAnimationFrame(drawDham);}}
-function tileAt(px,py){const g=dGeo;if(!g)return null;const a=(px-g.ox)/(g.tw/2),b=(py-g.oy)/(g.th/2),i=Math.floor((a+b)/2),j=Math.floor((b-a)/2);return i>=0&&j>=0&&i<g.n&&j<g.n?[i,j]:null;}
-$("#dhamCv").addEventListener("pointermove",e=>{const r=e.target.getBoundingClientRect();dHover=tileAt(e.clientX-r.left,e.clientY-r.top);});
-$("#dhamCv").addEventListener("pointerleave",()=>dHover=null);
-$("#dhamCv").addEventListener("click",e=>{const r=e.target.getBoundingClientRect(),tl=tileAt(e.clientX-r.left,e.clientY-r.top);if(!tl){toast("Tap a tile inside your land (the diamond grid).");return;}dHover=tl;const key=tl.join(","),D=dham(),T={...(D.tiles[key]||{})};
-  if(dTool==="remove"){if(T.o){progress.coins=coinBal()+DITEMS[T.o][3];toast(`Picked up ${DITEMS[T.o][1]} · +${DITEMS[T.o][3]} 🪙 refund`);delete T.o;}else if(T.g){progress.coins=coinBal()+DITEMS[T.g][3];toast(`Cleared ${DITEMS[T.g][1]} · +${DITEMS[T.g][3]} 🪙`);delete T.g;}else return;}
-  else{const it=DITEMS[dSel],price=it[3];if(it[0]==="object"&&T.g==="water"||it[0]==="object"&&T.g==="kund"){toast("You can't build on water.");return;}
-    if(it[0]==="ground"){if(T.g===dSel)return;if(coinBal()<price){toast(`You need ${price-coinBal()} more 🪙. Earn coins by chanting, quizzes and games.`);return;}if(T.g)progress.coins+=DITEMS[T.g][3];if(T.o&&(dSel==="water"||dSel==="kund")){toast("Pick up what's on this tile first.");return;}T.g=dSel;}
-    else{if(T.o){toast("This tile is taken. Use Pick up first.");return;}if(coinBal()<price){toast(`You need ${price-coinBal()} more 🪙. Earn coins by chanting, quizzes and games.`);return;}if(!T.g)T.g="grass",progress.coins-=DITEMS.grass[3];T.o=dSel;}
-    progress.coins-=price;const [X,Y]=isoPt(dGeo,tl[0]+.5,tl[1]+.5);FX.burst(r.left+X,r.top+Y,30);}
-  D.tiles[key]=T;if(!T.g&&!T.o)delete D.tiles[key];progress.dham={...D};save();renderDhamHUD();renderDhamShop();checkAwards();});
-function renderDham(){if(!$("#dhamCv"))return;renderDhamHUD();renderDhamShop();renderSpin();drawDham();drawWheel();}
-
+/* My Dham lives in its own script (city.js section at the end of the page). */
 function coinsFor(xp,why){const w=why.toLowerCase();
   if(w.includes("reflex")||w.includes("tiles"))return 20;if(w.includes("full round"))return 30;
   if(w.includes("round"))return w.includes("logged")?10*Math.max(1,Math.round(xp/5)):10;
@@ -1648,12 +1593,12 @@ AWARDS.push(
  ["study1","📖","First Chapter","Read a chapter summary in the Study room",p=>Object.values(p.studied||{}).some(x=>x.read)],
  ["study5","🧠","Chapter Master","Score 4+ on 5 chapter quizzes",p=>Object.values(p.studied||{}).filter(x=>(x.quiz||0)>=4).length>=5],
  ["gita18","🪔","Whole Gita","Score 4+ on all 18 Gita chapter quizzes",p=>Array.from({length:18},(_,i)=>p.studied?.["gita:"+(i+1)]).every(x=>(x?.quiz||0)>=4)],
- ["dham1","🧱","First Brick","Place something in your dham",p=>Object.keys(p.dham?.tiles||{}).length>=1],
- ["dhamT","🛕","Temple Founder","Build a temple in your dham",p=>Object.values(p.dham?.tiles||{}).some(t=>t.o==="temple"||t.o==="grand")],
- ["dhamG","🏯","Grand Darshan","Build the grand Radha-Krishna temple",p=>Object.values(p.dham?.tiles||{}).some(t=>t.o==="grand")],
- ["dhamC","🐄","Goshala Keeper","Keep 5 cows and calves",p=>Object.values(p.dham?.tiles||{}).filter(t=>t.o==="cow"||t.o==="calf").length>=5],
- ["dhamV","🏙️","Tirtha Town","Reach a dham value of 3,000",p=>dhamValue()>=3000],
- ["dhamX","🗺️","Growing Dham","Expand your dham",p=>(p.dham?.size||6)>6],
+ ["dham1","🏗️","First Set","Place your first set in your dham",p=>(p.city?.sets||[]).length>=1],
+ ["dhamT","🛕","Temple Founder","Own a temple set",p=>(p.city?.sets||[]).some(x=>["krishnabalarama","manor","mayapur","jagannatha"].includes(x.id))],
+ ["dhamG","🏯","Mayapur Darshan","Own the Mayapur temple",p=>(p.city?.sets||[]).some(x=>x.id==="mayapur")],
+ ["dhamC","🐄","Goshala Keeper","Own the Gokula cowshed",p=>(p.city?.sets||[]).some(x=>x.id==="goshala")],
+ ["dhamV","🏙️","Tirtha Town","Own 8 different sets",p=>new Set((p.city?.sets||[]).map(x=>x.id)).size>=8],
+ ["dhamX","🎁","Daily Darshan","Claim your dham reward 7 times",p=>(p.city?.claims||0)>=7],
  ["spin","🎡","Wheel Turner","Spin the Sudarshana wheel",p=>!!p.spun],
  ["rich","🪙","Lakshmi's Blessing","Earn 5,000 coins in total",p=>(p.coinsAll||0)>=5000],
  ["fest","🌼","Festival Devotee","Chant on a festival day",p=>anyJapaOn("festival")],
@@ -1775,5 +1720,6 @@ try{showTab(startTab);}catch(e){console.error(e);}try{renderJapa();}catch(e){con
   db.collection("days").orderBy("date").onSnapshot(s=>{const before=days.map(d=>d.date).join();days=s.docs.map(d=>d.data()).filter(d=>d&&d.date);if(days.map(d=>d.date).join()!==before)renderAll();},
     ()=>{$("#stage").innerHTML=`<h2>The vault is stuck</h2><p style="color:var(--dim)">Couldn't load the scrolls. Reload the page to try again.</p>`;});})();
 </script>
+<!-- CITY_JS -->
 </body>
 </html>

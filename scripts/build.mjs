@@ -39,7 +39,7 @@ for (const [pkg, files] of faces) {
 writeFileSync(join(out, "fonts", "fonts.css"), css);
 
 // Transpile the page's inline scripts so older Android WebViews (Chrome 69+) can run them.
-let html = readFileSync(join(root, "src/index.html"), "utf8");
+let html = readFileSync(join(root, "src/index.html"), "utf8").replace("<!-- CITY_JS -->", () => "<script>\n" + readFileSync(join(root, "src/city.js"), "utf8") + "\n</script>");
 const parts = html.split(/(<script>)([\s\S]*?)(<\/script>)/);
 for (let i = 0; i < parts.length; i++) {
   if (parts[i] === "<script>") {
