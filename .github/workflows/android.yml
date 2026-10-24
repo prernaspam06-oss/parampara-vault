@@ -1,4 +1,5 @@
 name: Build Android APK
+# Signed with the release key from repository secrets (KEYSTORE_BASE64 etc.).
 
 on:
   push:
