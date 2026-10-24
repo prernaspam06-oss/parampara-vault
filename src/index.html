@@ -9,6 +9,13 @@
 <link rel="stylesheet" href="fonts/fonts.css">
 <script src="shim.js"></script>
 <style>
+/* Base reset (the Claude viewer supplied this; the app must carry it itself) */
+[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%}
 /* Layout: one narrow lamp-lit column. Rank bar on top, a spinning mandala seal that shatters into the day's scroll, an arcade of three history games, then the archive. Single dark look by choice (night temple). */
 :root{
   --night:#0d0b17;
@@ -37,7 +44,7 @@
   --lotus:#e2508a;--peacock:#13919a;--indigo:#4a5ce0;--violet:#8a55e0;--panel-glow:rgba(224,116,11,.08);color-scheme:light}
 :root[data-mode="dark"]{color-scheme:dark}
 .tab[data-tab="today"]{--accent:var(--saffron)} .tab[data-tab="journey"]{--accent:var(--peacock)} .tab[data-tab="learn"]{--accent:var(--indigo)}
-.tab[data-tab="play"]{--accent:var(--lotus)} .tab[data-tab="dham"]{--accent:var(--gold)} .tab[data-tab="stats"]{--accent:var(--violet)}
+.tab[data-tab="play"]{--accent:var(--lotus)} .tab[data-tab="library"]{--accent:#ff9fc4} .tab[data-tab="dham"]{--accent:var(--gold)} .tab[data-tab="stats"]{--accent:var(--violet)}
 .tab .panel{border-top:3px solid var(--accent);background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 9%,var(--stone)) 0,var(--stone) 120px)}
 .tab .panel h2{color:color-mix(in srgb,var(--accent) 35%,var(--leaf))}
 .tab .sec-h{color:var(--accent)}
@@ -46,7 +53,7 @@
 .modebtn{all:unset;cursor:pointer;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--stone);border:1px solid var(--line)}
 .modebtn:focus-visible{outline:2px solid var(--saffron)}
 .dhampanel{overflow:visible}
-#dhamCv{display:block;width:100%;height:380px;margin-top:10px;touch-action:manipulation;cursor:crosshair}
+#dhamCv{display:block;width:100%;aspect-ratio:1/0.95;max-width:100%;height:auto;margin-top:10px;touch-action:manipulation;cursor:crosshair}
 .dstats{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--f-mono);font-size:.76rem;color:var(--dim);margin-top:6px}
 .dstats b{color:var(--leaf);font-weight:500}
 .cats{grid-template-columns:repeat(4,1fr)}
@@ -102,7 +109,9 @@
 .rp-h{font-family:var(--f-display);font-size:1.05rem;line-height:1.15;color:var(--leaf)}
 .rp-row{display:grid;grid-template-columns:1fr 64px 1fr;gap:10px;align-items:center;margin-top:8px}
 .rp-row .dcard{width:64px;cursor:default}
-.rp-row .dcard .nm{font-size:.62rem} .rp-row .dcard .em{font-size:1.5rem}
+.rp-row .dcard .nm{font-size:.62rem}
+.rp-row .dcard .bk{display:none}
+body:not([data-tab="today"]) .rank,body:not([data-tab="today"]) #festBanner{display:none} .rp-row .dcard .em{font-size:1.5rem}
 .rp-coin{font-family:var(--f-display);font-size:1.5rem;color:var(--gold);text-align:right}
 .rp-item{font-family:var(--f-mono);font-size:.78rem;color:var(--leaf)}
 .rp-s{font-family:var(--f-mono);font-size:.7rem;color:var(--dim);margin-top:6px;text-align:center}
@@ -112,10 +121,10 @@ body{font-family:var(--f-body);font-size:17px;line-height:1.55;
   padding-right:max(16px, env(safe-area-inset-right, 0px));
   padding-block:20px calc(96px + env(safe-area-inset-bottom, 0px));min-height:100%}
 .tab{display:flex;flex-direction:column;gap:22px}
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(6,1fr);gap:2px;
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(7,1fr);gap:0;
   background:color-mix(in srgb,var(--stone) 94%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line);
   padding:6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px))}
-.tabs button{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:10px;font-family:var(--f-mono);font-size:.68rem;color:var(--dim);letter-spacing:.04em}
+.tabs button{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:10px;font-family:var(--f-mono);font-size:.6rem;min-width:0;color:var(--dim);letter-spacing:.04em}
 .tabs button .ic{font-size:1.25rem;filter:grayscale(.8) opacity(.7);transition:filter .2s,transform .2s}
 .tabs button[aria-current="page"]{color:var(--gold)}
 .tabs button[aria-current="page"] .ic{filter:none;transform:translateY(-2px)}
@@ -370,8 +379,8 @@ input,textarea,.fact,.note{user-select:text;-webkit-user-select:text}
 <div class="wrap">
   <header class="row" style="align-items:flex-end">
     <div>
-      <div class="eyebrow">Hare Krishna movement · secret archive</div>
-      <h1 class="brand">The Parampara <span>Vault</span></h1>
+      <div class="eyebrow" id="pageEyebrow">Hare Krishna movement · secret archive</div>
+      <h1 class="brand" id="pageTitle">The Parampara <span>Vault</span></h1>
     </div>
     <div class="hdr-r">
       <button class="coinpill" id="coinPill" aria-label="Your coins. Opens My Dham."><span>🪙</span><b id="hdrCoins">0</b></button>
@@ -482,8 +491,12 @@ input,textarea,.fact,.note{user-select:text;-webkit-user-select:text}
       <h3 class="sec-h">Scripture quiz room · pick a book</h3>
       <div class="books" id="books"></div>
     </section>
+  </div>
+
+  <!-- LIBRARY -->
+  <div class="tab" data-tab="library" hidden>
     <section>
-      <div class="panel library">
+      <div class="panel library" style="border-top:3px solid var(--accent)">
         <div class="row"><div><div class="eyebrow">Photocard library</div><h2 style="margin:4px 0 0">Your collections</h2></div><div class="jstat"><b id="cardCount">0</b><span>cards collected</span></div></div>
         <p style="color:var(--dim);margin:6px 0 0;font-size:.95rem">Every reward drops one photocard. Finish a collection for 500 🪙 and a gold card. Gold versions are rare.</p>
         <div class="colls" id="colls" role="tablist" aria-label="Collections"></div>
@@ -580,6 +593,7 @@ input,textarea,.fact,.note{user-select:text;-webkit-user-select:text}
   <button data-go="today" aria-current="page"><span class="ic">🪔</span>Today</button>
   <button data-go="journey"><span class="ic">👣</span>Journey</button>
   <button data-go="learn"><span class="ic">📜</span>Learn</button>
+  <button data-go="library"><span class="ic">🎴</span>Cards</button>
   <button data-go="play"><span class="ic">🎮</span>Play</button>
   <button data-go="dham"><span class="ic">🛕</span>Dham</button>
   <button data-go="stats"><span class="ic">📊</span>Stats</button>
@@ -799,10 +813,11 @@ function renderStage(){const past=days.filter(d=>d.date<=localDate());
 /* ---------- arcade ---------- */
 let stopGame=()=>{};
 let curTab="today";
-function showTab(t){curTab=t;document.querySelectorAll(".tab").forEach(s=>s.hidden=s.dataset.tab!==t);
+const PAGES={today:["Hare Krishna movement · secret archive",'The Parampara <span>Vault</span>'],journey:["Your path through Vraja","Journey"],learn:["Quizzes and the Sunday boss","Learn"],library:["Photocard library","Your <span>Cards</span>"],play:["History arcade and side quests","Play"],dham:["Build your holy place","My <span>Dham</span>"],stats:["Chart data, Wrapped and rewards","Stats"]};
+function showTab(t){curTab=t;document.body.dataset.tab=t;if(PAGES[t]){$("#pageEyebrow").textContent=PAGES[t][0];$("#pageTitle").innerHTML=PAGES[t][1];}document.querySelectorAll(".tab").forEach(s=>s.hidden=s.dataset.tab!==t);
   document.querySelectorAll(".tabs button").forEach(b=>b.dataset.go===t?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
   stopGame();stopGame=()=>{};$("#game").hidden=true;$("#game").innerHTML="";
-  if(t==="today")requestAnimationFrame(()=>{drawMala();drawTulsi();});if(t==="journey")requestAnimationFrame(()=>{drawMap();drawTemple();});if(t==="play")requestAnimationFrame(drawArt);if(t==="dham")requestAnimationFrame(renderDham);
+  if(t==="library")renderAlbum();if(t==="today")requestAnimationFrame(()=>{drawMala();drawTulsi();});if(t==="journey")requestAnimationFrame(()=>{drawMap();drawTemple();});if(t==="play")requestAnimationFrame(drawArt);if(t==="dham")requestAnimationFrame(renderDham);
   try{localStorage.setItem("vaultTab",t);}catch(e){}scrollTo({top:0,behavior:"auto"});}
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.go)));
 function closeGame(){showTab(curTab);}
@@ -1452,7 +1467,7 @@ $("#dShop").addEventListener("click",e=>{const b=e.target.closest("[data-item]")
 $("#dTools").addEventListener("click",e=>{const b=e.target.closest("[data-tool]");if(!b)return;dTool=b.dataset.tool;renderDhamShop();$("#dHint").textContent=dTool==="remove"?"Tap something to pick it up. You get a full refund.":`Tap a tile to place: ${DITEMS[dSel][1]}`;});
 $("#dExpand").addEventListener("click",()=>{const nx=SIZES.find(s=>s[0]>dham().size);if(!nx)return;if(coinBal()<nx[1]){toast(`You need ${nx[1]-coinBal()} more 🪙 to expand.`);return;}progress.coins-=nx[1];dham().size=nx[0];progress.dham={...dham()};save();renderDham();toast(`Your dham grew to ${nx[0]}×${nx[0]}!`);});
 let dGeo=null;
-function isoGeo(w,h){const n=dham().size,tw=Math.min((w-20)/n,(h-60)/(n*.5+1.2)*1)*1,th=tw/2;return {n,tw,th,ox:w/2,oy:30+th*0.6};}
+function isoGeo(w,h){const n=dham().size,head=70,tw=Math.min((w-16)/n,(h-head-16)*2/n),th=tw/2;return {n,tw,th,ox:w/2,oy:head+Math.max(0,(h-head-16-n*th)/2)};}
 const isoPt=(g,i,j)=>[g.ox+(i-j)*g.tw/2,g.oy+(i+j)*g.th/2];
 function prism(x,X,Y,w2,h2,hgt,top,left,right){ // diamond footprint centred at X,Y (ground), height hgt
   x.fillStyle=left;x.beginPath();x.moveTo(X-w2,Y);x.lineTo(X,Y+h2);x.lineTo(X,Y+h2-hgt);x.lineTo(X-w2,Y-hgt);x.closePath();x.fill();
@@ -1497,21 +1512,21 @@ function drawDham(t=performance.now()){const cv=$("#dhamCv");if(!cv||cv.offsetPa
   // base slab
   const c0=isoPt(g,0,0),c1=isoPt(g,g.n,0),c2=isoPt(g,g.n,g.n),c3=isoPt(g,0,g.n);x.fillStyle="#3a2c22";x.beginPath();x.moveTo(c3[0],c3[1]);x.lineTo(c2[0],c2[1]);x.lineTo(c2[0],c2[1]+10);x.lineTo(c3[0],c3[1]+10);x.closePath();x.fill();
   x.fillStyle="#4a3a2c";x.beginPath();x.moveTo(c1[0],c1[1]);x.lineTo(c2[0],c2[1]);x.lineTo(c2[0],c2[1]+10);x.lineTo(c1[0],c1[1]+10);x.closePath();x.fill();
-  for(let s2=0;s2<=2*(g.n-1);s2++)for(let i=0;i<g.n;i++){const j=s2-i;if(j<0||j>=g.n)continue;const T=D.tiles[i+","+j]||{},[X,Y]=isoPt(g,i+.5,j+.5),gd=T.g?DITEMS[T.g][4]:{top:C.stone2};
+  x.fillStyle="#d9c094";x.beginPath();x.moveTo(c0[0],c0[1]);x.lineTo(c1[0],c1[1]);x.lineTo(c2[0],c2[1]);x.lineTo(c3[0],c3[1]);x.closePath();x.fill();
+  for(let s2=0;s2<=2*(g.n-1);s2++)for(let i=0;i<g.n;i++){const j=s2-i;if(j<0||j>=g.n)continue;const T=D.tiles[i+","+j]||{},[X,Y]=isoPt(g,i+.5,j+.5),gd=T.g?DITEMS[T.g][4]:{top:"rgba(150,120,80,.28)",empty:true};
     x.fillStyle=gd.top;x.beginPath();x.moveTo(X,Y-g.th/2);x.lineTo(X+g.tw/2,Y);x.lineTo(X,Y+g.th/2);x.lineTo(X-g.tw/2,Y);x.closePath();x.fill();
-    x.strokeStyle=T.g?"rgba(0,0,0,.15)":"rgba(236,223,195,.08)";x.lineWidth=1;x.stroke();
+    x.strokeStyle=T.g?"rgba(0,0,0,.18)":"rgba(140,105,60,.55)";x.lineWidth=1;x.stroke();
     if(gd.dots){const r=seeded(i*31+j);gd.dots.forEach(c=>{for(let k=0;k<3;k++){x.fillStyle=c;x.beginPath();x.arc(X+(r()-.5)*g.tw*.6,Y+(r()-.5)*g.th*.6,1.6,0,7);x.fill();}});}
     if(gd.grid){x.strokeStyle="rgba(0,0,0,.08)";x.beginPath();x.moveTo(X-g.tw/4,Y-g.th/4);x.lineTo(X+g.tw/4,Y+g.th/4);x.moveTo(X+g.tw/4,Y-g.th/4);x.lineTo(X-g.tw/4,Y+g.th/4);x.stroke();}
     if(gd.lotus){const rp=RM?0:(t/900+i+j)%1;x.strokeStyle=`rgba(255,255,255,${.3*(1-rp)})`;x.beginPath();x.ellipse(X,Y,g.tw*.2*rp+2,g.th*.2*rp+1,0,0,7);x.stroke();x.fillStyle="#ff8fb8";x.beginPath();x.arc(X+g.tw*.12,Y-g.th*.05,2.4,0,7);x.fill();x.fillStyle="#4fa864";x.beginPath();x.ellipse(X-g.tw*.1,Y+g.th*.1,3.5,2,0,0,7);x.fill();}
     if(gd.steps){x.strokeStyle="rgba(232,227,218,.7)";x.lineWidth=1.5;x.beginPath();x.moveTo(X,Y-g.th/2+3);x.lineTo(X+g.tw/2-5,Y);x.lineTo(X,Y+g.th/2-3);x.lineTo(X-g.tw/2+5,Y);x.closePath();x.stroke();}
     if(dHover&&dHover[0]===i&&dHover[1]===j){x.fillStyle=dTool==="remove"?"rgba(224,86,106,.35)":"rgba(255,210,122,.35)";x.beginPath();x.moveTo(X,Y-g.th/2);x.lineTo(X+g.tw/2,Y);x.lineTo(X,Y+g.th/2);x.lineTo(X-g.tw/2,Y);x.closePath();x.fill();}
     if(T.o)drawObj(x,T.o,X,Y+g.th*.1,g,t);}
-  if(!Object.keys(D.tiles).length){x.fillStyle="#9d93b2";x.font="12px 'DM Mono',monospace";x.textAlign="center";x.fillText("Pick something from the shop below, then tap a tile",w/2,h-12);}
   if(!RM&&curTab==="dham"){cancelAnimationFrame(dhamRAF);dhamRAF=requestAnimationFrame(drawDham);}}
 function tileAt(px,py){const g=dGeo;if(!g)return null;const a=(px-g.ox)/(g.tw/2),b=(py-g.oy)/(g.th/2),i=Math.floor((a+b)/2),j=Math.floor((b-a)/2);return i>=0&&j>=0&&i<g.n&&j<g.n?[i,j]:null;}
 $("#dhamCv").addEventListener("pointermove",e=>{const r=e.target.getBoundingClientRect();dHover=tileAt(e.clientX-r.left,e.clientY-r.top);});
 $("#dhamCv").addEventListener("pointerleave",()=>dHover=null);
-$("#dhamCv").addEventListener("click",e=>{const r=e.target.getBoundingClientRect(),tl=tileAt(e.clientX-r.left,e.clientY-r.top);if(!tl)return;dHover=tl;const key=tl.join(","),D=dham(),T={...(D.tiles[key]||{})};
+$("#dhamCv").addEventListener("click",e=>{const r=e.target.getBoundingClientRect(),tl=tileAt(e.clientX-r.left,e.clientY-r.top);if(!tl){toast("Tap a tile inside your land (the diamond grid).");return;}dHover=tl;const key=tl.join(","),D=dham(),T={...(D.tiles[key]||{})};
   if(dTool==="remove"){if(T.o){progress.coins=coinBal()+DITEMS[T.o][3];toast(`Picked up ${DITEMS[T.o][1]} · +${DITEMS[T.o][3]} 🪙 refund`);delete T.o;}else if(T.g){progress.coins=coinBal()+DITEMS[T.g][3];toast(`Cleared ${DITEMS[T.g][1]} · +${DITEMS[T.g][3]} 🪙`);delete T.g;}else return;}
   else{const it=DITEMS[dSel],price=it[3];if(it[0]==="object"&&T.g==="water"||it[0]==="object"&&T.g==="kund"){toast("You can't build on water.");return;}
     if(it[0]==="ground"){if(T.g===dSel)return;if(coinBal()<price){toast(`You need ${price-coinBal()} more 🪙. Earn coins by chanting, quizzes and games.`);return;}if(T.g)progress.coins+=DITEMS[T.g][3];if(T.o&&(dSel==="water"||dSel==="kund")){toast("Pick up what's on this tile first.");return;}T.g=dSel;}
@@ -1593,7 +1608,7 @@ let openProfile=function(){const P=progress.profile;if(!P){openSignup(false);ret
   const J=progress.japa||{},best=Math.max(0,...Object.values(J));
   $("#pfStats").innerHTML=[["Rounds all-time",fmt(jLife())],["Japa streak",`${jStreak()} days`],["Coins",fmt(coinBal())],["Cards",`${Object.keys(progress.cards||{}).length}/${CARDS.length}`],["Best day",`${best} rounds`],["Dham value",fmt(dhamValue())]].map(([l,v])=>`<div class="tile4"><div class="l">${l}</div><div class="v">${v}</div></div>`).join("");
   const sc=(progress.showcase||[]).filter(k=>progress.cards?.[k]);
-  $("#pfShow").innerHTML=sc.length?sc.map(k=>{const c=CARDS.find(x=>x[0]===k);return cardHTML(c,progress.cards[k].gold,false);}).join(""):`<p style="color:var(--dim);grid-column:1/-1;margin:0">No cards pinned yet. Open a card in Learn → Photocard library and pin it.</p>`;
+  $("#pfShow").innerHTML=sc.length?sc.map(k=>{const c=CARDS.find(x=>x[0]===k);return cardHTML(c,progress.cards[k].gold,false);}).join(""):`<p style="color:var(--dim);grid-column:1/-1;margin:0">No cards pinned yet. Open a card in the Cards tab and pin it.</p>`;
   const A=progress.awards||{},latest=Object.entries(A).sort((a,b)=>a[1]<b[1]?1:-1).slice(0,6);
   $("#pfAwards").innerHTML=latest.length?latest.map(([id,d])=>{const a=AWARDS.find(x=>x[0]===id);return a?`<div class="aw on"><div class="m">${a[1]}</div><div class="t">${esc(a[2])}</div><div class="d">${pretty(d)}</div></div>`:"";}).join(""):`<p style="color:var(--dim);margin:0">Your rewards will show up here.</p>`;
   openSheet("profile");};
