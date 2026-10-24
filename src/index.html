@@ -1,0 +1,1657 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0d0b17">
+<title>Parampara Vault</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="fonts/fonts.css">
+<script src="shim.js"></script>
+<style>
+/* Layout: one narrow lamp-lit column. Rank bar on top, a spinning mandala seal that shatters into the day's scroll, an arcade of three history games, then the archive. Single dark look by choice (night temple). */
+:root{
+  --night:#0d0b17;
+  --stone:#191527;
+  --stone-2:#231e37;
+  --leaf:#ecdfc3;
+  --dim:#9d93b2;
+  --saffron:#f29a2e;
+  --gold:#ffd27a;
+  --tulsi:#6fc49a;
+  --kumkum:#e0566a;
+  --line:#322c4a;
+  --f-display:"Yatra One","Georgia",serif;
+  --f-hand:"Kalam","Comic Sans MS",cursive;
+  --lotus:#ff7fae;--peacock:#3fc1c9;--indigo:#7c8cff;--violet:#b98cff;--accent:var(--saffron);
+  --panel-glow:rgba(242,154,46,.10);
+  --f-body:"Spectral","Georgia",serif;
+  --f-mono:"DM Mono",ui-monospace,"SFMono-Regular",monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]):not([data-mode="dark"]){
+  --night:#fdf6ee;--stone:#ffffff;--stone-2:#f7ecdf;--leaf:#2b1d36;--dim:#76658a;--saffron:#e0740b;--gold:#b07a0a;--tulsi:#24935c;--kumkum:#cc3350;--line:#ecdcc8;
+  --lotus:#e2508a;--peacock:#13919a;--indigo:#4a5ce0;--violet:#8a55e0;--panel-glow:rgba(224,116,11,.08);color-scheme:light}}
+:root[data-theme="light"]:not([data-mode="dark"]),:root[data-mode="light"]{
+  --night:#fdf6ee;--stone:#ffffff;--stone-2:#f7ecdf;--leaf:#2b1d36;--dim:#76658a;--saffron:#e0740b;--gold:#b07a0a;--tulsi:#24935c;--kumkum:#cc3350;--line:#ecdcc8;
+  --lotus:#e2508a;--peacock:#13919a;--indigo:#4a5ce0;--violet:#8a55e0;--panel-glow:rgba(224,116,11,.08);color-scheme:light}
+:root[data-mode="dark"]{color-scheme:dark}
+.tab[data-tab="today"]{--accent:var(--saffron)} .tab[data-tab="journey"]{--accent:var(--peacock)} .tab[data-tab="learn"]{--accent:var(--indigo)}
+.tab[data-tab="play"]{--accent:var(--lotus)} .tab[data-tab="dham"]{--accent:var(--gold)} .tab[data-tab="stats"]{--accent:var(--violet)}
+.tab .panel{border-top:3px solid var(--accent);background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 9%,var(--stone)) 0,var(--stone) 120px)}
+.tab .panel h2{color:color-mix(in srgb,var(--accent) 35%,var(--leaf))}
+.tab .sec-h{color:var(--accent)}
+.fact p,.note,.scroll .fact{font-family:var(--f-body)}
+.mantra{font-family:var(--f-hand)!important;font-size:1.05rem!important}
+.modebtn{all:unset;cursor:pointer;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--stone);border:1px solid var(--line)}
+.modebtn:focus-visible{outline:2px solid var(--saffron)}
+.dhampanel{overflow:visible}
+#dhamCv{display:block;width:100%;height:380px;margin-top:10px;touch-action:manipulation;cursor:crosshair}
+.dstats{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--f-mono);font-size:.76rem;color:var(--dim);margin-top:6px}
+.dstats b{color:var(--leaf);font-weight:500}
+.cats{grid-template-columns:repeat(4,1fr)}
+.cats button{font-size:.7rem}
+.dshop{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin-top:10px}
+.ditem{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;padding:10px 6px;border-radius:12px;background:var(--stone-2);border:1px solid var(--line);min-width:0;transition:transform .12s,border-color .15s}
+.ditem:hover{border-color:var(--gold)} .ditem:active{transform:scale(.96)}
+.ditem.on{border:2px solid var(--gold);box-shadow:0 0 14px color-mix(in srgb,var(--gold) 35%,transparent)}
+.ditem.poor{opacity:.55}
+.ditem .ic{font-size:1.7rem} .ditem .nm{font-size:.78rem;line-height:1.2} .ditem .p{font-family:var(--f-mono);font-size:.7rem;color:var(--gold)}
+.ditem:focus-visible{outline:2px solid var(--gold)}
+#wheel{display:block;width:260px;height:260px;max-width:100%;margin:10px auto 0}
+.earnlist{margin:8px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:.95rem}
+.earnlist b{color:var(--accent);font-weight:600}
+.hdr-r{display:flex;gap:8px;align-items:center}
+.coinpill{all:unset;cursor:pointer;display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 30%,var(--stone)),var(--stone));border:1px solid var(--gold);font-family:var(--f-mono);font-size:.85rem}
+.coinpill b{color:var(--leaf);font-weight:500;font-variant-numeric:tabular-nums}
+.coinpill.bump{animation:pop .4s}
+.coinpill:focus-visible,.avatar:focus-visible{outline:2px solid var(--saffron);outline-offset:2px}
+.avatar{all:unset;cursor:pointer;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--lotus) 45%,var(--stone)),var(--stone));border:2px solid var(--lotus)}
+.sheet{position:fixed;inset:0;z-index:80;overflow-y:auto;background:radial-gradient(90% 60% at 50% 0%,color-mix(in srgb,var(--saffron) 22%,transparent),transparent 70%),radial-gradient(80% 60% at 100% 100%,color-mix(in srgb,var(--violet) 22%,transparent),transparent 70%),var(--night);
+  padding:calc(24px + env(safe-area-inset-top,0px)) max(16px, env(safe-area-inset-right, 0px)) calc(32px + env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-left, 0px));animation:unfurl .5s both}
+.sheet-in{position:relative;max-width:520px;margin:0 auto}
+#welcome{display:flex;align-items:center}
+#welcome[hidden]{display:none}
+#welcomeArt{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.w-sub{font-size:1.1rem;max-width:400px;margin:10px auto 0}
+.big-btn{padding:15px 22px;font-size:.95rem}
+.form{display:flex;flex-direction:column;gap:6px}
+.form label{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-top:8px}
+.form input,.form select{padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--stone);color:var(--leaf);font-family:var(--f-body);font-size:1rem}
+.form input:focus,.form select:focus{outline:2px solid var(--saffron)}
+.avpick{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.avpick button{all:unset;cursor:pointer;aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--stone);border:2px solid var(--line)}
+.avpick button[aria-pressed="true"]{border-color:var(--lotus);box-shadow:0 0 12px color-mix(in srgb,var(--lotus) 50%,transparent)}
+.avpick button:focus-visible{outline:2px solid var(--saffron)}
+.tour-art{font-size:4.2rem;line-height:1;margin:12px 0 10px;animation:pop .5s}
+.pf-card{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;margin:18px 0 14px;padding:16px;border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--lotus) 18%,var(--stone)),color-mix(in srgb,var(--violet) 14%,var(--stone)));border:1px solid var(--line)}
+.pf-av{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.4rem;background:var(--stone);border:3px solid var(--gold);box-shadow:0 0 20px color-mix(in srgb,var(--gold) 40%,transparent)}
+.library{border-top:3px solid var(--indigo)}
+.colls{display:flex;gap:8px;overflow-x:auto;padding:12px 2px 6px;scrollbar-width:thin}
+.colls button{all:unset;cursor:pointer;flex:0 0 auto;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:12px;background:var(--stone-2);border:1px solid var(--line);min-width:120px}
+.colls button[aria-selected="true"]{border-color:var(--hue);box-shadow:0 0 0 1px var(--hue) inset;background:color-mix(in srgb,var(--hue) 16%,var(--stone-2))}
+.colls .cn{font-family:var(--f-display);font-size:.95rem;line-height:1.1}
+.colls .cp{font-family:var(--f-mono);font-size:.68rem;color:var(--dim)}
+.colls .mini-bar{height:4px;border-radius:4px;background:var(--line);overflow:hidden}
+.colls .mini-bar i{display:block;height:100%;background:var(--hue)}
+.colls button:focus-visible{outline:2px solid var(--gold)}
+.collhead{margin:10px 0}
+.rewardpop{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top,0px));transform:translate(-50%,-140%);z-index:70;width:min(360px,calc(100% - 32px));
+  background:linear-gradient(160deg,color-mix(in srgb,var(--gold) 22%,var(--stone)),var(--stone));border:1px solid var(--gold);border-radius:18px;padding:12px 14px;box-shadow:0 12px 40px rgba(0,0,0,.35);transition:transform .45s cubic-bezier(.2,.9,.3,1.2)}
+.rewardpop.on{transform:translate(-50%,0)}
+.rp-h{font-family:var(--f-display);font-size:1.05rem;line-height:1.15;color:var(--leaf)}
+.rp-row{display:grid;grid-template-columns:1fr 64px 1fr;gap:10px;align-items:center;margin-top:8px}
+.rp-row .dcard{width:64px;cursor:default}
+.rp-row .dcard .nm{font-size:.62rem} .rp-row .dcard .em{font-size:1.5rem}
+.rp-coin{font-family:var(--f-display);font-size:1.5rem;color:var(--gold);text-align:right}
+.rp-item{font-family:var(--f-mono);font-size:.78rem;color:var(--leaf)}
+.rp-s{font-family:var(--f-mono);font-size:.7rem;color:var(--dim);margin-top:6px;text-align:center}
+html,body{background:var(--night);color:var(--leaf)}
+body{font-family:var(--f-body);font-size:17px;line-height:1.55;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:20px calc(96px + env(safe-area-inset-bottom, 0px));min-height:100%}
+.tab{display:flex;flex-direction:column;gap:22px}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(6,1fr);gap:2px;
+  background:color-mix(in srgb,var(--stone) 94%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line);
+  padding:6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px))}
+.tabs button{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:10px;font-family:var(--f-mono);font-size:.68rem;color:var(--dim);letter-spacing:.04em}
+.tabs button .ic{font-size:1.25rem;filter:grayscale(.8) opacity(.7);transition:filter .2s,transform .2s}
+.tabs button[aria-current="page"]{color:var(--gold)}
+.tabs button[aria-current="page"] .ic{filter:none;transform:translateY(-2px)}
+.tabs button:focus-visible{outline:2px solid var(--saffron)}
+.fest{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--stone)}
+.fest.today{border-color:var(--gold);background:linear-gradient(110deg,rgba(255,210,122,.16),var(--stone) 70%);box-shadow:0 0 24px rgba(242,154,46,.2)}
+.fest .ic{font-size:1.6rem}
+.fest .t{font-family:var(--f-display);font-size:1.08rem;line-height:1.15}
+.fest .d{font-family:var(--f-mono);font-size:.72rem;color:var(--dim)}
+.fest .cnt{margin-left:auto;text-align:right;font-family:var(--f-display);font-size:1.6rem;color:var(--gold);line-height:1;font-variant-numeric:tabular-nums}
+.fest .cnt small{display:block;font-family:var(--f-mono);font-size:.62rem;color:var(--dim)}
+.fests{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.fests li{display:flex;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line)}
+.fests .n{font-family:var(--f-mono);font-size:.75rem;color:var(--saffron);min-width:5.6em;font-variant-numeric:tabular-nums}
+.fests .k{margin-left:auto;font-family:var(--f-mono);font-size:.7rem;color:var(--dim);white-space:nowrap}
+#tulsi{display:block;width:100%;height:240px}
+#pmap{display:block;width:100%;height:320px;margin-top:10px}
+#temple{display:block;width:100%;height:230px;margin:6px 0 10px}
+.stops ol{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.stops li{font-size:.92rem;padding:8px 10px;border-radius:8px;background:var(--stone-2)}
+.stops li b{font-family:var(--f-display);font-weight:400}
+.stops li.locked{opacity:.5}
+.stops li .r{float:right;font-family:var(--f-mono);font-size:.7rem;color:var(--dim)}
+.boss{background:linear-gradient(150deg,#2a1530,var(--stone) 60%);border-color:#5a2a4a}
+.album{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:10px}
+.dcard{all:unset;box-sizing:border-box;cursor:pointer;aspect-ratio:5/7;border-radius:12px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:8px;min-width:0;
+  background:radial-gradient(circle at 50% 30%,var(--hue) 0,rgba(0,0,0,0) 60%),linear-gradient(180deg,#2a2440,#141120);border:1px solid var(--line)}
+.dcard .em{position:absolute;top:18%;left:0;right:0;text-align:center;font-size:2.2rem}
+.dcard .nm{font-family:var(--f-display);font-size:.9rem;line-height:1.1;position:relative}
+.dcard .bk{font-family:var(--f-mono);font-size:.58rem;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;position:relative}
+.dcard.gold{border:2px solid var(--gold);box-shadow:0 0 16px rgba(255,210,122,.35)}
+.dcard.gold::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,240,200,.35) 50%,transparent 65%);background-size:250% 100%;animation:shine 3s linear infinite}
+@keyframes shine{from{background-position:150% 0}to{background-position:-100% 0}}
+.dcard.locked{cursor:default;background:var(--stone);border-style:dashed}
+.dcard.locked .em{filter:grayscale(1) brightness(.3)}
+.dcard.locked .nm{color:var(--dim)}
+.dcard .x{position:absolute;top:6px;right:8px;font-family:var(--f-mono);font-size:.62rem;color:var(--gold)}
+.dcard:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.reveal{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:center;margin-top:14px}
+.reveal .dcard{cursor:default;animation:flipin .7s cubic-bezier(.2,.8,.2,1)}
+@keyframes flipin{from{transform:rotateY(90deg) scale(.8)}to{transform:none}}
+.wrapped{margin-top:14px;min-height:230px;border-radius:14px;padding:22px 18px;display:flex;flex-direction:column;justify-content:center;gap:6px;text-align:center;
+  background:radial-gradient(circle at 20% 0%,rgba(255,210,122,.25),transparent 55%),radial-gradient(circle at 90% 100%,rgba(199,139,255,.25),transparent 55%),var(--stone-2);animation:unfurl .5s both}
+.wrapped .k{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.wrapped .v{font-family:var(--f-display);font-size:3rem;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.wrapped .s{font-size:1rem;color:var(--leaf)}
+.dots{display:flex;gap:6px}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--gold)}
+.bag{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+.item{display:grid;grid-template-columns:auto auto 1fr;grid-template-rows:auto auto;column-gap:8px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--stone-2);min-width:0}
+.item .ic{font-size:1.4rem;grid-row:1/3}
+.item b{font-family:var(--f-display);font-weight:400;font-size:1.4rem;color:var(--gold);grid-row:1/3;font-variant-numeric:tabular-nums}
+.item .nm{font-family:var(--f-mono);font-size:.74rem;color:var(--leaf)}
+.item .d{font-size:.74rem;color:var(--dim);line-height:1.25;grid-column:3}
+@media (max-width:420px){.bag{grid-template-columns:1fr}}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.board{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.board li{display:grid;grid-template-columns:2em 1fr auto;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--stone-2)}
+.board li.me{border:1px solid var(--saffron)}
+.board .p{font-family:var(--f-display);font-size:1.2rem;color:var(--saffron);text-align:center}
+.board .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.board .v{font-family:var(--f-mono);font-size:.85rem;font-variant-numeric:tabular-nums}
+body{background:radial-gradient(90% 50% at 100% 0%,color-mix(in srgb,var(--violet) 14%,transparent),transparent 70%),radial-gradient(70% 40% at 0% 30%,color-mix(in srgb,var(--peacock) 10%,transparent),transparent 70%),radial-gradient(80% 50% at 50% 110%,color-mix(in srgb,var(--lotus) 10%,transparent),transparent 70%),var(--night);background-attachment:fixed}
+#embers,#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+#embers{z-index:0}
+#fx{z-index:50}
+.wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.eyebrow{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.brand{font-family:var(--f-display);font-weight:400;font-size:2.1rem;line-height:1;margin:4px 0 0;text-wrap:balance}
+.brand span{background:linear-gradient(90deg,var(--saffron),var(--lotus),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 14px rgba(242,154,46,.35))}
+
+.rank{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--stone);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.badge{width:44px;height:44px}
+.rank .name{font-family:var(--f-display);font-size:1.15rem;line-height:1.1}
+.bar{height:6px;border-radius:6px;background:var(--stone-2);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--saffron),var(--gold));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.rank .xp{font-family:var(--f-mono);font-size:.72rem;color:var(--dim);margin-top:4px;font-variant-numeric:tabular-nums}
+.streak{text-align:center;font-family:var(--f-mono);font-size:.7rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.streak b{display:block;font-family:var(--f-display);font-weight:400;font-size:1.6rem;color:var(--saffron);letter-spacing:0;line-height:1}
+
+.panel{background:color-mix(in srgb,var(--stone) 92%,transparent);border:1px solid var(--line);border-radius:16px;padding:22px 20px;position:relative;overflow:hidden;backdrop-filter:blur(2px)}
+.panel h2{font-family:var(--f-display);font-weight:400;font-size:1.55rem;line-height:1.15;margin:6px 0 12px;text-wrap:balance}
+.center{text-align:center}
+#seal{display:block;width:200px;height:200px;max-width:100%;margin:0 auto 4px;cursor:default}
+.q{font-size:1.12rem;margin:0 0 16px}
+.opts{display:grid;gap:10px}
+.opt{all:unset;box-sizing:border-box;display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border-radius:10px;background:var(--stone-2);border:1px solid var(--line);cursor:pointer;font-family:var(--f-body);font-size:1rem;line-height:1.35;color:var(--leaf);transition:border-color .15s,transform .12s,background .15s}
+.opt:hover{border-color:var(--saffron)}
+.opt:active{transform:scale(.98)}
+.opt:focus-visible{outline:2px solid var(--saffron);outline-offset:2px}
+.opt .k{font-family:var(--f-mono);font-size:.8rem;color:var(--saffron);padding-top:2px;min-width:1.2em}
+.opt.wrong{border-color:var(--kumkum);opacity:.45;pointer-events:none}
+.opt.right{border-color:var(--tulsi);background:rgba(111,196,154,.12)}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.msg{min-height:1.4em;margin-top:12px;font-family:var(--f-mono);font-size:.82rem;color:var(--dim)}
+.msg.bad{color:var(--kumkum)} .msg.good{color:var(--tulsi)}
+.linkbtn{all:unset;cursor:pointer;color:var(--saffron);text-decoration:underline;text-underline-offset:3px;font-family:var(--f-mono);font-size:.82rem}
+.linkbtn:focus-visible{outline:2px solid var(--saffron)}
+.peek{margin-top:12px;padding:12px 14px;border-left:2px solid var(--saffron);background:rgba(242,154,46,.07);font-size:.95rem}
+.scroll{animation:unfurl 1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes unfurl{from{clip-path:inset(0 0 100% 0);opacity:.2;transform:translateY(8px)}to{clip-path:inset(0 0 0 0);opacity:1;transform:none}}
+.fact p{margin:0 0 10px;font-size:1.08rem}
+.fact p:first-child::first-letter{font-family:var(--f-display);font-size:2.6em;float:left;line-height:.85;margin:6px 8px 0 0;color:var(--saffron)}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.chip{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);border:1px solid var(--line);padding:4px 8px;border-radius:999px}
+.chip.hot{color:var(--gold);border-color:rgba(255,210,122,.4)}
+.next{margin-top:18px;padding-top:14px;border-top:1px dashed var(--line);font-family:var(--f-mono);font-size:.82rem;color:var(--dim);font-variant-numeric:tabular-nums}
+.next b{color:var(--saffron);font-weight:500}
+
+.sec-h{font-family:var(--f-mono);font-weight:500;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:0 0 10px}
+.arcade{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:460px){.arcade{grid-template-columns:1fr}}
+.card{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:14px;background:var(--stone);border:1px solid var(--line);transition:transform .15s,border-color .15s;min-width:0}
+.card:hover{transform:translateY(-2px);border-color:var(--saffron)}
+.card:focus-visible{outline:2px solid var(--saffron);outline-offset:2px}
+.card canvas{width:100%;height:64px;display:block}
+.card .t{font-family:var(--f-display);font-size:1.1rem;line-height:1.1}
+.card .d{font-size:.88rem;color:var(--dim);line-height:1.35}
+.card .best{font-family:var(--f-mono);font-size:.7rem;color:var(--saffron)}
+
+.btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:999px;background:var(--saffron);color:#1a1208;font-family:var(--f-mono);font-weight:500;font-size:.85rem;letter-spacing:.04em}
+.btn.ghost{background:transparent;color:var(--leaf);border:1px solid var(--line)}
+.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.lives{font-family:var(--f-mono);font-size:.85rem;color:var(--kumkum);letter-spacing:.15em}
+.seq{display:flex;flex-direction:column;gap:6px;margin:14px 0}
+.seq .slot{padding:9px 12px;border-radius:8px;border:1px dashed var(--line);font-size:.95rem;color:var(--dim);display:flex;gap:10px}
+.seq .slot.filled{border-style:solid;border-color:var(--tulsi);color:var(--leaf);background:rgba(111,196,154,.08);animation:pop .3s}
+.seq .slot b{font-family:var(--f-mono);font-weight:500;color:var(--saffron);min-width:3.2em;font-variant-numeric:tabular-nums}
+@keyframes pop{from{transform:scale(.96)}to{transform:none}}
+.pool{display:grid;gap:8px}
+#japa{display:block;width:280px;height:280px;max-width:100%;margin:6px auto;touch-action:manipulation;cursor:pointer}
+.mantra{font-style:italic;color:var(--dim);font-size:.95rem;text-align:center;margin:4px 0 0}
+.big{font-family:var(--f-display);font-size:2.4rem;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+
+.jstat{text-align:right;font-family:var(--f-mono);font-size:.75rem;color:var(--dim)}
+.jstat b{display:block;font-family:var(--f-display);font-weight:400;font-size:2.6rem;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+.goalbar{height:8px;border-radius:8px;background:var(--stone-2);overflow:hidden;margin:12px 0 4px}
+.goalbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--saffron),var(--gold));transition:width .5s}
+#mala{display:block;width:290px;height:290px;max-width:100%;margin:8px auto 0;touch-action:manipulation;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:999px;background:var(--stone-2);margin-top:14px}
+.seg button{all:unset;cursor:pointer;text-align:center;padding:9px 10px;border-radius:999px;font-family:var(--f-mono);font-size:.8rem;color:var(--dim)}
+.seg button[aria-selected="true"]{background:var(--saffron);color:#1a1208}
+.seg button:focus-visible{outline:2px solid var(--gold)}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.qadd{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;padding:16px 0;border-radius:12px;background:var(--stone-2);border:1px solid var(--line);font-family:var(--f-display);font-size:1.5rem;color:var(--gold);transition:transform .12s,border-color .15s}
+.qadd:hover{border-color:var(--saffron)} .qadd:active{transform:scale(.95)}
+.qadd:focus-visible{outline:2px solid var(--gold)}
+.logrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.logrow input{flex:1;min-width:90px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--stone-2);color:var(--leaf);font-family:var(--f-mono);font-size:1rem}
+.logrow input:focus{outline:2px solid var(--saffron)}
+.logrow label{width:100%}
+.jbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.goalset{display:flex;align-items:center;gap:10px}
+.goalset b{font-family:var(--f-mono);font-weight:500;color:var(--leaf);min-width:2ch;text-align:center;font-variant-numeric:tabular-nums}
+.mini{all:unset;cursor:pointer;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);color:var(--saffron);font-size:1.1rem}
+.mini:focus-visible{outline:2px solid var(--saffron)}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:16px;align-items:end;height:96px;position:relative}
+.week .col{display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;min-width:0}
+.week .b{width:100%;max-width:28px;border-radius:5px 5px 2px 2px;background:var(--line);min-height:3px;transition:height .5s}
+.week .b.met{background:linear-gradient(0deg,var(--saffron),var(--gold))}
+.week .b.part{background:rgba(242,154,46,.45)}
+.week .n{font-family:var(--f-mono);font-size:.68rem;color:var(--leaf);font-variant-numeric:tabular-nums}
+.week .d{font-family:var(--f-mono);font-size:.62rem;color:var(--dim);text-transform:uppercase}
+.week .today .d{color:var(--saffron)}
+.live{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--kumkum);margin-right:8px;vertical-align:1px;box-shadow:0 0 0 0 rgba(224,86,106,.6);animation:live 1.6s infinite}
+@keyframes live{70%{box-shadow:0 0 0 8px rgba(224,86,106,0)}100%{box-shadow:0 0 0 0 rgba(224,86,106,0)}}
+.tiles4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.tile4{padding:12px;border-radius:10px;background:var(--stone-2);min-width:0}
+.tile4 .l{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.tile4 .v{font-family:var(--f-display);font-size:1.75rem;line-height:1.1;color:var(--leaf);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.tile4 .c{font-family:var(--f-mono);font-size:.72rem;font-variant-numeric:tabular-nums}
+.up{color:var(--tulsi)} .down{color:var(--kumkum)} .flat{color:var(--dim)}
+.feed{margin-top:14px;display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.feed div{padding:9px 0;border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:.8rem;line-height:1.45;color:var(--leaf);font-variant-numeric:tabular-nums}
+.feed b{color:var(--saffron);font-weight:500}
+.miles{display:flex;flex-direction:column;gap:10px}
+.mile .top{display:flex;justify-content:space-between;gap:10px;font-family:var(--f-mono);font-size:.76rem;color:var(--dim);font-variant-numeric:tabular-nums}
+.mile .top b{color:var(--leaf);font-weight:500}
+.mile .bar{margin-top:4px}
+.awards{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+.aw{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:12px 8px;border-radius:12px;background:var(--stone);border:1px solid var(--line);min-width:0}
+.aw .m{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:var(--stone-2);color:var(--dim);border:2px dashed var(--line)}
+.aw.on .m{background:radial-gradient(circle at 35% 30%,#fff1c9,var(--saffron) 55%,#9a4c10);color:#1a1208;border:2px solid var(--gold);box-shadow:0 0 18px rgba(242,154,46,.45)}
+.aw .t{font-family:var(--f-display);font-size:.95rem;line-height:1.1}
+.aw .d{font-size:.75rem;color:var(--dim);line-height:1.3}
+.aw:not(.on) .t{color:var(--dim)}
+.books{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.book{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;gap:10px;min-height:118px;padding:14px 14px 12px 18px;border-radius:6px 12px 12px 6px;position:relative;overflow:hidden;
+  background:linear-gradient(110deg,var(--hue) 0 10px,var(--stone) 10px);border:1px solid var(--line);transition:transform .15s,border-color .15s;min-width:0}
+.book::after{content:"";position:absolute;right:-24px;bottom:-24px;width:84px;height:84px;border-radius:50%;border:2px solid var(--hue);opacity:.35}
+.book:hover{transform:translateY(-2px);border-color:var(--hue)}
+.book:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.book .t{font-family:var(--f-display);font-size:1.12rem;line-height:1.1}
+.book .d{font-family:var(--f-mono);font-size:.7rem;color:var(--dim)}
+.book .s{font-family:var(--f-mono);font-size:.7rem;color:var(--hue)}
+.qprog{display:flex;gap:6px;margin:12px 0}
+.qprog i{flex:1;height:4px;border-radius:4px;background:var(--stone-2)}
+.qprog i.ok{background:var(--tulsi)} .qprog i.no{background:var(--kumkum)} .qprog i.now{background:var(--saffron)}
+.note{margin-top:12px;padding:10px 12px;border-radius:8px;background:rgba(255,210,122,.07);border:1px solid rgba(255,210,122,.25);font-size:.95rem}
+#snake{display:block;width:300px;height:300px;max-width:100%;margin:10px auto;border-radius:12px;background:var(--stone-2);touch-action:none}
+.dpad{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(2,44px);gap:6px;justify-content:center;margin-top:6px}
+.dpad button{all:unset;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border-radius:10px;background:var(--stone-2);border:1px solid var(--line);color:var(--saffron);font-size:1.1rem;cursor:pointer;touch-action:manipulation}
+.dpad button:active{background:var(--line)}
+.dpad button:focus-visible{outline:2px solid var(--saffron)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0;max-width:340px;margin-inline:auto}
+.tile{all:unset;box-sizing:border-box;aspect-ratio:3/4;max-width:100%;border-radius:10px;cursor:pointer;perspective:500px}
+.tile .in{position:relative;width:100%;height:100%;transition:transform .35s;transform-style:preserve-3d}
+.tile.up .in,.tile.got .in{transform:rotateY(180deg)}
+.tile .f,.tile .b{position:absolute;inset:0;border-radius:10px;backface-visibility:hidden;display:flex;align-items:center;justify-content:center}
+.tile .f{background:linear-gradient(145deg,var(--saffron),#b8641a);border:1px solid var(--gold)}
+.tile .f::after{content:"";width:40%;aspect-ratio:1;border:2px solid rgba(255,240,200,.6);border-radius:50%}
+.tile .b{background:var(--stone-2);border:1px solid var(--gold);transform:rotateY(180deg);font-size:1.8rem;color:var(--gold)}
+.tile.got .b{border-color:var(--tulsi);color:var(--tulsi)}
+.tile:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.pad{all:unset;box-sizing:border-box;width:100%;min-height:220px;margin:14px 0;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;text-align:center;background:var(--stone-2);border:1px solid var(--line);transition:background .08s;touch-action:manipulation;user-select:none}
+.pad.go{background:radial-gradient(circle,#ffe2a0 0%,var(--saffron) 55%,#a5520f 100%);color:#1a1208;border-color:var(--gold)}
+.pad.early{background:rgba(224,86,106,.25);border-color:var(--kumkum)}
+.pad .big{color:inherit}
+.pad:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.archive ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.archive li{border:1px solid var(--line);border-radius:10px;background:var(--stone)}
+.archive summary{cursor:pointer;padding:12px 14px;display:flex;gap:12px;align-items:baseline;list-style:none}
+.archive summary::-webkit-details-marker{display:none}
+.archive summary:focus-visible{outline:2px solid var(--saffron);border-radius:10px}
+.archive .n{font-family:var(--f-mono);font-size:.75rem;color:var(--saffron);min-width:2.4em}
+.archive .t{flex:1;min-width:0}
+.archive .d{font-family:var(--f-mono);font-size:.72rem;color:var(--dim)}
+.archive .body{padding:0 14px 14px}
+.archive li.sealed summary{color:var(--dim);cursor:default}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;z-index:60;background:var(--stone-2);border:1px solid var(--saffron);color:var(--leaf);padding:10px 16px;border-radius:999px;font-family:var(--f-mono);font-size:.82rem;transition:.35s;max-width:calc(100% - 32px);text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+html{padding-top:env(safe-area-inset-top,0px)}
+*{-webkit-tap-highlight-color:transparent}
+body{overscroll-behavior-y:none;user-select:none;-webkit-user-select:none}
+input,textarea,.fact,.note{user-select:text;-webkit-user-select:text}
+.set-row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--line)}
+.set-row .lbl{min-width:0}
+.set-row .lbl b{display:block;font-weight:600}
+.set-row .lbl span{font-size:.85rem;color:var(--dim)}
+.set-row input[type=time]{padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--stone-2);color:var(--leaf);font-family:var(--f-mono);font-size:1rem}
+</style>
+</head>
+<body>
+
+<canvas id="embers" aria-hidden="true"></canvas>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<div class="wrap">
+  <header class="row" style="align-items:flex-end">
+    <div>
+      <div class="eyebrow">Hare Krishna movement · secret archive</div>
+      <h1 class="brand">The Parampara <span>Vault</span></h1>
+    </div>
+    <div class="hdr-r">
+      <button class="coinpill" id="coinPill" aria-label="Your coins. Opens My Dham."><span>🪙</span><b id="hdrCoins">0</b></button>
+      <button class="modebtn" id="modeBtn" aria-label="Switch light or dark mode">🌙</button>
+      <button class="avatar" id="avatarBtn" aria-label="Open your profile">🙏</button>
+    </div>
+  </header>
+
+  <section class="rank" aria-label="Your rank">
+    <canvas class="badge" id="badge" width="88" height="88"></canvas>
+    <div style="min-width:0">
+      <div class="name" id="rankName">Seeker</div>
+      <div class="bar"><i id="xpbar"></i></div>
+      <div class="xp" id="xpText">0 XP</div>
+    </div>
+    <div class="streak">streak<b id="streak">0</b></div>
+  </section>
+
+  <div id="festBanner"></div>
+
+  <!-- TODAY -->
+  <div class="tab" data-tab="today">
+    <section class="panel" id="stage" aria-live="polite">
+      <canvas id="seal" width="400" height="400"></canvas>
+      <div class="eyebrow center">Lighting the lamp…</div>
+    </section>
+
+    <section class="panel" id="japaPanel" aria-label="Japa counter">
+      <div class="row"><div><div class="eyebrow">Japa counter · today</div><h2 style="margin:4px 0 0">Your daily rounds</h2></div>
+        <div class="jstat"><b id="jRounds">0</b><span>of <span id="jGoal">16</span> rounds</span></div></div>
+      <div class="goalbar"><i id="jGoalBar"></i></div>
+      <div class="seg" role="tablist" aria-label="How are you chanting?">
+        <button role="tab" id="mChant" aria-selected="true">Chant here</button>
+        <button role="tab" id="mLog" aria-selected="false">Log my rounds</button>
+      </div>
+      <div id="modeChant">
+        <canvas id="mala" aria-label="Tap the mala to count one bead"></canvas>
+        <p class="mantra">Hare Krishna Hare Krishna Krishna Krishna Hare Hare<br>Hare Rama Hare Rama Rama Rama Hare Hare</p>
+        <div class="jbtns">
+          <button class="btn" id="jTap">Count bead</button>
+          <button class="btn ghost" id="jUndo">Undo bead</button>
+        </div>
+      </div>
+      <div id="modeLog" hidden>
+        <p style="color:var(--dim);margin:14px 0 10px">Chanted on your own beads? Add the rounds you finished.</p>
+        <div class="quick">
+          <button class="qadd" data-n="1" id="qa1">+1</button><button class="qadd" data-n="4" id="qa4">+4</button><button class="qadd" data-n="8" id="qa8">+8</button><button class="qadd" data-n="16" id="qa16">+16</button>
+        </div>
+        <form class="logrow" id="logForm"><label for="logN" class="eyebrow">Exact rounds</label><input id="logN" type="number" min="1" max="192" inputmode="numeric" placeholder="e.g. 6"><button class="btn" type="submit">Add</button></form>
+        <div class="jbtns" style="justify-content:flex-start"><button class="btn ghost" id="jRemove">Remove 1 round from today</button></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <div class="goalset"><span class="eyebrow">Daily goal</span><button class="mini" id="jMinus" aria-label="Lower goal">−</button><b id="jGoal2">16</b><button class="mini" id="jPlus" aria-label="Raise goal">+</button></div>
+        <div class="eyebrow" id="jStreak">Japa streak 0 days</div>
+      </div>
+      <div class="week" id="week"></div>
+      <div class="eyebrow" style="margin-top:6px" id="jLife">0 rounds all-time</div>
+    </section>
+
+    <section class="panel" aria-label="Your bag">
+      <div class="row"><div><div class="eyebrow">Your bag</div><h2 style="margin:4px 0 0">Power-ups</h2></div><div class="jstat"><b id="coins">0</b><span>XP to spend</span></div></div>
+      <div id="restoreBox"></div>
+      <div class="bag" id="bag"></div>
+      <h3 class="sec-h" style="margin-top:16px">Bhakti bazaar · spend XP without losing rank</h3>
+      <div class="jbtns" style="justify-content:flex-start" id="shop"></div>
+      <p class="eyebrow" style="margin:10px 0 0">Every reward you unlock opens a chest with XP, hints, freezes, passes, restores or a card.</p>
+    </section>
+
+    <section class="panel" aria-label="Your tulsi plant">
+      <div class="row"><div><div class="eyebrow">Your tulsi</div><h2 style="margin:4px 0 0" id="tulsiTitle">A tiny sprout</h2></div><div class="eyebrow" id="tulsiDays"></div></div>
+      <canvas id="tulsi" aria-hidden="true"></canvas>
+      <p class="center" style="margin:0;color:var(--dim)" id="tulsiMsg">Chant a round today to water her.</p>
+    </section>
+  </div>
+
+  <!-- JOURNEY -->
+  <div class="tab" data-tab="journey" hidden>
+    <section class="panel" aria-label="Vrindavan parikrama">
+      <div class="row"><div><div class="eyebrow">Vraja parikrama · lap <span id="pLap">1</span></div><h2 style="margin:4px 0 0" id="pHere">Mathura</h2></div><div class="eyebrow" id="pNext"></div></div>
+      <canvas id="pmap" aria-label="Map of your walk through Vraja"></canvas>
+      <div class="note" id="pFact"></div>
+      <p class="eyebrow" style="margin:10px 0 0">Every round you chant is a step on the walk.</p>
+      <details class="stops"><summary class="sec-h" style="margin:14px 0 0;cursor:pointer">All stops</summary><ol id="pStops"></ol></details>
+    </section>
+
+    <section class="panel" aria-label="Your temple">
+      <div class="row"><div><div class="eyebrow">Build-a-temple</div><h2 style="margin:4px 0 0" id="tmplTitle">An empty plot</h2></div><div class="eyebrow" id="tmplPct"></div></div>
+      <canvas id="temple" aria-hidden="true"></canvas>
+      <div class="mile" id="tmplNext"></div>
+    </section>
+
+    <section class="panel" aria-label="Festival calendar">
+      <div class="eyebrow">Festivals & Ekadashis</div><h2 style="margin:4px 0 8px">Coming up</h2>
+      <ol class="fests" id="fests"></ol>
+      <p class="eyebrow" style="margin:10px 0 0">Dates follow the ISKCON calendar for India. Your local temple may differ by a day. Festival days give double XP.</p>
+    </section>
+
+    <section class="archive">
+      <h3 class="sec-h">Scroll archive</h3>
+      <ol id="archive"></ol>
+    </section>
+  </div>
+
+  <!-- LEARN -->
+  <div class="tab" data-tab="learn" hidden>
+    <section class="panel boss" id="bossPanel" aria-label="Sunday boss quiz"></section>
+    <section>
+      <h3 class="sec-h">Scripture quiz room · pick a book</h3>
+      <div class="books" id="books"></div>
+    </section>
+    <section>
+      <div class="panel library">
+        <div class="row"><div><div class="eyebrow">Photocard library</div><h2 style="margin:4px 0 0">Your collections</h2></div><div class="jstat"><b id="cardCount">0</b><span>cards collected</span></div></div>
+        <p style="color:var(--dim);margin:6px 0 0;font-size:.95rem">Every reward drops one photocard. Finish a collection for 500 🪙 and a gold card. Gold versions are rare.</p>
+        <div class="colls" id="colls" role="tablist" aria-label="Collections"></div>
+        <div class="collhead" id="collHead"></div>
+        <div class="album" id="album"></div>
+      </div>
+      <div class="jbtns" style="justify-content:flex-start;margin-top:10px"><button class="btn ghost" id="tradeBtn">Trade duplicates for coins</button></div>
+    </section>
+  </div>
+
+  <!-- PLAY -->
+  <div class="tab" data-tab="play" hidden>
+    <section>
+      <h3 class="sec-h">History arcade · earn XP</h3>
+      <div class="arcade">
+        <button class="card" data-game="timeline" id="g-timeline"><canvas data-art="timeline"></canvas><span class="t">Timeline Dash</span><span class="d">Tap five moments in the order they happened.</span><span class="best" data-best="timeline">Not played yet</span></button>
+        <button class="card" data-game="lineage" id="g-lineage"><canvas data-art="lineage"></canvas><span class="t">Lineage Links</span><span class="d">Rebuild the disciplic succession, teacher before student.</span><span class="best" data-best="lineage">Not played yet</span></button>
+        <button class="card" data-game="japa" id="g-japa"><canvas data-art="japa"></canvas><span class="t">Japa Sprint</span><span class="d">Race around all 108 beads of the mala.</span><span class="best" data-best="japa">Not played yet</span></button>
+      </div>
+    </section>
+    <section>
+      <h3 class="sec-h">Side quests · just for fun</h3>
+      <div class="arcade">
+        <button class="card" data-game="snake" id="g-snake"><canvas data-art="snake"></canvas><span class="t">Ember Snake</span><span class="d">Eat sparks, grow longer, don't bite your tail.</span><span class="best" data-best="snake">Not played yet</span></button>
+        <button class="card" data-game="memory" id="g-memory"><canvas data-art="memory"></canvas><span class="t">Twin Tiles</span><span class="d">Flip cards and find all eight pairs.</span><span class="best" data-best="memory">Not played yet</span></button>
+        <button class="card" data-game="reflex" id="g-reflex"><canvas data-art="reflex"></canvas><span class="t">Flash Reflex</span><span class="d">Wait for the flame, then tap faster than thought.</span><span class="best" data-best="reflex">Not played yet</span></button>
+      </div>
+    </section>
+  </div>
+
+  <!-- DHAM -->
+  <div class="tab" data-tab="dham" hidden>
+    <section class="panel dhampanel" aria-label="My Dham">
+      <div class="row"><div><div class="eyebrow">My Dham · <span id="dLevel">Village</span></div><h2 style="margin:4px 0 0">Build your holy place</h2></div>
+        <div class="jstat"><b id="dCoins">0</b><span>🪙 coins</span></div></div>
+      <div class="dstats"><span>Dham value <b id="dValue">0</b> 🪙</span><span>Streak bonus <b id="dMult">×1.00</b></span></div>
+      <canvas id="dhamCv" aria-label="Your dham. Tap a tile to place or pick up."></canvas>
+      <div class="eyebrow center" id="dHint">Pick something from the shop, then tap a tile.</div>
+      <div class="row" style="margin-top:10px">
+        <div class="seg" id="dTools" style="margin:0;min-width:200px"><button data-tool="place" aria-selected="true">🧱 Place</button><button data-tool="remove" aria-selected="false">✋ Pick up</button></div>
+        <button class="btn ghost" id="dExpand">Expand</button>
+      </div>
+      <div class="seg cats" id="dCats" role="tablist"></div>
+      <div class="dshop" id="dShop"></div>
+    </section>
+    <section class="panel spin" aria-label="Daily wheel">
+      <div class="row"><div><div class="eyebrow">Sudarshana wheel · once a day</div><h2 style="margin:4px 0 0">Spin for a gift</h2></div><button class="btn" id="spinBtn">Spin the wheel</button></div>
+      <canvas id="wheel" aria-hidden="true"></canvas>
+    </section>
+    <section class="panel" aria-label="How coins work">
+      <div class="eyebrow">How you earn coins</div>
+      <ul class="earnlist">
+        <li><b>Every reward</b> gives coins, one photocard and one random power-up.</li>
+        <li><b>Japa:</b> 10 🪙 a round chanted here, 10 a round logged, 50 for hitting your goal.</li>
+        <li><b>Scrolls:</b> 60 🪙 for a first-try seal break, 40 after that.</li>
+        <li><b>Quizzes:</b> 8 🪙 per correct answer, 16 in the Sunday boss.</li>
+        <li><b>Games:</b> 20 to 40 🪙 depending on the game and how well you play.</li>
+        <li><b>Rewards unlocked:</b> 60 🪙 each. Rank-ups pay 150.</li>
+        <li><b>Streak bonus:</b> each day of japa streak adds 5% to all coins, up to ×2.</li>
+        <li><b>Festival days</b> double everything.</li>
+        <li><b>Pilgrim donations:</b> your dham earns 2% of its value every day you visit.</li>
+        <li><b>Duplicate cards</b> trade for 30 🪙 each in the Learn tab.</li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- STATS -->
+  <div class="tab" data-tab="stats" hidden>
+    <section class="panel cd" aria-label="Bhakti chart data">
+      <div class="row"><div><div class="eyebrow"><span class="live"></span>Bhakti Chart Data · live</div><h2 style="margin:4px 0 0">Your numbers</h2></div><div class="eyebrow" id="cdTime"></div></div>
+      <div class="tiles4" id="cdTiles"></div>
+      <div class="feed" id="cdFeed"></div>
+      <h3 class="sec-h" style="margin-top:18px">Milestone watch</h3>
+      <div class="miles" id="cdMiles"></div>
+    </section>
+
+    <section class="panel" aria-label="Bhakti Wrapped">
+      <div class="row"><div><div class="eyebrow">Bhakti Wrapped</div><h2 style="margin:4px 0 0" id="wrTitle">Your month</h2></div>
+        <div class="seg" style="margin:0;min-width:180px"><button id="wrM" aria-selected="true">Month</button><button id="wrY" aria-selected="false">Year</button></div></div>
+      <div class="wrapped" id="wrSlide"></div>
+      <div class="row" style="margin-top:10px"><button class="btn ghost" id="wrPrev" aria-label="Previous slide">‹ Back</button><div class="dots" id="wrDots"></div><button class="btn" id="wrNext" aria-label="Next slide">Next ›</button></div>
+    </section>
+
+    <section>
+      <h3 class="sec-h">Rewards · <span id="awCount">0</span> unlocked</h3>
+      <div class="awards" id="awards"></div>
+    </section>
+  </div>
+
+  <section class="panel" id="game" hidden></section>
+</div>
+
+<nav class="tabs" aria-label="Sections">
+  <button data-go="today" aria-current="page"><span class="ic">🪔</span>Today</button>
+  <button data-go="journey"><span class="ic">👣</span>Journey</button>
+  <button data-go="learn"><span class="ic">📜</span>Learn</button>
+  <button data-go="play"><span class="ic">🎮</span>Play</button>
+  <button data-go="dham"><span class="ic">🛕</span>Dham</button>
+  <button data-go="stats"><span class="ic">📊</span>Stats</button>
+</nav>
+<div class="toast" id="toast" role="status"></div>
+<div class="rewardpop" id="rewardPop" role="status" aria-live="polite"></div>
+
+<div class="sheet" id="welcome" hidden>
+  <canvas id="welcomeArt" aria-hidden="true"></canvas>
+  <div class="sheet-in center">
+    <div class="eyebrow">Hare Krishna</div>
+    <h1 class="brand" style="font-size:2.6rem">The Parampara <span>Vault</span></h1>
+    <p class="w-sub" id="wSub">Chant, learn the scriptures, unlock hidden history and build your own dham. A little every day.</p>
+    <div class="jbtns" style="flex-direction:column;align-items:stretch;max-width:320px;margin:18px auto 0">
+      <button class="btn big-btn" id="wGo">Begin my journey</button>
+      <button class="btn ghost" id="wTour">Take the tour first</button>
+    </div>
+    <p class="eyebrow" style="margin-top:16px">Your progress is saved on this phone. No account needed.</p>
+  </div>
+</div>
+
+<div class="sheet" id="signup" hidden>
+  <div class="sheet-in">
+    <div class="eyebrow">Create your devotee profile</div>
+    <h2 style="font-family:var(--f-display);font-weight:400;font-size:1.9rem;margin:6px 0 4px">Who's chanting?</h2>
+    <p style="color:var(--dim);margin:0 0 14px">This is how you appear on your profile. It stays on this phone.</p>
+    <form id="signForm" class="form">
+      <label for="fName">Your name or devotee name</label>
+      <input id="fName" maxlength="40" required placeholder="e.g. Radhika devi dasi">
+      <label>Pick an avatar</label>
+      <div class="avpick" id="avPick"></div>
+      <label for="fGoal">Daily japa goal (rounds)</label>
+      <input id="fGoal" type="number" min="1" max="192" value="16" inputmode="numeric">
+      <label for="fBook">Favourite scripture</label>
+      <select id="fBook"><option value="gita">Bhagavad Gita</option><option value="bhag">Srimad Bhagavatam</option><option value="krsna">Krishna Book</option><option value="ram">Ramayana</option><option value="mbh">Mahabharata</option><option value="iskcon">ISKCON history</option></select>
+      <label for="fTemple">Home temple or city (optional)</label>
+      <input id="fTemple" maxlength="60" placeholder="e.g. ISKCON Lusaka">
+      <button class="btn big-btn" type="submit" style="margin-top:14px">Create my profile</button>
+    </form>
+  </div>
+</div>
+
+<div class="sheet" id="tour" hidden>
+  <div class="sheet-in center">
+    <div class="tour-art" id="tourArt"></div>
+    <div class="eyebrow" id="tourStep"></div>
+    <h2 style="font-family:var(--f-display);font-weight:400;font-size:1.8rem;margin:6px 0" id="tourTitle"></h2>
+    <p id="tourText" style="max-width:420px;margin:0 auto"></p>
+    <div class="dots" id="tourDots" style="justify-content:center;margin:16px 0"></div>
+    <div class="row" style="max-width:360px;margin:0 auto"><button class="btn ghost" id="tourSkip">Skip</button><button class="btn" id="tourNext">Next ›</button></div>
+  </div>
+</div>
+
+<div class="sheet" id="profile" hidden>
+  <div class="sheet-in">
+    <div class="row"><button class="btn ghost" id="pfClose">‹ Back</button><button class="btn ghost" id="pfEdit">Edit profile</button></div>
+    <div class="pf-card">
+      <div class="pf-av" id="pfAv">🙏</div>
+      <div style="min-width:0"><h2 id="pfName" style="font-family:var(--f-display);font-weight:400;font-size:1.8rem;margin:0;line-height:1.1"></h2>
+        <div class="eyebrow" id="pfRank"></div><div class="eyebrow" id="pfMeta" style="margin-top:2px"></div></div>
+    </div>
+    <div class="tiles4" id="pfStats"></div>
+    <h3 class="sec-h" style="margin-top:18px">Showcase · tap a card in your library to pin it</h3>
+    <div class="album" id="pfShow"></div>
+    <h3 class="sec-h" style="margin-top:18px">Latest rewards</h3>
+    <div class="awards" id="pfAwards"></div>
+    <h3 class="sec-h" style="margin-top:22px">Settings</h3>
+    <div class="set-row"><div class="lbl"><b>Daily scroll reminder</b><span id="remStatus">A notification when tonight's scroll is sealed.</span></div>
+      <div class="jbtns" style="margin:0"><input type="time" id="remTime" value="18:00" aria-label="Reminder time"><button class="btn" id="remSave">Set</button><button class="btn ghost" id="remOff">Off</button></div></div>
+    <div class="set-row"><div class="lbl"><b>Back up my progress</b><span>Save a backup file to Drive, WhatsApp or your files. Use it on a new phone.</span></div>
+      <button class="btn ghost" id="bkSave">Back up</button></div>
+    <div class="set-row"><div class="lbl"><b>Restore from a backup</b><span>Replaces this phone's progress with the backup.</span></div>
+      <label class="btn ghost" for="bkFile" style="cursor:pointer">Choose file</label><input type="file" id="bkFile" accept="application/json,.json" hidden></div>
+    <div class="set-row"><div class="lbl"><b>Share the app</b><span>Send the download link to devotee friends.</span></div>
+      <button class="btn ghost" id="shareApp">Share</button></div>
+    <div class="jbtns" style="justify-content:flex-start;margin-top:16px"><button class="btn ghost" id="pfTour">Replay the tour</button></div>
+    <p class="eyebrow" id="appVer" style="margin-top:14px"></p>
+  </div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const paras=s=>String(s??"").split(/\n+/).filter(Boolean).map(p=>`<p>${esc(p)}</p>`).join("");
+const pad=n=>String(n).padStart(2,"0");
+const localDate=(d=new Date())=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const pretty=iso=>new Date(iso+"T12:00:00").toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short"});
+const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+const C={saffron:"#f29a2e",gold:"#ffd27a",leaf:"#ecdfc3",dim:"#9d93b2",line:"#322c4a",tulsi:"#6fc49a",stone2:"#231e37"};
+function refreshC(){const cs=getComputedStyle(document.documentElement),g=k=>cs.getPropertyValue(k).trim();
+  Object.assign(C,{saffron:g("--saffron")||C.saffron,gold:g("--gold")||C.gold,leaf:g("--leaf")||C.leaf,dim:g("--dim")||C.dim,line:g("--line")||C.line,tulsi:g("--tulsi")||C.tulsi,stone2:g("--stone-2")||C.stone2});}
+function applyMode(m){const r=document.documentElement;if(m==="auto")delete r.dataset.mode;else r.dataset.mode=m;
+  const b=document.getElementById("modeBtn");if(b){b.textContent=m==="light"?"☀️":m==="dark"?"🌙":"🌗";b.setAttribute("aria-label",`Theme: ${m}. Tap to change.`);}
+  refreshC();try{window.Native?.setStatusBar?.(getComputedStyle(document.documentElement).colorScheme!=="light");}catch(e){}try{drawArt();drawMala();drawTulsi();drawMap();drawTemple();drawDham();drawWheel();drawBadge(lvl(progress.xp||0));}catch(e){}}
+
+/* ---------- data for the games (well-documented dates) ---------- */
+const TL=[[1486,"Chaitanya Mahaprabhu is born in Bengal"],[1510,"Chaitanya takes sannyasa at Katwa"],[1838,"Bhaktivinoda Thakura is born"],[1874,"Bhaktisiddhanta Sarasvati is born in Puri"],[1896,"Abhay Charan De, the future Prabhupada, is born in Calcutta"],[1922,"Abhay meets Bhaktisiddhanta in Calcutta"],[1933,"Abhay is initiated in Allahabad"],[1937,"Bhaktisiddhanta passes away"],[1944,"First issue of Back to Godhead"],[1959,"Prabhupada takes sannyasa"],[1965,"The Jaladuta sails for Boston"],[1966,"ISKCON is incorporated in New York"],[1967,"First Ratha Yatra in the West, San Francisco"],[1969,"\"Hare Krishna Mantra\" single charts in the UK"],[1977,"Prabhupada passes away in Vrindavan"]];
+const LINE=["Madhvacharya","Madhavendra Puri","Ishvara Puri","Chaitanya Mahaprabhu","Rupa Goswami","Krishnadasa Kaviraja","Narottama das Thakura","Vishvanatha Chakravarti","Jagannatha das Babaji","Bhaktivinoda Thakura","Gaurakishora das Babaji","Bhaktisiddhanta Sarasvati","A. C. Bhaktivedanta Swami"];
+const RANKS=[[0,"Seeker"],[100,"Pilgrim"],[250,"Scribe"],[500,"Archivist"],[900,"Keeper of the Vault"],[1500,"Guardian of the Parampara"]];
+
+let db=null,progRef=null,days=[],progress={unlocked:{},xp:0,best:{}},attempts=0,timer=null,sealCrack=0;
+
+/* ---------- canvas helpers ---------- */
+function fit(cv){const r=cv.getBoundingClientRect(),d=devicePixelRatio||1;cv.width=Math.max(1,r.width*d);cv.height=Math.max(1,r.height*d);const x=cv.getContext("2d");x.setTransform(d,0,0,d,0,0);return [x,r.width,r.height];}
+
+// drifting embers behind everything
+(()=>{const cv=$("#embers");let x,w,h,ps=[];
+  const reset=()=>{[x,w,h]=fit(cv);ps=Array.from({length:Math.round(w*h/9000)},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.6+.4,s:Math.random()*.35+.1,p:Math.random()*6}));};
+  addEventListener("resize",reset);reset();
+  const tick=t=>{x.clearRect(0,0,w,h);
+    const g=x.createRadialGradient(w/2,-h*.1,0,w/2,-h*.1,h*.9);g.addColorStop(0,"rgba(242,154,46,.18)");g.addColorStop(1,"rgba(242,154,46,0)");x.fillStyle=g;x.fillRect(0,0,w,h);
+    for(const p of ps){if(!RM){p.y-=p.s;p.x+=Math.sin(t/1400+p.p)*.25;if(p.y<-4){p.y=h+4;p.x=Math.random()*w;}}
+      const a=.35+.35*Math.sin(t/500+p.p);x.fillStyle=`rgba(255,${170+Math.round(60*a)},90,${a})`;x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill();}
+    if(!RM)requestAnimationFrame(tick);};requestAnimationFrame(tick);})();
+
+// burst particles on top
+const FX=(()=>{const cv=$("#fx");let x,w,h,ps=[],run=false;const re=()=>{[x,w,h]=fit(cv);};addEventListener("resize",re);re();
+  const loop=()=>{x.clearRect(0,0,w,h);ps=ps.filter(p=>p.l>0);for(const p of ps){p.x+=p.vx;p.y+=p.vy;p.vy+=.06;p.vx*=.985;p.l-=1;x.globalAlpha=Math.min(1,p.l/40);x.fillStyle=p.c;x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill();}x.globalAlpha=1;if(ps.length)requestAnimationFrame(loop);else run=false;};
+  return {burst(cx,cy,n=140,cols=[C.saffron,C.gold,"#fff1c9",C.tulsi]){if(RM)return;for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=Math.random()*7+1.5;ps.push({x:cx,y:cy,vx:Math.cos(a)*s,vy:Math.sin(a)*s-2,r:Math.random()*2.6+.8,l:60+Math.random()*50,c:cols[i%cols.length]});}if(!run){run=true;requestAnimationFrame(loop);}}};})();
+const burstAt=el=>{const r=el.getBoundingClientRect();FX.burst(r.left+r.width/2,r.top+r.height/2);};
+
+// the mandala seal
+function drawSeal(t){const cv=$("#seal");if(!cv||!cv.isConnected)return false;const x=cv.getContext("2d"),S=400,c=S/2;x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,S,S);
+  const rot=RM?0:t/9000,k=sealCrack;x.save();x.translate(c,c);
+  const glow=x.createRadialGradient(0,0,10,0,0,190);glow.addColorStop(0,"rgba(255,210,122,.35)");glow.addColorStop(1,"rgba(242,154,46,0)");x.fillStyle=glow;x.beginPath();x.arc(0,0,190,0,7);x.fill();
+  const rings=[[16,150,46,.5],[12,112,34,-.8],[8,76,24,1.2]];
+  rings.forEach(([n,R,L,dir],ri)=>{for(let i=0;i<n;i++){const a=i/n*Math.PI*2+rot*dir,push=k*(40+ri*25);x.save();x.rotate(a);x.translate(0,-R+L/2-push);x.globalAlpha=1-k;
+      x.beginPath();x.moveTo(0,-L/2);x.quadraticCurveTo(L*.42,0,0,L/2);x.quadraticCurveTo(-L*.42,0,0,-L/2);
+      x.fillStyle=ri%2?"rgba(242,154,46,.14)":"rgba(255,210,122,.1)";x.fill();x.strokeStyle=ri===1?C.gold:C.saffron;x.lineWidth=2;x.stroke();x.restore();}});
+  x.globalAlpha=1-k;x.strokeStyle=C.saffron;x.lineWidth=2;[166,128,92,54].forEach(r=>{x.beginPath();x.arc(0,0,r+k*60,0,7);x.stroke();});
+  for(let i=0;i<108;i++){const a=i/108*Math.PI*2-rot;x.fillStyle=i%27===0?C.gold:"rgba(236,223,195,.55)";x.beginPath();x.arc(Math.cos(a)*(180+k*30),Math.sin(a)*(180+k*30),i%27===0?3.2:1.6,0,7);x.fill();}
+  // keyhole
+  x.fillStyle="#0d0b17";x.beginPath();x.arc(0,-8,15,0,7);x.fill();x.beginPath();x.moveTo(-9,0);x.lineTo(9,0);x.lineTo(14,30);x.lineTo(-14,30);x.closePath();x.fill();
+  x.strokeStyle=C.gold;x.lineWidth=2.5;x.beginPath();x.arc(0,-8,15,Math.PI*.78,Math.PI*2.22);x.lineTo(14,30);x.lineTo(-14,30);x.closePath();x.stroke();
+  x.restore();return true;}
+function sealLoop(t){if(drawSeal(t)&&!RM)requestAnimationFrame(sealLoop);}
+
+// rank badge
+function drawBadge(level){const x=$("#badge").getContext("2d"),c=44;x.clearRect(0,0,88,88);x.save();x.translate(c,c);
+  const n=6+level*2;for(let i=0;i<n;i++){x.save();x.rotate(i/n*Math.PI*2);x.beginPath();x.moveTo(0,-38);x.quadraticCurveTo(10,-20,0,-8);x.quadraticCurveTo(-10,-20,0,-38);x.fillStyle=i%2?"rgba(242,154,46,.35)":"rgba(255,210,122,.25)";x.fill();x.strokeStyle=C.saffron;x.lineWidth=1.5;x.stroke();x.restore();}
+  x.fillStyle="#0d0b17";x.beginPath();x.arc(0,0,13,0,7);x.fill();x.strokeStyle=C.gold;x.lineWidth=2;x.stroke();
+  x.fillStyle=C.gold;x.font="600 15px 'DM Mono', monospace";x.textAlign="center";x.textBaseline="middle";x.fillText(level+1,0,1);x.restore();}
+
+// little card illustrations
+function drawArt(){document.querySelectorAll("canvas[data-art]").forEach(cv=>{const [x,w,h]=fit(cv),k=cv.dataset.art;
+  if(k==="timeline"){x.strokeStyle=C.line;x.lineWidth=2;x.beginPath();x.moveTo(6,h/2);x.lineTo(w-6,h/2);x.stroke();[.12,.32,.55,.78,.92].forEach((p,i)=>{x.fillStyle=i===4?C.gold:C.saffron;x.beginPath();x.arc(6+(w-12)*p,h/2,i===4?6:4,0,7);x.fill();x.fillStyle=C.dim;x.font="10px 'DM Mono',monospace";x.textAlign="center";x.fillText(["1486","1838","1896","1966","1977"][i],6+(w-12)*p,i%2?h/2+18:h/2-10);});}
+  if(k==="lineage"){const n=5;for(let i=0;i<n;i++){const px=12+(w-24)*i/(n-1),py=h/2+(i%2?10:-10);if(i){const qx=12+(w-24)*(i-1)/(n-1),qy=h/2+((i-1)%2?10:-10);x.strokeStyle=C.line;x.lineWidth=2;x.beginPath();x.moveTo(qx,qy);x.lineTo(px,py);x.stroke();}}for(let i=0;i<n;i++){const px=12+(w-24)*i/(n-1),py=h/2+(i%2?10:-10);x.fillStyle=i===n-1?C.gold:C.saffron;x.beginPath();x.arc(px,py,6,0,7);x.fill();}}
+  if(k==="snake"){const s=8,pts=[[2,4],[3,4],[4,4],[5,4],[5,3],[6,3],[7,3],[8,3]];pts.forEach(([a,b],i)=>{x.fillStyle=i===pts.length-1?C.gold:C.saffron;x.globalAlpha=.4+.6*i/pts.length;x.fillRect(w/2-48+a*s,b*s+14,s-1,s-1);});x.globalAlpha=1;x.fillStyle=C.tulsi;x.beginPath();x.arc(w/2-48+12*s+4,3*s+18,3.5,0,7);x.fill();}
+  if(k==="memory"){const cw=22,ch=28,gap=6,sx=w/2-(cw*4+gap*3)/2;for(let i=0;i<4;i++){const up=i===1||i===2;x.fillStyle=up?C.stone2:C.saffron;x.strokeStyle=up?C.gold:C.saffron;x.lineWidth=1.5;x.beginPath();x.roundRect(sx+i*(cw+gap),h/2-ch/2,cw,ch,4);x.fill();x.stroke();if(up){x.fillStyle=C.gold;x.font="15px serif";x.textAlign="center";x.textBaseline="middle";x.fillText("★",sx+i*(cw+gap)+cw/2,h/2+1);}}}
+  if(k==="reflex"){const cx=w/2,cy=h/2;for(let r=28;r>0;r-=7){x.strokeStyle=r===28?C.line:C.saffron;x.globalAlpha=r/28;x.lineWidth=2;x.beginPath();x.arc(cx,cy,r,0,7);x.stroke();}x.globalAlpha=1;x.fillStyle=C.gold;x.beginPath();x.moveTo(cx,cy-12);x.quadraticCurveTo(cx+8,cy,cx,cy+8);x.quadraticCurveTo(cx-8,cy,cx,cy-12);x.fill();}
+  if(k==="japa"){const cx=w/2,cy=h/2,R=Math.min(w,h)/2-6;for(let i=0;i<36;i++){const a=i/36*Math.PI*2-Math.PI/2;x.fillStyle=i<22?C.saffron:C.line;x.beginPath();x.arc(cx+Math.cos(a)*R,cy+Math.sin(a)*R,2.6,0,7);x.fill();}x.fillStyle=C.gold;x.beginPath();x.arc(cx,cy-R-0.5,4.5,0,7);x.fill();}
+});}
+
+/* ---------- progress & XP ---------- */
+const isOpen=d=>d&&(d.prologue||progress.unlocked?.[d.date]);
+const lvl=xp=>{let i=0;RANKS.forEach((r,j)=>{if(xp>=r[0])i=j;});return i;};
+let saveT=null,sangaRef=null;const save=()=>{clearTimeout(saveT);saveT=setTimeout(async()=>{try{if(progRef)await progRef.set(progress);}catch(e){toast("Progress didn't save this time.");}
+  try{if(sangaRef)await sangaRef.set({week:weekKey(),rounds:weekRounds(),xp:progress.xp||0,quiz:(progress.qa||{}).right||0,updated:Date.now()});}catch(e){}},400);};
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),2600);}
+function addXP(n,why,noCoins){const base=n,fe=todayEvent();if(fe){n*=2;why+=" · ×2 "+(fe.kind==="ekadashi"?"Ekadashi":"festival");}const before=lvl(progress.xp||0);progress.xp=(progress.xp||0)+n;save();renderRank();toast(`+${n} XP · ${why}`);
+  checkAwards();renderChart();if(!noCoins)earn(coinsFor(base,why),why.replace(/^\d+ /,""));
+  const after=lvl(progress.xp);if(after>before)setTimeout(()=>{give("freeze");give("hint",2);toast(`Rank up! You are now ${RANKS[after][1]} · gift: 🧊 + 💡💡`);earn(150,"Rank up: "+RANKS[after][1]);burstAt($("#badge"));save();renderBag();},1400);}
+function streak(){const past=days.filter(d=>d.date<=localDate());let s=0;for(let i=past.length-1;i>=0;i--){if(isOpen(past[i]))s++;else break;}return s;}
+function renderRank(){const xp=progress.xp||0,l=lvl(xp),cur=RANKS[l][0],nxt=RANKS[l+1]?.[0];
+  $("#rankName").textContent=RANKS[l][1];$("#xpbar").style.width=nxt?((xp-cur)/(nxt-cur)*100)+"%":"100%";
+  $("#xpText").textContent=nxt?`${xp} XP · ${nxt-xp} to ${RANKS[l+1][1]}`:`${xp} XP · highest rank`;$("#streak").textContent=streak();drawBadge(l);
+  const b=progress.best||{};
+  document.querySelector('[data-best="timeline"]').textContent=b.timeline!=null?`Best: ${b.timeline.toFixed(1)}s`:"Not played yet";
+  document.querySelector('[data-best="lineage"]').textContent=b.lineage!=null?`Best: ${b.lineage.toFixed(1)}s`:"Not played yet";
+  document.querySelector('[data-best="japa"]').textContent=b.japa!=null?`Best: ${b.japa.toFixed(1)}s`:"Not played yet";
+  document.querySelector('[data-best="snake"]').textContent=b.snake!=null?`Best: ${b.snake} sparks`:"Not played yet";
+  document.querySelector('[data-best="memory"]').textContent=b.memory!=null?`Best: ${b.memory} moves`:"Not played yet";
+  document.querySelector('[data-best="reflex"]').textContent=b.reflex!=null?`Best: ${Math.round(b.reflex)} ms`:"Not played yet";}
+
+/* ---------- daily scroll ---------- */
+function nextSeal(){const n=new Date(),t=new Date(n);t.setHours(18,0,0,0);if(t<=n)t.setDate(t.getDate()+1);const ms=t-n;return `${pad(Math.floor(ms/36e5))}:${pad(Math.floor(ms%36e5/6e4))}:${pad(Math.floor(ms%6e4/1e3))}`;}
+const numOf=d=>d.prologue?0:days.filter(x=>!x.prologue).indexOf(d)+1;
+function stableOrder(d){const idx=(d.options||[]).map((_,i)=>i);let s=[...d.date].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7);for(let i=idx.length-1;i>0;i--){s=(s*1103515245+12345)>>>0;const j=s%(i+1);[idx[i],idx[j]]=[idx[j],idx[i]];}return idx;}
+
+function renderArchive(){const shown=days.filter(d=>d.date<=localDate()).reverse(),ol=$("#archive");
+  if(!shown.length){ol.innerHTML=`<li style="padding:12px 14px;color:var(--dim)">Opened scrolls collect here.</li>`;return;}
+  ol.innerHTML=shown.map(d=>isOpen(d)?`<li><details><summary><span class="n">#${numOf(d)}</span><span class="t">${esc(d.title)}</span><span class="d">${pretty(d.date)}</span></summary><div class="body fact">${paras(d.fact)}</div></details></li>`
+    :`<li class="sealed"><summary><span class="n">#${numOf(d)}</span><span class="t">🔒 Sealed scroll</span><span class="d">${pretty(d.date)}</span></summary></li>`).join("");}
+
+function showScroll(d,fresh){clearInterval(timer);
+  $("#stage").innerHTML=`<div class="scroll"><div class="eyebrow">Scroll #${numOf(d)} · ${pretty(d.date)}${fresh?" · seal broken":""}</div><h2>${esc(d.title)}</h2><div class="fact">${paras(d.fact)}</div>
+  <div class="meta">${d.era?`<span class="chip">${esc(d.era)}</span>`:""}${d.disputed?`<span class="chip hot">historians disagree</span>`:""}</div>
+  <div class="next">Memorize this. Tomorrow's seal only breaks if you can answer a question about it.<br>Next seal in <b id="cd">${nextSeal()}</b></div></div>`;
+  timer=setInterval(()=>{const e=$("#cd");if(e)e.textContent=nextSeal();},1000);}
+
+function showLock(today,prev){clearInterval(timer);attempts=0;sealCrack=0;const order=stableOrder(prev),K="ABCD";
+  $("#stage").innerHTML=`<canvas id="seal" width="400" height="400" aria-hidden="true"></canvas>
+  <div class="eyebrow center">Scroll #${numOf(today)} is sealed · ${pretty(today.date)}</div>
+  <h2 class="center">Prove you kept yesterday's secret</h2><p class="q">${esc(prev.question)}</p>
+  <div class="opts" id="opts">${order.map((oi,k)=>`<button class="opt" data-i="${oi}" id="opt-${oi}"><span class="k">${K[k]}</span><span>${esc(prev.options[oi])}</span></button>`).join("")}</div>
+  <div class="msg" id="msg">First try earns 30 XP.</div><div class="jbtns" style="justify-content:flex-start"><button class="btn ghost" id="lockHint">💡 Use a hint (${inv().hint||0})</button><button class="btn ghost" id="lockPass">🎟️ Use a free pass (${inv().pass||0})</button></div><div id="peekwrap"></div>`;
+  $("#lockHint").onclick=()=>{if(hintOn($("#opts"),prev.answer)){$("#lockHint").disabled=true;}};
+  $("#lockPass").onclick=()=>{if(!useItem("pass")){toast("No free passes yet. Earn them from chests or the bazaar.");return;}progress.unlocked={...(progress.unlocked||{}),[today.date]:true};burstAt($("#seal"));save();setTimeout(()=>{showScroll(today,true);renderArchive();addXP(5,"free pass used");},500);};
+  requestAnimationFrame(sealLoop);
+  $("#opts").addEventListener("click",async e=>{const b=e.target.closest(".opt");if(!b)return;
+    if(+b.dataset.i===prev.answer){b.classList.add("right");const m=$("#msg");m.className="msg good";m.textContent="Correct. The seal cracks…";
+      document.querySelectorAll(".opt").forEach(o=>o.style.pointerEvents="none");
+      const seal=$("#seal");burstAt(seal);const t0=performance.now();
+      const crack=t=>{sealCrack=Math.min(1,(t-t0)/700);if(RM)drawSeal(t);if(sealCrack<1)requestAnimationFrame(crack);};requestAnimationFrame(crack);
+      progress.unlocked={...(progress.unlocked||{}),[today.date]:true};
+      setTimeout(()=>{showScroll(today,true);renderArchive();addXP([30,20][attempts]??10,attempts?"seal broken":"first-try seal break");},900);
+    }else{attempts++;b.classList.add("wrong");const st=$("#stage");st.classList.remove("shake");void st.offsetWidth;st.classList.add("shake");
+      const m=$("#msg");m.className="msg bad";m.textContent=attempts===1?"The lamp flickers. Try again (20 XP left).":"Still sealed.";
+      if(attempts>=2&&!$("#peek")){$("#peekwrap").innerHTML=`<div style="margin-top:10px"><button class="linkbtn" id="peekbtn">Re-read yesterday's scroll</button></div>`;
+        $("#peekbtn").onclick=()=>{$("#peekwrap").innerHTML=`<div class="peek" id="peek"><b>${esc(prev.title)}</b>${paras(prev.fact)}</div>`;};}}});}
+
+function renderStage(){const past=days.filter(d=>d.date<=localDate());
+  if(!past.length){$("#stage").innerHTML=`<canvas id="seal" width="400" height="400" aria-hidden="true"></canvas><h2 class="center">The first scroll arrives at 6 pm</h2><p class="center" style="color:var(--dim)">Each evening a new piece of hidden history is sealed in here.</p>`;requestAnimationFrame(sealLoop);return;}
+  const today=past[past.length-1],prev=past[past.length-2];if(isOpen(today)||!prev)showScroll(today,false);else showLock(today,prev);}
+
+/* ---------- arcade ---------- */
+let stopGame=()=>{};
+let curTab="today";
+function showTab(t){curTab=t;document.querySelectorAll(".tab").forEach(s=>s.hidden=s.dataset.tab!==t);
+  document.querySelectorAll(".tabs button").forEach(b=>b.dataset.go===t?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
+  stopGame();stopGame=()=>{};$("#game").hidden=true;$("#game").innerHTML="";
+  if(t==="today")requestAnimationFrame(()=>{drawMala();drawTulsi();});if(t==="journey")requestAnimationFrame(()=>{drawMap();drawTemple();});if(t==="play")requestAnimationFrame(drawArt);if(t==="dham")requestAnimationFrame(renderDham);
+  try{localStorage.setItem("vaultTab",t);}catch(e){}scrollTo({top:0,behavior:"auto"});}
+document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.go)));
+function closeGame(){showTab(curTab);}
+function enterGame(){stopGame();stopGame=()=>{};document.querySelectorAll(".tab").forEach(s=>s.hidden=true);const g=$("#game");g.hidden=false;scrollTo({top:0,behavior:"auto"});return g;}
+function openGame(k){enterGame();({timeline:orderGame,lineage:orderGame,japa:japaGame,snake:snakeGame,memory:memoryGame,reflex:reflexGame})[k](k);}
+document.querySelectorAll(".card").forEach(c=>c.addEventListener("click",()=>openGame(c.dataset.game)));
+
+function orderGame(kind){const isTL=kind==="timeline";
+  const picks=isTL?shuffle(TL.map((e,i)=>({i,label:e[1],tag:e[0]}))).slice(0,5).sort((a,b)=>a.i-b.i)
+                  :shuffle(LINE.map((n,i)=>({i,label:n,tag:""}))).slice(0,5).sort((a,b)=>a.i-b.i);
+  let step=0,lives=3,t0=0,done=false;const g=$("#game");
+  g.innerHTML=`<div class="row"><div><div class="eyebrow">${isTL?"Timeline Dash":"Lineage Links"}</div><h2 style="margin-bottom:0">${isTL?"Earliest first":"Teacher before student"}</h2></div><div class="lives" id="lives" aria-label="lives">♥♥♥</div></div>
+   <p style="color:var(--dim);margin:6px 0 0">${isTL?"Tap these five moments from oldest to newest.":"Tap these five names in the order the succession runs, oldest first."}</p>
+   <div class="seq" id="seq">${picks.map((_,i)=>`<div class="slot" id="slot${i}"><b>${i+1}</b><span>…</span></div>`).join("")}</div>
+   <div class="pool" id="pool">${shuffle(picks).map(p=>`<button class="opt" data-i="${p.i}"><span>${esc(p.label)}</span></button>`).join("")}</div>
+   <div class="msg" id="gmsg">Clock starts on your first tap.</div><div class="row" style="margin-top:14px"><button class="btn ghost" id="back">Back to vault</button></div>`;
+  $("#back").onclick=closeGame;
+  $("#pool").addEventListener("click",e=>{const b=e.target.closest(".opt");if(!b||done)return;if(!t0)t0=performance.now();
+    const want=picks[step];
+    if(+b.dataset.i===want.i){const s=$("#slot"+step);s.classList.add("filled");s.innerHTML=`<b>${isTL?want.tag:step+1}</b><span>${esc(want.label)}</span>`;b.remove();step++;
+      if(step===5){done=true;const sec=(performance.now()-t0)/1000;const best=progress.best||{};const nb=best[kind]==null||sec<best[kind];if(nb)progress.best={...best,[kind]:sec};
+        const xp=lives===3?20:10;burstAt($("#seq"));
+        $("#gmsg").className="msg good";$("#gmsg").textContent=`Done in ${sec.toFixed(1)}s${nb?" · new best!":""}`;
+        $("#back").insertAdjacentHTML("beforebegin",`<button class="btn" id="again">Play again</button>`);$("#again").onclick=()=>orderGame(kind);addXP(xp,lives===3?"flawless run":"run complete");}
+    }else{lives--;$("#lives").textContent="♥".repeat(lives)+"♡".repeat(3-lives);const g2=$("#game");g2.classList.remove("shake");void g2.offsetWidth;g2.classList.add("shake");
+      if(lives===0){done=true;$("#gmsg").className="msg bad";
+        $("#gmsg").innerHTML=`Out of lives. The right order was: ${picks.map(p=>esc((isTL?p.tag+" ":"")+p.label)).join(" → ")}`;
+        $("#back").insertAdjacentHTML("beforebegin",`<button class="btn" id="again">Try again</button>`);$("#again").onclick=()=>orderGame(kind);}
+      else{$("#gmsg").className="msg bad";$("#gmsg").textContent=isTL?"Not yet. Something happened before that.":"Not yet. Someone comes earlier in the line.";}}});}
+
+function japaGame(){const g=$("#game");let n=0,t0=0,done=false,last=0;
+  g.innerHTML=`<div class="row"><div><div class="eyebrow">Japa Sprint</div><h2 style="margin-bottom:0">108 beads</h2></div><div class="big" id="jt">0.0s</div></div>
+  <canvas id="japa" aria-label="Tap the mala to advance one bead"></canvas>
+  <p class="mantra">Hare Krishna Hare Krishna Krishna Krishna Hare Hare<br>Hare Rama Hare Rama Rama Rama Hare Hare</p>
+  <div class="msg center" id="gmsg">Tap the mala as fast as you can. One tap, one bead.</div>
+  <div class="row" style="margin-top:14px"><button class="btn ghost" id="back">Back to vault</button><button class="btn" id="reset">Restart</button></div>`;
+  $("#back").onclick=()=>{done=true;closeGame();};$("#reset").onclick=japaGame;
+  const cv=$("#japa"),[x,w,h]=fit(cv),cx=w/2,cy=h/2,R=Math.min(w,h)/2-16;
+  const draw=t=>{x.clearRect(0,0,w,h);const pulse=Math.max(0,1-(t-last)/250);
+    for(let i=0;i<108;i++){const a=i/108*Math.PI*2-Math.PI/2+Math.PI/108;const lit=i<n,cur=i===n-1;
+      x.fillStyle=lit?(cur?C.gold:C.saffron):C.stone2;x.beginPath();x.arc(cx+Math.cos(a)*R,cy+Math.sin(a)*R,cur?3.8+pulse*3:3,0,7);x.fill();
+      if(!lit){x.strokeStyle=C.line;x.lineWidth=1;x.stroke();}}
+    x.fillStyle=C.gold;x.beginPath();x.moveTo(cx,cy-R-12);x.lineTo(cx+7,cy-R+2);x.lineTo(cx-7,cy-R+2);x.closePath();x.fill();
+    x.fillStyle=C.leaf;x.font="400 44px 'Rozha One',Georgia,serif";x.textAlign="center";x.textBaseline="middle";x.fillText(n,cx,cy-6);
+    x.fillStyle=C.dim;x.font="12px 'DM Mono',monospace";x.fillText("of 108",cx,cy+26);
+    if(t0&&!done)$("#jt").textContent=((performance.now()-t0)/1000).toFixed(1)+"s";
+    if(!done&&$("#japa")===cv)requestAnimationFrame(draw);};requestAnimationFrame(draw);
+  cv.addEventListener("pointerdown",e=>{e.preventDefault();if(done||n>=108)return;if(!t0)t0=performance.now();n++;last=performance.now();
+    if(n===108){done=true;const sec=(performance.now()-t0)/1000;$("#jt").textContent=sec.toFixed(1)+"s";const best=progress.best||{},nb=best.japa==null||sec<best.japa;if(nb)progress.best={...best,japa:sec};
+      requestAnimationFrame(draw);burstAt(cv);$("#gmsg").className="msg good center";$("#gmsg").textContent=`One full round in ${sec.toFixed(1)}s${nb?" · new best!":""}`;addXP(15,"full round");}});}
+
+/* ---------- scripture quiz room ---------- */
+const BOOKS={
+ gita:{name:"Bhagavad Gita",hue:"#f29a2e",qs:[
+  ["How many chapters does the Bhagavad Gita have?",["18","12","24","10"],0,"Eighteen chapters, with roughly 700 verses."],
+  ["Where was the Gita spoken?",["The battlefield of Kurukshetra","The forest of Vrindavan","The court of Hastinapura","The banks of the Ganges at Haridwar"],0,"Krishna spoke it to Arjuna between the two armies just before the war."],
+  ["Who narrates the conversation to the blind king Dhritarashtra?",["Sanjaya","Vidura","Bhishma","Vyasa"],0,"Vyasa gave Sanjaya divine vision so he could report the battle."],
+  ["What is the name of Krishna's conch shell?",["Panchajanya","Devadatta","Paundra","Anantavijaya"],0,"Devadatta was Arjuna's, Paundra was Bhima's, Anantavijaya was Yudhishthira's."],
+  ["In which chapter does Krishna show Arjuna his universal form?",["Chapter 11","Chapter 2","Chapter 18","Chapter 7"],0,"Chapter 11 is the vision of the universal form (Vishvarupa)."],
+  ["What role does Krishna take in the war?",["Arjuna's charioteer","Commander of the Pandava army","A neutral messenger","Bhishma's advisor"],0,"He promised not to fight, and drove Arjuna's chariot instead."],
+  ["What is the name of Arjuna's bow?",["Gandiva","Pinaka","Sharanga","Vijaya"],0,"Pinaka is Shiva's bow and Sharanga is Vishnu's."],
+  ["The Gita is part of which larger work?",["The Mahabharata","The Ramayana","The Srimad Bhagavatam","The Upanishads"],0,"It sits in the Bhishma Parva of the Mahabharata."]]},
+ mbh:{name:"Mahabharata",hue:"#e0566a",qs:[
+  ["Who, according to tradition, wrote the Mahabharata down as Vyasa dictated it?",["Ganesha","Narada","Valmiki","Brihaspati"],0,"Ganesha agreed on condition that Vyasa never pause."],
+  ["How many days did the Kurukshetra war last?",["18","7","40","12"],0,"Eighteen days, matching the epic's 18 books (parvas)."],
+  ["Who lay on a bed of arrows waiting for an auspicious time to leave his body?",["Bhishma","Drona","Karna","Jayadratha"],0,"Bhishma could choose his moment of death."],
+  ["Who was Karna's birth mother?",["Kunti","Gandhari","Madri","Satyavati"],0,"Kunti bore him before her marriage, through the sun-god Surya."],
+  ["Who threw the dice for Duryodhana in the fateful gambling match?",["Shakuni","Dushasana","Karna","Ashwatthama"],0,"Shakuni, Duryodhana's maternal uncle, was a master of the dice."],
+  ["How long was the Pandavas' exile after the dice game?",["12 years in the forest plus 1 year in disguise","14 years in the forest","7 years in disguise","10 years in the forest"],0,"Fourteen years is Rama's exile in the Ramayana."],
+  ["Draupadi was the daughter of which king?",["Drupada","Virata","Shalya","Jarasandha"],0,"She was born from King Drupada's fire sacrifice."],
+  ["Who was the eldest Pandava?",["Yudhishthira","Bhima","Arjuna","Nakula"],0,"Yudhishthira, the son of Dharma."]]},
+ ram:{name:"Ramayana",hue:"#6fc49a",qs:[
+  ["Who is the traditional author of the Ramayana?",["Valmiki","Vyasa","Tulsidas","Kalidasa"],0,"Valmiki's Sanskrit Ramayana is the original. Tulsidas wrote a later Hindi retelling."],
+  ["How many years was Rama exiled to the forest?",["14","12","7","21"],0,"Kaikeyi's boon demanded fourteen years."],
+  ["Which kingdom did Rama come from?",["Ayodhya","Mithila","Kishkindha","Lanka"],0,"Mithila was Sita's home and Kishkindha the monkey kingdom."],
+  ["Which vulture fought Ravana trying to save Sita?",["Jatayu","Sampati","Garuda","Aruna"],0,"Jatayu was mortally wounded. Sampati was his elder brother."],
+  ["Who placed Rama's sandals on the throne and ruled in his name?",["Bharata","Lakshmana","Shatrughna","Sugriva"],0,"Bharata refused to take the throne for himself."],
+  ["Which monkey engineer is credited with building the bridge to Lanka?",["Nala","Angada","Jambavan","Vali"],0,"Nala, helped by Nila and the vanara army."],
+  ["How many books (kandas) does Valmiki's Ramayana have?",["7","18","12","4"],0,"From Bala Kanda to Uttara Kanda."],
+  ["Who was Rama's father?",["King Dasharatha","King Janaka","King Bharata","King Ikshvaku"],0,"Janaka was Sita's father."]]},
+ bhag:{name:"Srimad Bhagavatam",hue:"#8fa8ff",qs:[
+  ["How many cantos does the Srimad Bhagavatam have?",["12","18","10","7"],0,"Twelve cantos. Krishna's pastimes fill the Tenth."],
+  ["Who spoke the Bhagavatam to King Parikshit?",["Shukadeva Goswami","Narada Muni","Suta Goswami","Maitreya"],0,"Shukadeva spoke it on the bank of the Ganges."],
+  ["How long did Parikshit have to live when he heard the Bhagavatam?",["Seven days","One day","Forty days","One year"],0,"A brahmin boy cursed him to die by a snakebird's bite in seven days."],
+  ["Who advised Vyasa to compose the Bhagavatam?",["Narada Muni","Brahma","Shukadeva","Krishna"],0,"Vyasa felt unsatisfied after his other works, and Narada told him to describe the Lord's pastimes."],
+  ["Which child devotee was protected by Lord Nrisimha?",["Prahlada","Dhruva","Markandeya","Nachiketa"],0,"Nrisimha appeared to save Prahlada from his father Hiranyakashipu."],
+  ["Which boy devotee was given the pole star as his abode?",["Dhruva","Prahlada","Ajamila","Bharata"],0,"Dhruva performed severe austerities as a five-year-old."],
+  ["Roughly how many verses does the Bhagavatam traditionally have?",["18,000","700","100,000","24,000"],0,"Around 18,000. The Ramayana has about 24,000."],
+  ["Who is traditionally credited with compiling the Bhagavatam?",["Vyasadeva","Valmiki","Shankaracharya","Jayadeva"],0,"Vyasa, compiler of the Vedas and the Mahabharata."]]},
+ krsna:{name:"Krishna Book",hue:"#ffd27a",qs:[
+  ["Prabhupada's Krishna book summarizes which canto of the Bhagavatam?",["The Tenth","The First","The Twelfth","The Fifth"],0,"Its full title is 'Krishna, the Supreme Personality of Godhead.'"],
+  ["Where was Krishna born?",["In Kamsa's prison in Mathura","In Nanda's house in Gokula","In Dvaraka","On the bank of the Yamuna in Vrindavan"],0,"He was born to Vasudeva and Devaki while they were imprisoned."],
+  ["Who carried baby Krishna across the Yamuna to Gokula?",["Vasudeva","Nanda Maharaja","Balarama","Akrura"],0,"Vasudeva carried him through the storm to Nanda and Yashoda."],
+  ["Which demoness tried to kill baby Krishna with poisoned breast milk?",["Putana","Trinavarta","Hidimbi","Surpanakha"],0,"Krishna sucked out her life along with the milk."],
+  ["How long did Krishna hold up Govardhana Hill?",["Seven days","One day","Forty days","Three days"],0,"He sheltered the people of Vraja from Indra's storm."],
+  ["Which serpent did Krishna subdue by dancing on its hoods?",["Kaliya","Vasuki","Ananta","Takshaka"],0,"Kaliya had poisoned a lake in the Yamuna."],
+  ["What did Yashoda see when she looked into Krishna's mouth?",["The whole universe","A golden lotus","Lord Vishnu","A burning fire"],0,"She was checking whether he had eaten dirt."],
+  ["Who is Krishna's elder brother?",["Balarama","Uddhava","Pradyumna","Arjuna"],0,"Balarama was transferred from Devaki's womb to Rohini's."]]},
+ iskcon:{name:"ISKCON",hue:"#c78bff",qs:[
+  ["In which year was ISKCON founded?",["1966","1965","1977","1959"],0,"It was incorporated in New York in July 1966."],
+  ["Where is ISKCON's world headquarters?",["Mayapur, West Bengal","Vrindavan","New York","London"],0,"Mayapur, near Chaitanya's birthplace."],
+  ["How many rounds of japa do initiated ISKCON devotees commit to daily?",["16","108","4","64"],0,"Sixteen rounds on a 108-bead mala."],
+  ["What is ISKCON's large free-meal program called?",["Food for Life","Annamrita Kitchens","Prasad for All","Hare Krishna Meals"],0,"Food for Life serves free plant-based meals around the world."],
+  ["Which Beatle helped the movement, donating Bhaktivedanta Manor?",["George Harrison","John Lennon","Paul McCartney","Ringo Starr"],0,"He also produced the 1969 Hare Krishna Mantra single."],
+  ["What is the name of the magazine Prabhupada started in 1944?",["Back to Godhead","Krishna Consciousness","The Harmonist","Gaudiya"],0,"He wrote, published and distributed it himself."],
+  ["In which city was the first Ratha Yatra in the West held?",["San Francisco","New York","London","Los Angeles"],0,"In 1967."],
+  ["Which body manages ISKCON as a whole?",["The Governing Body Commission (GBC)","The Bhaktivedanta Book Trust","The Gaudiya Math","The Mayapur Council"],0,"Prabhupada set up the GBC in 1970."]]}
+};
+/* fresh packs: new questions arrive every day; they merge into the books forever */
+const BASE=Object.fromEntries(Object.entries(BOOKS).map(([k,b])=>[k,b.qs.slice()]));let PACKS=[];
+function mergePacks(){Object.keys(BOOKS).forEach(k=>BOOKS[k].qs=BASE[k].slice());const seen=new Set(Object.values(BOOKS).flatMap(b=>b.qs.map(q=>q[0])));
+  PACKS.forEach(p=>(p.questions||[]).forEach(q=>{if(!BOOKS[q.book]||!q.q||!Array.isArray(q.options)||q.options.length<2||seen.has(q.q))return;seen.add(q.q);BOOKS[q.book].qs.push([q.q,q.options,q.answer|0,q.note||""]);}));}
+const todayPack=()=>PACKS.filter(p=>p.date<=localDate()).slice(-1)[0];
+function renderBooks(){const tp=todayPack();$("#books").innerHTML=(tp?`<button class="book" style="--hue:#ffd27a;grid-column:1/-1;min-height:96px" data-book="today" id="b-today"><span class="t">✦ Fresh pack · ${pretty(tp.date)}</span><span><span class="d">${(tp.questions||[]).length} brand-new questions, renewed every evening</span><br><span class="s">${progress.best?.["q_today_"+tp.date]!=null?"Your score: "+progress.best["q_today_"+tp.date]+"/5":"Not tried yet"}</span></span></button>`:"")+Object.entries(BOOKS).map(([k,b])=>{const best=progress.best?.["q_"+k];
+  return `<button class="book" style="--hue:${b.hue}" data-book="${k}" id="b-${k}"><span class="t">${b.name}</span><span><span class="d">${b.qs.length} questions · 5 per round</span><br><span class="s">${best!=null?"Best: "+best+"/5":"Not tried yet"}</span></span></button>`;}).join("")+
+  `<button class="book" style="--hue:#f29a2e" data-book="mixed" id="b-mixed"><span class="t">Grand Mix</span><span><span class="d">All six books shuffled</span><br><span class="s">${progress.best?.q_mixed!=null?"Best: "+progress.best.q_mixed+"/5":"Not tried yet"}</span></span></button>`;}
+$("#books").addEventListener("click",e=>{const b=e.target.closest(".book");if(!b)return;enterGame();quizGame(b.dataset.book);});
+
+function quizGame(k){const NAMES=Object.fromEntries(Object.entries(BOOKS).map(([a,b])=>[a,b.name]));const tp=todayPack();
+  if(k==="today"&&tp){k="today_"+tp.date;}
+  const isBoss=k==="boss",N=isBoss?10:5;
+  const pool=isBoss?bossPool():k.startsWith("today_")?(tp.questions||[]).filter(q=>NAMES[q.book]).map(q=>[q.q,q.options,q.answer|0,q.note||"",NAMES[q.book]]):k==="mixed"?Object.values(BOOKS).flatMap(b=>b.qs.map(q=>[...q,b.name])):BOOKS[k].qs.map(q=>[...q,BOOKS[k].name]);
+  const qs=shuffle(pool).slice(0,N),res=[];let i=0,score=0;const multi=isBoss||k==="mixed"||k.startsWith("today_");const title=isBoss?"Sunday Boss":k==="mixed"?"Grand Mix":k.startsWith("today_")?"Fresh pack":BOOKS[k].name;
+  if(qs.length<N){$("#game").innerHTML=`<h2>Not enough questions yet</h2><p style="color:var(--dim)">This pack is still filling up. Try a book instead.</p><button class="btn ghost" id="back">Back to vault</button>`;$("#back").onclick=closeGame;return;}
+  const show=()=>{const [q,opts,ans,note,src]=qs[i],order=shuffle(opts.map((_,j)=>j)),K="ABCD";
+    $("#game").innerHTML=`<div class="row"><div><div class="eyebrow">${esc(title)} · question ${i+1} of ${N}</div></div><div class="big">${score}</div></div>
+    <div class="qprog">${qs.map((_,j)=>`<i class="${j<i?(res[j]?"ok":"no"):j===i?"now":""}"></i>`).join("")}</div>
+    ${multi?`<div class="chip" style="display:inline-block;margin-bottom:8px">${esc(src)}</div>`:""}
+    <p class="q">${esc(q)}</p><div class="opts" id="qo">${order.map((j,n)=>`<button class="opt" data-i="${j}" id="qo${j}"><span class="k">${K[n]}</span><span>${esc(opts[j])}</span></button>`).join("")}</div>
+    <div id="qnote"></div><div class="row" style="margin-top:14px"><button class="btn ghost" id="back">Back to vault</button><button class="btn ghost" id="qhint">💡 Hint (${inv().hint||0})</button><span id="qnext"></span></div>`;
+    $("#back").onclick=closeGame;$("#qhint").onclick=()=>{if(res.length>i)return;if(hintOn($("#qo"),ans))$("#qhint").disabled=true;};
+    $("#qo").addEventListener("click",e=>{const b=e.target.closest(".opt");if(!b||res.length>i)return;const ok=+b.dataset.i===ans;res.push(ok);
+      document.querySelectorAll("#qo .opt").forEach(o=>{o.style.pointerEvents="none";if(+o.dataset.i===ans)o.classList.add("right");});
+      if(ok){score++;burstAt(b);}else{b.classList.add("wrong");b.style.opacity="1";const g=$("#game");g.classList.remove("shake");void g.offsetWidth;g.classList.add("shake");}
+      $("#qnote").innerHTML=`<div class="note"><b style="color:${ok?"var(--tulsi)":"var(--kumkum)"}">${ok?"Correct.":"Not quite."}</b> ${esc(note)}</div>`;
+      $("#qnext").innerHTML=`<button class="btn" id="nx">${i<N-1?"Next question":"See results"}</button>`;$("#nx").onclick=()=>{i++;i<N?show():finish();};});};
+  const finish=()=>{const qa=progress.qa||{right:0,total:0};progress.qa={right:qa.right+score,total:qa.total+N};
+    let nb=false,firstBoss=false;
+    if(isBoss){const wk=weekKey();firstBoss=progress.boss?.[wk]==null;nb=firstBoss||score>(progress.boss[wk]||0);if(nb)progress.boss={...(progress.boss||{}),[wk]:score};}
+    else{nb=setBest("q_"+k,score,false);if(BOOKS[k])progress.qbook={...(progress.qbook||{}),[k]:((progress.qbook||{})[k]||0)+1};}
+    renderBooks();renderBoss();
+    const pct=score/N,verdict=pct===1?"Perfect. A true scholar of the scrolls.":pct>=.8?"Almost flawless!":pct>=.6?"Well read!":pct>=.4?"Getting there.":pct>0?"A humble start.":"The scrolls await your study.";
+    const drop=isBoss?(firstBoss&&score>=1):score>=4,card=drop?drawCard(isBoss?.25:.1):null;
+    $("#game").innerHTML=`<div class="center"><div class="eyebrow">${esc(title)} · results</div><div class="big" style="font-size:3.4rem;margin:12px 0">${score}/${N}</div><h2>${verdict}</h2>${nb&&score&&!isBoss?`<p class="msg good center">New best!</p>`:""}</div>
+    <div class="qprog">${res.map(r=>`<i class="${r?"ok":"no"}"></i>`).join("")}</div>
+    ${card?`<div class="reveal">${cardHTML(card.c,card.gold,false)}<div><div class="eyebrow">${card.dupe?"Duplicate card · +10 XP":"New card drawn!"}${card.gold?" · ✨ GOLD":""}</div><h2 style="margin:4px 0 6px">${esc(card.c[1])}</h2><p style="margin:0;font-size:.95rem">${esc(card.c[5])}</p></div></div>`:""}
+    <div class="row" style="margin-top:14px"><button class="btn ghost" id="back">Back to vault</button>${isBoss?"":`<button class="btn" id="again">New round</button>`}</div>`;
+    $("#back").onclick=closeGame;if(!isBoss)$("#again").onclick=()=>quizGame(k);
+    if(pct===1)burstAt($("#game .big"));
+    const xp=isBoss?(firstBoss?score*8:0):score*4;if(xp)addXP(xp,`${score}/${N} in ${title}`);else save();
+    if(card&&card.dupe)setTimeout(()=>addXP(10,"duplicate card"),1500);renderAlbum();};
+  show();}
+
+/* ---------- japa counter & rewards ---------- */
+const jToday=()=>(progress.japa||{})[localDate()]||0;
+const jBead=()=>progress.bead&&progress.bead.date===localDate()?progress.bead.n:0;
+const jLife=()=>Object.values(progress.japa||{}).reduce((a,b)=>a+b,0);
+function jStreak(){const J=progress.japa||{},F=progress.frozen||{},d=new Date();if(!J[localDate(d)])d.setDate(d.getDate()-1);let s=0;while(J[localDate(d)]>0||F[localDate(d)]){if(J[localDate(d)]>0)s++;d.setDate(d.getDate()-1);}return s;}
+const AWARDS=[
+ ["first","📿","First Round","Finish your first round of japa",p=>jLife()>=1],
+ ["four","🪔","Four Rounds","Chant 4 rounds in one day",p=>Math.max(0,...Object.values(p.japa||{}))>=4],
+ ["vow","🌸","Full Vow","Chant 16 rounds in one day",p=>Math.max(0,...Object.values(p.japa||{}))>=16],
+ ["double","🌺","Double Vow","Chant 32 rounds in one day",p=>Math.max(0,...Object.values(p.japa||{}))>=32],
+ ["early","🌅","Brahma Muhurta","Finish a round before 6 am",p=>!!p.early],
+ ["goal","🎯","Goal Keeper","Hit your daily goal",p=>Object.values(p.japa||{}).some(r=>r>=(p.goal||16))],
+ ["s3","🔥","Three-Day Flame","Chant every day for 3 days",p=>jStreak()>=3||(p.maxJS||0)>=3],
+ ["s7","⚡","Week of Japa","Chant every day for 7 days",p=>jStreak()>=7||(p.maxJS||0)>=7],
+ ["s30","🌕","Month of Japa","Chant every day for 30 days",p=>jStreak()>=30||(p.maxJS||0)>=30],
+ ["l108","💠","108 Rounds","108 rounds all-time",p=>jLife()>=108],
+ ["l1008","👑","1,008 Rounds","1,008 rounds all-time",p=>jLife()>=1008],
+ ["seal","🔓","Seal Breaker","Break your first scroll seal",p=>Object.keys(p.unlocked||{}).length>=1],
+ ["seal7","🗝️","Keeper of Secrets","Open 7 scrolls",p=>Object.keys(p.unlocked||{}).length>=7],
+ ["scholar","📜","Perfect Scholar","Score 5/5 in any quiz",p=>Object.entries(p.best||{}).some(([k,v])=>k.startsWith("q_")&&v>=5)],
+ ["arcade","🎮","Arcade Regular","Set a best in every arcade game",p=>["timeline","lineage","japa","snake","memory","reflex"].every(k=>(p.best||{})[k]!=null)],
+ ["q_gita","🏹","Kurukshetra Ready","Score 4+ in the Bhagavad Gita quiz",p=>(p.best?.q_gita||0)>=4],
+ ["q_mbh","⚔️","Epic Survivor","Score 4+ in the Mahabharata quiz",p=>(p.best?.q_mbh||0)>=4],
+ ["q_ram","🌉","Bridge Builder","Score 4+ in the Ramayana quiz",p=>(p.best?.q_ram||0)>=4],
+ ["q_bhag","🪷","Seven-Day Listener","Score 4+ in the Srimad Bhagavatam quiz",p=>(p.best?.q_bhag||0)>=4],
+ ["q_krsna","🧈","Butter Thief's Friend","Score 4+ in the Krishna Book quiz",p=>(p.best?.q_krsna||0)>=4],
+ ["q_iskcon","🏛️","Movement Historian","Score 4+ in the ISKCON quiz",p=>(p.best?.q_iskcon||0)>=4],
+ ["q_all","🌟","Six Scriptures","Score 4+ in all six book quizzes",p=>["gita","mbh","ram","bhag","krsna","iskcon"].every(k=>(p.best?.["q_"+k]||0)>=4)],
+ ["fresh","✨","Fresh Off the Press","Play a fresh daily pack",p=>Object.keys(p.best||{}).some(k=>k.startsWith("q_today_"))],
+ ["q50","📚","Fifty Questions","Answer 50 quiz questions",p=>(p.qa?.total||0)>=50],
+ ["q500","🎓","Five Hundred Questions","Answer 500 quiz questions",p=>(p.qa?.total||0)>=500],
+ ["tl","⏳","Time Keeper","Finish Timeline Dash",p=>p.best?.timeline!=null],
+ ["ln","🔗","Link in the Chain","Finish Lineage Links",p=>p.best?.lineage!=null],
+ ["sprint","💨","Lightning Mala","Finish Japa Sprint under 40 s",p=>(p.best?.japa??99)<40],
+ ["snake20","🐍","Long Snake","Eat 20 sparks in Ember Snake",p=>(p.best?.snake||0)>=20],
+ ["mem10","🃏","Sharp Memory","Clear Twin Tiles in 10 moves or fewer",p=>(p.best?.memory??99)<=10],
+ ["fast","⚡","Quick as Garuda","Average under 250 ms in Flash Reflex",p=>(p.best?.reflex??999)<250],
+ ["r_pil","🥾","Pilgrim","Reach the rank of Pilgrim",p=>(p.xp||0)>=100],
+ ["r_arc","🗄️","Archivist","Reach the rank of Archivist",p=>(p.xp||0)>=500],
+ ["r_grd","🛡️","Guardian","Reach Guardian of the Parampara",p=>(p.xp||0)>=1500]
+];
+function checkAwards(quiet){progress.awards=progress.awards||{};progress.maxJS=Math.max(progress.maxJS||0,jStreak());let fresh=[];
+  AWARDS.forEach(([id,ic,t,d,test])=>{if(!progress.awards[id]&&test(progress)){progress.awards[id]=localDate();fresh.push([ic,t]);}});
+  if(fresh.length){save();if(!quiet)fresh.forEach(([ic,t],i)=>setTimeout(()=>{toast(`${ic} Reward unlocked: ${t}`);burstAt($("#awards"));setTimeout(()=>earn(60,"Reward unlocked: "+t),1500);},1800+i*3600));}
+  renderAwards();}
+function renderAwards(){const A=progress.awards||{};$("#awCount").textContent=Object.keys(A).length+" of "+AWARDS.length;
+  $("#awards").innerHTML=AWARDS.map(([id,ic,t,d])=>`<div class="aw ${A[id]?"on":""}" title="${A[id]?"Unlocked "+esc(A[id]):"Locked"}"><div class="m">${A[id]?ic:"?"}</div><div class="t">${esc(t)}</div><div class="d">${esc(d)}</div></div>`).join("");}
+
+/* chart data board */
+const fmt=n=>Math.round(n).toLocaleString();
+function delta(a,b){const d=a-b;return d>0?`<span class="up">▲ ${fmt(d)}</span>`:d<0?`<span class="down">▼ ${fmt(-d)}</span>`:`<span class="flat">— 0</span>`;}
+function renderChart(){const J=progress.japa||{},day=o=>{const d=new Date();d.setDate(d.getDate()-o);return J[localDate(d)]||0;};
+  const today=day(0),yest=day(1),wk=[0,1,2,3,4,5,6].reduce((a,o)=>a+day(o),0),pwk=[7,8,9,10,11,12,13].reduce((a,o)=>a+day(o),0);
+  const life=jLife(),mantras=life*108+jBead(),names=mantras*16;
+  const peak=Object.entries(J).sort((a,b)=>b[1]-a[1])[0],qa=progress.qa||{right:0,total:0},scrolls=Object.keys(progress.unlocked||{}).length;
+  $("#cdTime").textContent=new Date().toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"});
+  $("#cdTiles").innerHTML=[["Rounds today",fmt(today),delta(today,yest)+" vs yesterday"],["Last 7 days",fmt(wk),delta(wk,pwk)+" vs week before"],
+    ["Mantras all-time",fmt(mantras),`<span class="flat">${fmt(life)} rounds</span>`],["Holy names",fmt(names),`<span class="flat">16 per mantra</span>`]]
+    .map(([l,v,c])=>`<div class="tile4"><div class="l">${l}</div><div class="v">${v}</div><div class="c">${c}</div></div>`).join("");
+  const lines=[`📿 <b>Japa:</b> ${today} round${today===1?"":"s"} today (${today>=(progress.goal||16)?"goal hit ✔":`${(progress.goal||16)-today} to goal`}). Streak <b>${jStreak()}</b> day${jStreak()===1?"":"s"}, best ever ${Math.max(progress.maxJS||0,jStreak())}.`,
+    peak&&peak[1]?`🏆 <b>Peak day:</b> ${peak[1]} rounds on ${pretty(peak[0])}.`:`🏆 <b>Peak day:</b> no rounds logged yet. Your first one sets the record.`,
+    `📜 <b>Scrolls:</b> ${scrolls} seal${scrolls===1?"":"s"} broken · scroll streak ${streak()}.`,
+    `🧠 <b>Quiz accuracy:</b> ${qa.total?Math.round(qa.right/qa.total*100)+"%":"–"} across ${qa.total} question${qa.total===1?"":"s"}.`,
+    `⭐ <b>Rank:</b> ${RANKS[lvl(progress.xp||0)][1]} with ${fmt(progress.xp||0)} XP · ${Object.keys(progress.awards||{}).length}/${AWARDS.length} rewards.`];
+  $("#cdFeed").innerHTML=lines.map(l=>`<div>${l}</div>`).join("");
+  const next=(v,steps)=>steps.find(s=>s>v)??null;
+  const ms=[["Rounds",life,[1,16,108,216,540,1008,2016,5004,10008,25000,50000,100000]],["Mantras",mantras,[1080,10000,25000,50000,100000,250000,500000,1000000,10000000]],["Japa streak (days)",jStreak(),[3,7,16,30,54,108,365,1000]],["Scrolls opened",scrolls,[1,7,16,30,54,108,365]]];
+  $("#cdMiles").innerHTML=ms.map(([l,v,steps])=>{const n=next(v,steps);if(n==null)return `<div class="mile"><div class="top"><span>${l}</span><b>All milestones passed 👑</b></div></div>`;
+    const prev=[...steps].reverse().find(s=>s<=v)||0;return `<div class="mile"><div class="top"><span>${l} → <b>${fmt(n)}</b></span><span>${fmt(n-v)} to go</span></div><div class="bar"><i style="width:${(v-prev)/(n-prev)*100}%"></i></div></div>`;}).join("");}
+
+let malaPulse=0;
+function drawMala(){const cv=$("#mala");if(!cv)return;const [x,w,h]=fit(cv),cx=w/2,cy=h/2,R=Math.min(w,h)/2-18,n=jBead();
+  x.clearRect(0,0,w,h);const pulse=Math.max(0,1-(performance.now()-malaPulse)/300);
+  const g=x.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(0,`rgba(242,154,46,${.1+pulse*.15})`);g.addColorStop(1,"rgba(242,154,46,0)");x.fillStyle=g;x.beginPath();x.arc(cx,cy,R,0,7);x.fill();
+  x.strokeStyle="rgba(236,223,195,.12)";x.lineWidth=1;x.beginPath();x.arc(cx,cy,R,0,7);x.stroke();
+  for(let i=0;i<108;i++){const a=i/108*Math.PI*2-Math.PI/2+Math.PI/108,lit=i<n,cur=i===n-1;
+    x.fillStyle=lit?(cur?C.gold:C.saffron):C.line;x.beginPath();x.arc(cx+Math.cos(a)*R,cy+Math.sin(a)*R,cur?4+pulse*3:3.2,0,7);x.fill();}
+  x.fillStyle=C.gold;x.beginPath();x.moveTo(cx,cy-R-14);x.lineTo(cx+8,cy-R+2);x.lineTo(cx-8,cy-R+2);x.closePath();x.fill();
+  x.fillStyle=C.leaf;x.font="400 54px 'Rozha One',Georgia,serif";x.textAlign="center";x.textBaseline="middle";x.fillText(n,cx,cy-8);
+  x.fillStyle=C.dim;x.font="12px 'DM Mono',monospace";x.fillText(`bead of 108 · round ${jToday()+1}`,cx,cy+28);
+  if(pulse>0&&!RM)requestAnimationFrame(drawMala);}
+function renderJapa(){const r=jToday(),goal=progress.goal||16;$("#jRounds").textContent=r;$("#jGoal").textContent=goal;$("#jGoal2").textContent=goal;
+  $("#jGoalBar").style.width=Math.min(100,r/goal*100)+"%";const s=jStreak();$("#jStreak").textContent=`Japa streak ${s} day${s===1?"":"s"}`;
+  $("#jLife").textContent=`${jLife()} rounds all-time`;renderChart();renderGrowth();if($("#bag"))renderBag();
+  const J=progress.japa||{},days7=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));return d;}),mx=Math.max(goal,...days7.map(d=>J[localDate(d)]||0));
+  $("#week").innerHTML=days7.map((d,i)=>{const v=J[localDate(d)]||0;return `<div class="col ${i===6?"today":""}"><span class="n">${v||""}</span><div class="b ${v>=goal?"met":v?"part":""}" style="height:${Math.max(3,v/mx*60)}px"></div><span class="d">${d.toLocaleDateString(undefined,{weekday:"narrow"})}</span></div>`;}).join("");
+  drawMala();}
+function addRounds(k){const d=localDate(),before=jToday(),goal=progress.goal||16;progress.japa={...(progress.japa||{}),[d]:before+k};
+  if(new Date().getHours()<6)progress.early=true;burstAt($("#jRounds"));renderJapa();addXP(5*k,`${k} round${k>1?"s":""} logged`);
+  if(before<goal&&before+k>=goal)setTimeout(()=>{toast(`🎯 Daily goal reached: ${goal} rounds!`);addXP(25,"daily goal");},1300);checkAwards();}
+function finishRound(manual){window.Native?.thump?.();const d=localDate();progress.japa={...(progress.japa||{}),[d]:jToday()+1};progress.bead={date:d,n:0};
+  if(new Date().getHours()<6)progress.early=true;const r=progress.japa[d],goal=progress.goal||16;
+  burstAt($("#mala"));renderJapa();addXP(5,manual?"round logged":"round complete");
+  if(r===goal)setTimeout(()=>{toast(`🎯 Daily goal reached: ${goal} rounds!`);addXP(25,"daily goal");burstAt($("#jRounds"));},1300);
+  checkAwards();}
+function countBead(){const n=jBead()+1;if(n>=108){finishRound(false);return;}progress.bead={date:localDate(),n};malaPulse=performance.now();window.Native?.tap?.();try{navigator.vibrate&&navigator.vibrate(8);}catch(e){}save();requestAnimationFrame(drawMala);}
+$("#mala").addEventListener("pointerdown",e=>{e.preventDefault();countBead();});
+$("#jTap").addEventListener("click",countBead);
+$("#jUndo").addEventListener("click",()=>{const n=jBead();if(n>0){progress.bead={date:localDate(),n:n-1};save();drawMala();}});
+function setMode(m){const chant=m==="chant";$("#mChant").setAttribute("aria-selected",chant);$("#mLog").setAttribute("aria-selected",!chant);$("#modeChant").hidden=!chant;$("#modeLog").hidden=chant;
+  progress.mode=m;save();if(chant)requestAnimationFrame(drawMala);}
+$("#mChant").addEventListener("click",()=>setMode("chant"));$("#mLog").addEventListener("click",()=>setMode("log"));
+document.querySelectorAll(".qadd").forEach(b=>b.addEventListener("click",()=>addRounds(+b.dataset.n)));
+$("#logForm").addEventListener("submit",e=>{e.preventDefault();const n=Math.floor(+$("#logN").value);if(!(n>=1&&n<=192)){toast("Enter a number from 1 to 192.");return;}$("#logN").value="";addRounds(n);});
+$("#jRemove").addEventListener("click",()=>{const r=jToday();if(!r){toast("No rounds logged today yet.");return;}progress.japa={...progress.japa,[localDate()]:r-1};save();renderJapa();toast("Removed 1 round from today.");});
+$("#jMinus").addEventListener("click",()=>{progress.goal=Math.max(1,(progress.goal||16)-1);save();renderJapa();});
+$("#jPlus").addEventListener("click",()=>{progress.goal=Math.min(192,(progress.goal||16)+1);save();renderJapa();});
+addEventListener("resize",()=>drawMala());
+
+function setBest(k,v,lowerIsBetter){const b=progress.best||{},nb=b[k]==null||(lowerIsBetter?v<b[k]:v>b[k]);if(nb)progress.best={...b,[k]:v};return nb;}
+
+function snakeGame(){stopGame();const g=$("#game"),N=15;
+  g.innerHTML=`<div class="row"><div><div class="eyebrow">Ember Snake</div><h2 style="margin-bottom:0">Eat the sparks</h2></div><div class="big" id="ss">0</div></div>
+  <canvas id="snake" aria-label="Snake board. Swipe or use arrow keys."></canvas>
+  <div class="dpad"><span></span><button id="dU" aria-label="Up">▲</button><span></span><button id="dL" aria-label="Left">◀</button><button id="dD" aria-label="Down">▼</button><button id="dR" aria-label="Right">▶</button></div>
+  <div class="msg center" id="gmsg">Swipe on the board, use the arrows, or press any arrow to start.</div>
+  <div class="row" style="margin-top:14px"><button class="btn ghost" id="back">Back to vault</button><button class="btn" id="reset">Restart</button></div>`;
+  $("#back").onclick=closeGame;$("#reset").onclick=snakeGame;
+  const cv=$("#snake"),[x,w]=fit(cv),cs=w/N;
+  let snake=[[7,7],[6,7],[5,7]],dir=[1,0],queue=[],food=null,score=0,iv=null,over=false,started=false;
+  const place=()=>{do{food=[Math.random()*N|0,Math.random()*N|0];}while(snake.some(s=>s[0]===food[0]&&s[1]===food[1]));};place();
+  const draw=()=>{x.clearRect(0,0,w,w);x.strokeStyle="rgba(50,44,74,.6)";x.lineWidth=1;for(let i=1;i<N;i++){x.beginPath();x.moveTo(i*cs,0);x.lineTo(i*cs,w);x.moveTo(0,i*cs);x.lineTo(w,i*cs);x.stroke();}
+    const fg=x.createRadialGradient(food[0]*cs+cs/2,food[1]*cs+cs/2,0,food[0]*cs+cs/2,food[1]*cs+cs/2,cs);fg.addColorStop(0,"#fff1c9");fg.addColorStop(.4,C.tulsi);fg.addColorStop(1,"rgba(111,196,154,0)");x.fillStyle=fg;x.fillRect(food[0]*cs-cs/2,food[1]*cs-cs/2,cs*2,cs*2);
+    snake.forEach((s,i)=>{x.globalAlpha=1-i/(snake.length+6);x.fillStyle=i?C.saffron:C.gold;x.beginPath();x.roundRect(s[0]*cs+1.5,s[1]*cs+1.5,cs-3,cs-3,i?4:6);x.fill();});x.globalAlpha=1;};
+  const turn=d=>{if(over)return;const last=queue.length?queue[queue.length-1]:dir;if(d[0]===-last[0]&&d[1]===-last[1])return;if(queue.length<3)queue.push(d);if(!started){started=true;run();}};
+  const step=()=>{if(queue.length)dir=queue.shift();const h=[snake[0][0]+dir[0],snake[0][1]+dir[1]];
+    if(h[0]<0||h[1]<0||h[0]>=N||h[1]>=N||snake.some(s=>s[0]===h[0]&&s[1]===h[1])){over=true;clearInterval(iv);const nb=score>0&&setBest("snake",score,false);
+      $("#gmsg").className="msg bad center";$("#gmsg").textContent=`Game over with ${score} spark${score===1?"":"s"}${nb?" · new best!":""}`;if(score>=3)addXP(Math.min(20,score),"snake run");else save();return;}
+    snake.unshift(h);if(h[0]===food[0]&&h[1]===food[1]){score++;$("#ss").textContent=score;const r=cv.getBoundingClientRect();FX.burst(r.left+(h[0]+.5)*r.width/N,r.top+(h[1]+.5)*r.height/N,24);place();if(score%4===0){clearInterval(iv);run();}}else snake.pop();draw();};
+  const run=()=>{iv=setInterval(step,Math.max(70,150-score*4));};
+  const D={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]};
+  const key=e=>{if(D[e.key]){e.preventDefault();turn(D[e.key]);}};addEventListener("keydown",key);
+  [["dU",[0,-1]],["dD",[0,1]],["dL",[-1,0]],["dR",[1,0]]].forEach(([id,d])=>$("#"+id).addEventListener("pointerdown",e=>{e.preventDefault();turn(d);}));
+  let sx=0,sy=0;cv.addEventListener("pointerdown",e=>{sx=e.clientX;sy=e.clientY;});cv.addEventListener("pointerup",e=>{const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.max(Math.abs(dx),Math.abs(dy))<18)return;turn(Math.abs(dx)>Math.abs(dy)?[Math.sign(dx),0]:[0,Math.sign(dy)]);});
+  stopGame=()=>{clearInterval(iv);removeEventListener("keydown",key);};draw();}
+
+function memoryGame(){const g=$("#game"),SYM=["★","☾","◆","♥","♣","♠","☀","✿"];const deck=shuffle([...SYM,...SYM]);let open=[],moves=0,got=0,lock=false;
+  g.innerHTML=`<div class="row"><div><div class="eyebrow">Twin Tiles</div><h2 style="margin-bottom:0">Find all pairs</h2></div><div class="big" id="mv">0</div></div>
+  <div class="tiles" id="tiles">${deck.map((s,i)=>`<button class="tile" data-i="${i}" id="t${i}" aria-label="Hidden card"><div class="in"><div class="f"></div><div class="b">${s}</div></div></button>`).join("")}</div>
+  <div class="msg center" id="gmsg">Moves are counted per pair you flip. Fewer is better.</div>
+  <div class="row" style="margin-top:14px"><button class="btn ghost" id="back">Back to vault</button><button class="btn" id="reset">Shuffle</button></div>`;
+  $("#back").onclick=closeGame;$("#reset").onclick=memoryGame;
+  $("#tiles").addEventListener("click",e=>{const t=e.target.closest(".tile");if(!t||lock||t.classList.contains("up")||t.classList.contains("got"))return;
+    t.classList.add("up");t.setAttribute("aria-label",deck[t.dataset.i]);open.push(t);if(open.length<2)return;moves++;$("#mv").textContent=moves;
+    const [a,b]=open;open=[];if(deck[a.dataset.i]===deck[b.dataset.i]){setTimeout(()=>{a.classList.add("got");b.classList.add("got");burstAt(b);},250);got++;
+      if(got===8){const nb=setBest("memory",moves,true);setTimeout(()=>{$("#gmsg").className="msg good center";$("#gmsg").textContent=`All pairs in ${moves} moves${nb?" · new best!":""}`;addXP(moves<=12?20:15,"tiles cleared");},450);}}
+    else{lock=true;setTimeout(()=>{a.classList.remove("up");b.classList.remove("up");a.setAttribute("aria-label","Hidden card");b.setAttribute("aria-label","Hidden card");lock=false;},750);}});}
+
+function reflexGame(){const g=$("#game");let state="idle",to=null,t0=0,times=[];
+  g.innerHTML=`<div class="row"><div><div class="eyebrow">Flash Reflex</div><h2 style="margin-bottom:0">Three flames</h2></div><div class="big" id="rr">0/3</div></div>
+  <button class="pad" id="pad"><span class="big" id="pbig">Tap to begin</span><span id="psub" style="font-family:var(--f-mono);font-size:.82rem">When the flame lights, tap as fast as you can.</span></button>
+  <div class="msg center" id="gmsg">Your score is the average of three taps.</div>
+  <div class="row" style="margin-top:14px"><button class="btn ghost" id="back">Back to vault</button><button class="btn" id="reset">Restart</button></div>`;
+  $("#back").onclick=closeGame;$("#reset").onclick=reflexGame;
+  const pad=$("#pad"),big=$("#pbig"),sub=$("#psub");
+  const arm=()=>{state="wait";pad.className="pad";big.textContent="Wait for it…";sub.textContent="Don't tap yet.";to=setTimeout(()=>{state="go";pad.className="pad go";big.textContent="TAP!";sub.textContent="";t0=performance.now();},1200+Math.random()*2800);};
+  pad.addEventListener("pointerdown",e=>{e.preventDefault();
+    if(state==="idle"||state==="between")arm();
+    else if(state==="wait"){clearTimeout(to);state="between";pad.className="pad early";big.textContent="Too soon!";sub.textContent="Tap to try that flame again.";}
+    else if(state==="go"){const ms=performance.now()-t0;times.push(ms);$("#rr").textContent=times.length+"/3";burstAt(pad);
+      if(times.length<3){state="between";pad.className="pad";big.textContent=Math.round(ms)+" ms";sub.textContent="Tap for the next flame.";}
+      else{state="done";const avg=times.reduce((a,b)=>a+b,0)/3,nb=setBest("reflex",avg,true);pad.className="pad";big.textContent=Math.round(avg)+" ms";sub.textContent="average of three";
+        $("#gmsg").className="msg good center";$("#gmsg").textContent=`${times.map(t=>Math.round(t)).join(" · ")} ms${nb?" · new best!":""}`;addXP(avg<300?15:10,"reflex round");}}});
+  stopGame=()=>clearTimeout(to);}
+
+/* ================= growth: shared helpers ================= */
+const dayDiff=(a,b)=>Math.round((new Date(a+"T12:00:00")-new Date(b+"T12:00:00"))/864e5);
+const daysChanted=()=>Object.values(progress.japa||{}).filter(v=>v>0).length;
+function weekStart(d=new Date()){const x=new Date(d);const wd=(x.getDay()+6)%7;x.setDate(x.getDate()-wd);return x;}
+const weekKey=()=>localDate(weekStart());
+function weekRounds(){const s=weekStart(),J=progress.japa||{};let t=0;for(let i=0;i<7;i++){const d=new Date(s);d.setDate(s.getDate()+i);t+=J[localDate(d)]||0;}return t;}
+function seeded(n){let s=n>>>0||1;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
+let EVENTS=[];
+const todayEvent=()=>EVENTS.find(e=>e.date===localDate());
+const anyJapaOn=kind=>Object.entries(progress.japa||{}).some(([d,v])=>v>0&&EVENTS.some(e=>e.date===d&&(kind==="ekadashi"?e.kind==="ekadashi":e.kind!=="ekadashi")));
+function renderGrowth(){renderTulsi();renderMap();renderTemple();}
+
+/* ================= tulsi ================= */
+function tulsiState(){const J=progress.japa||{},dates=Object.keys(J).filter(d=>J[d]>0).sort(),g=dates.length;
+  const gap=g?dayDiff(localDate(),dates[dates.length-1]):null;
+  const health=gap==null?"seed":gap===0?"thriving":gap===1?"fine":gap<=3?"thirsty":"wilting";return {g,gap,health};}
+function renderTulsi(){const {g,gap,health}=tulsiState();
+  const title=g===0?"A seed in the soil":g<3?"A tiny sprout":g<7?"A young tulsi":g<21?"Tulsi in bloom":g<60?"A lush tulsi":"A sacred grove";
+  const msg={seed:"Chant your first round to plant her.",thriving:"Watered today. She's glowing. 🌿",fine:"Chant a round today to water her.",thirsty:`Thirsty. ${gap} days since you chanted.`,wilting:`Wilting after ${gap} days. One round brings her back.`}[health];
+  $("#tulsiTitle").textContent=title;$("#tulsiMsg").textContent=msg;$("#tulsiDays").textContent=g?`${g} day${g===1?"":"s"} of care`:"";drawTulsi();}
+let tulsiRAF=0;
+function drawTulsi(t=performance.now()){const cv=$("#tulsi");if(!cv||cv.offsetParent===null)return;const [x,w,h]=fit(cv);const {g,gap,health}=tulsiState();
+  const leafC={seed:"#6fc49a",thriving:"#5cc97f",fine:"#6fc49a",thirsty:"#a9b86a",wilting:"#9a8a55"}[health];
+  const droop={seed:0,thriving:0,fine:.05,thirsty:.25,wilting:.55}[health],sway=RM?0:Math.sin(t/1400)*.03;
+  x.clearRect(0,0,w,h);const cx=w/2,base=h-46;
+  if(health==="thriving"){const gl=x.createRadialGradient(cx,base-60,0,cx,base-60,140);gl.addColorStop(0,"rgba(111,196,154,.22)");gl.addColorStop(1,"rgba(111,196,154,0)");x.fillStyle=gl;x.fillRect(0,0,w,h);}
+  // pot
+  x.fillStyle="#a24e28";x.beginPath();x.moveTo(cx-44,base);x.lineTo(cx+44,base);x.lineTo(cx+32,h-6);x.lineTo(cx-32,h-6);x.closePath();x.fill();
+  x.fillStyle="#c2683a";x.fillRect(cx-50,base-8,100,12);x.fillStyle="#e9b04a";x.fillRect(cx-22,base+14,44,4);
+  x.fillStyle="#3b2a1e";x.fillRect(cx-46,base-10,92,3);
+  if(g===0){x.fillStyle="#7a5a3a";x.beginPath();x.ellipse(cx,base-12,6,4,0,0,7);x.fill();return;}
+  const rnd=seeded(42),H=Math.min(h-80,24+Math.min(g,45)*3.6),branches=Math.min(2+Math.floor(g/2),16);
+  const stem=(s)=>[cx+Math.sin(s*2+sway*20)*4*s+droop*30*s*s,base-10-H*s*(1-droop*.35*s)];
+  x.strokeStyle="#6b8f4a";x.lineWidth=Math.min(6,2+g/10);x.lineCap="round";x.beginPath();for(let s=0;s<=1.001;s+=.05){const [px,py]=stem(s);s?x.lineTo(px,py):x.moveTo(px,py);}x.stroke();
+  const leaf=(px,py,ang,len)=>{x.save();x.translate(px,py);x.rotate(ang);x.fillStyle=leafC;x.beginPath();x.moveTo(0,0);x.quadraticCurveTo(len*.5,-len*.38,len,0);x.quadraticCurveTo(len*.5,len*.38,0,0);x.fill();
+    x.strokeStyle="rgba(0,0,0,.18)";x.lineWidth=.8;x.beginPath();x.moveTo(0,0);x.lineTo(len*.9,0);x.stroke();x.restore();};
+  for(let b=0;b<branches;b++){const s=.25+.7*(b/branches),[px,py]=stem(s),side=b%2?1:-1,blen=(14+rnd()*22)*(1-s*.4)*Math.min(1,.4+g/12);
+    const a0=-Math.PI/2+side*(.7+rnd()*.4)+droop*side*.9+sway;const ex=px+Math.cos(a0)*blen,ey=py+Math.sin(a0)*blen;
+    x.strokeStyle="#6b8f4a";x.lineWidth=2;x.beginPath();x.moveTo(px,py);x.lineTo(ex,ey);x.stroke();
+    const nl=2+Math.min(4,Math.floor(g/5));for(let l=0;l<nl;l++){const f=(l+1)/nl,lx=px+(ex-px)*f,ly=py+(ey-py)*f;leaf(lx,ly,a0+side*(.5+droop)+(l%2?.6:-.6),8+rnd()*6);}
+    if(g>=7&&b%2===0&&health!=="wilting"){x.fillStyle="#8b5fbf";for(let k=0;k<5;k++){x.beginPath();x.arc(ex+Math.cos(a0)*k*2.4,ey+Math.sin(a0)*k*2.4,2.2-k*.25,0,7);x.fill();}}}
+  const [tx,ty]=stem(1);for(let l=0;l<4;l++)leaf(tx,ty,-Math.PI/2+(l-1.5)*.55+droop+sway,10+l%2*4);
+  if(!RM&&curTab==="today"){cancelAnimationFrame(tulsiRAF);tulsiRAF=requestAnimationFrame(drawTulsi);}}
+
+/* ================= parikrama ================= */
+const STOPS=[
+ [0,"Mathura","Krishna appeared at midnight in King Kamsa's prison here. The site is marked today by the Krishna Janmabhumi temple complex.",[.14,.9]],
+ [16,"Gokula","Across the Yamuna, where Vasudeva carried the newborn Krishna to the home of Nanda and Yashoda.",[.4,.94]],
+ [40,"Brahmanda Ghat","Tradition places Yashoda's vision of the whole universe inside little Krishna's mouth on this bank of the Yamuna.",[.66,.86]],
+ [72,"Kaliya Ghat","In Vrindavan, where Krishna is said to have danced on the serpent Kaliya's hoods and driven him out of the river.",[.84,.7]],
+ [108,"Keshi Ghat","Named after the horse demon Keshi, whom Krishna defeated here. It is one of Vrindavan's best-known bathing ghats.",[.6,.6]],
+ [150,"Krishna-Balarama Mandir","ISKCON's Vrindavan temple, opened by Prabhupada in 1975. His samadhi shrine stands beside it.",[.32,.54]],
+ [200,"Govardhan Hill","The hill Krishna lifted for seven days to shelter Vraja from Indra's storm. Pilgrims walk all the way around it, a circuit of about 21 km.",[.16,.38]],
+ [260,"Radha Kund","A sacred pond at the foot of Govardhan. Tradition holds that Chaitanya Mahaprabhu rediscovered it in the 1500s.",[.42,.25]],
+ [330,"Barsana","Radharani's home village, on a hill crowned by the Shriji temple.",[.7,.2]],
+ [410,"Nandagram","The hilltop village where Nanda Maharaja later settled with his family, not far from Barsana.",[.88,.08]]];
+const LAP=500;
+function mapState(){const life=jLife(),lap=Math.floor(life/LAP)+1,pos=life%LAP;let i=0;STOPS.forEach((s,j)=>{if(pos>=s[0])i=j;});
+  const nextR=i<STOPS.length-1?STOPS[i+1][0]:LAP,frac=(pos-STOPS[i][0])/(nextR-STOPS[i][0]);return {life,lap,pos,i,nextR,frac};}
+function renderMap(){const {lap,pos,i,nextR}=mapState(),s=STOPS[i];$("#pLap").textContent=lap;$("#pHere").textContent=s[1];
+  $("#pNext").textContent=i<STOPS.length-1?`${nextR-pos} rounds to ${STOPS[i+1][1]}`:`${LAP-pos} rounds to finish the lap`;
+  $("#pFact").innerHTML=`<b>${esc(s[1])}.</b> ${esc(s[2])}`;
+  $("#pStops").innerHTML=STOPS.map((st,j)=>`<li class="${j<=i||lap>1?"":"locked"}"><span class="r">${st[0]} rounds</span><b>${esc(st[1])}</b>${j<=i||lap>1?`<br>${esc(st[2])}`:""}</li>`).join("");drawMap();}
+let mapRAF=0;
+function drawMap(t=performance.now()){const cv=$("#pmap");if(!cv||cv.offsetParent===null)return;const [x,w,h]=fit(cv);const {i,frac}=mapState(),P=STOPS.map(s=>[s[3][0]*w,s[3][1]*(h-20)+10]);
+  x.clearRect(0,0,w,h);
+  // Yamuna
+  x.strokeStyle="rgba(120,160,255,.22)";x.lineWidth=16;x.lineCap="round";x.beginPath();x.moveTo(0,h*.72);x.bezierCurveTo(w*.3,h*.62,w*.35,h*1.02,w*.62,h*.98);x.bezierCurveTo(w*.85,h*.95,w*.92,h*.55,w,h*.5);x.stroke();
+  x.fillStyle="rgba(120,160,255,.6)";x.font="10px 'DM Mono',monospace";x.fillText("Yamuna",w*.02,h*.69);
+  // Govardhan ridge
+  x.fillStyle="rgba(140,110,80,.35)";x.beginPath();x.ellipse(P[6][0]+4,P[6][1]-14,34,9,-.2,0,7);x.fill();
+  // path
+  x.setLineDash([4,6]);x.strokeStyle="rgba(236,223,195,.25)";x.lineWidth=2;x.beginPath();P.forEach(([px,py],j)=>j?x.lineTo(px,py):x.moveTo(px,py));x.stroke();x.setLineDash([]);
+  x.strokeStyle=C.saffron;x.lineWidth=3;x.beginPath();for(let j=0;j<=i;j++){const [px,py]=P[j];j?x.lineTo(px,py):x.moveTo(px,py);}
+  const tr=i<P.length-1?[P[i][0]+(P[i+1][0]-P[i][0])*frac,P[i][1]+(P[i+1][1]-P[i][1])*frac]:P[i];x.lineTo(tr[0],tr[1]);x.stroke();
+  P.forEach(([px,py],j)=>{const done=j<=i,nxt=j===i+1;x.fillStyle=done?C.gold:C.line;x.beginPath();x.arc(px,py,done?6:5,0,7);x.fill();
+    if(nxt){x.strokeStyle=C.saffron;x.lineWidth=2;x.beginPath();x.arc(px,py,8+(RM?0:Math.sin(t/300)*2),0,7);x.stroke();}
+    x.fillStyle=done?C.leaf:C.dim;x.font="11px 'DM Mono',monospace";x.textAlign=px>w*.7?"right":px<w*.3?"left":"center";x.fillText(STOPS[j][1],px+(px>w*.7?-10:px<w*.3?10:0),py-11);});
+  const pul=RM?0:Math.sin(t/400);const gl=x.createRadialGradient(tr[0],tr[1],0,tr[0],tr[1],18);gl.addColorStop(0,"rgba(255,210,122,.9)");gl.addColorStop(1,"rgba(255,210,122,0)");
+  x.fillStyle=gl;x.beginPath();x.arc(tr[0],tr[1],18+pul*3,0,7);x.fill();x.fillStyle="#fff1c9";x.beginPath();x.arc(tr[0],tr[1],4.5,0,7);x.fill();
+  if(!RM&&curTab==="journey"){cancelAnimationFrame(mapRAF);mapRAF=requestAnimationFrame(drawMap);}}
+
+/* ================= build-a-temple ================= */
+const STAGES=[[1,"Foundation"],[8,"Steps"],[27,"Pillars"],[54,"Walls and door"],[108,"Altar lamps"],[216,"Carved arch"],[324,"Dome"],[540,"Kalasha"],[1008,"Saffron flag"]];
+function renderTemple(){const life=jLife(),built=STAGES.filter(s=>life>=s[0]).length,next=STAGES[built];
+  $("#tmplTitle").textContent=built===0?"An empty plot":built===STAGES.length?"Your temple is complete":`${STAGES[built-1][1]} built`;
+  $("#tmplPct").textContent=`${built}/${STAGES.length} parts`;
+  $("#tmplNext").innerHTML=next?(()=>{const prev=built?STAGES[built-1][0]:0;return `<div class="top"><span>Next: <b>${next[1]}</b></span><span>${next[0]-life} rounds to go</span></div><div class="bar"><i style="width:${(life-prev)/(next[0]-prev)*100}%"></i></div>`;})():`<div class="top"><span><b>All nine parts raised.</b> Jaya! 🚩</span></div>`;drawTemple();}
+let tmplRAF=0;
+function drawTemple(t=performance.now()){const cv=$("#temple");if(!cv||cv.offsetParent===null)return;const [x,w,h]=fit(cv),b=STAGES.filter(s=>jLife()>=s[0]).length,cx=w/2,gy=h-14;
+  x.clearRect(0,0,w,h);x.strokeStyle=C.line;x.lineWidth=2;x.beginPath();x.moveTo(10,gy);x.lineTo(w-10,gy);x.stroke();
+  if(b===0){x.setLineDash([4,5]);x.strokeStyle=C.dim;x.strokeRect(cx-80,gy-24,160,24);x.setLineDash([]);x.fillStyle=C.dim;x.font="11px 'DM Mono',monospace";x.textAlign="center";x.fillText("chant a round to lay the first stone",cx,gy-34);return;}
+  const stone="#d9c7a3",shade="#b8a582",W=150,top=gy-18;
+  x.fillStyle=shade;x.fillRect(cx-W/2-14,gy-18,W+28,18);                      // foundation
+  if(b>=2){x.fillStyle=stone;for(let k=0;k<3;k++)x.fillRect(cx-28+k*6,gy-18-(k+1)*5,56-k*12,5);}  // steps
+  const wallTop=top-90;
+  if(b>=4){x.fillStyle="#cdb98f";x.fillRect(cx-W/2,wallTop,W,90-15);x.fillStyle="#2a1f18";x.beginPath();x.moveTo(cx-16,top-15);x.lineTo(cx-16,top-52);x.arc(cx,top-52,16,Math.PI,0);x.lineTo(cx+16,top-15);x.fill();}
+  if(b>=3){x.fillStyle=stone;[-W/2,-W/2+30,W/2-44,W/2-14].forEach(o=>{x.fillRect(cx+o,wallTop,14,90-15);x.fillStyle=shade;x.fillRect(cx+o-2,wallTop-4,18,5);x.fillStyle=stone;});}
+  if(b>=5){[-8,0,8].forEach((o,k)=>{const f=RM?0:Math.sin(t/180+k)*1.2;const g2=x.createRadialGradient(cx+o,top-28,0,cx+o,top-28,9);g2.addColorStop(0,"rgba(255,220,140,.9)");g2.addColorStop(1,"rgba(242,154,46,0)");x.fillStyle=g2;x.beginPath();x.arc(cx+o,top-28,9,0,7);x.fill();x.fillStyle="#fff1c9";x.beginPath();x.ellipse(cx+o,top-29-f,1.8,3.2,0,0,7);x.fill();});}
+  if(b>=6){x.strokeStyle=C.saffron;x.lineWidth=3;x.beginPath();x.arc(cx,top-52,24,Math.PI,0);x.stroke();for(let k=0;k<7;k++){const a=Math.PI+k/6*Math.PI;x.fillStyle=C.gold;x.beginPath();x.arc(cx+Math.cos(a)*24,top-52+Math.sin(a)*24,2,0,7);x.fill();}}
+  const domeBase=wallTop;
+  if(b>=7){x.fillStyle="#e7d6b0";x.beginPath();x.moveTo(cx-W/2+10,domeBase);x.bezierCurveTo(cx-W/2+14,domeBase-60,cx-14,domeBase-82,cx,domeBase-92);x.bezierCurveTo(cx+14,domeBase-82,cx+W/2-14,domeBase-60,cx+W/2-10,domeBase);x.fill();
+    x.strokeStyle=shade;x.lineWidth=1;for(let k=1;k<5;k++){x.beginPath();x.moveTo(cx-W/2+10+k*8,domeBase);x.quadraticCurveTo(cx-20+k*4,domeBase-50,cx,domeBase-90);x.stroke();x.beginPath();x.moveTo(cx+W/2-10-k*8,domeBase);x.quadraticCurveTo(cx+20-k*4,domeBase-50,cx,domeBase-90);x.stroke();}}
+  if(b>=8){x.fillStyle=C.gold;x.beginPath();x.ellipse(cx,domeBase-96,7,5,0,0,7);x.fill();x.beginPath();x.ellipse(cx,domeBase-104,4.5,4,0,0,7);x.fill();x.fillRect(cx-1,domeBase-112,2,6);}
+  if(b>=9){const py=domeBase-112;x.strokeStyle="#8a7a5a";x.lineWidth=2;x.beginPath();x.moveTo(cx,py);x.lineTo(cx,py-34);x.stroke();const wv=RM?0:Math.sin(t/260)*4;
+    x.fillStyle=C.saffron;x.beginPath();x.moveTo(cx,py-34);x.quadraticCurveTo(cx+18,py-34+wv,cx+34,py-27+wv*.6);x.lineTo(cx,py-20);x.closePath();x.fill();}
+  if(!RM&&curTab==="journey"&&b>=5){cancelAnimationFrame(tmplRAF);tmplRAF=requestAnimationFrame(drawTemple);}}
+
+/* ================= festivals ================= */
+function renderFest(){const today=localDate(),up=EVENTS.filter(e=>e.date>=today).sort((a,b)=>a.date<b.date?-1:1),te=todayEvent(),nx=up.find(e=>e.date>today);
+  const ic=e=>e.kind==="ekadashi"?"🌙":"🌼";
+  $("#festBanner").innerHTML=te?`<div class="fest today"><span class="ic">${ic(te)}</span><div><div class="t">Today: ${esc(te.name)}</div><div class="d">Double XP all day${te.kind==="ekadashi"?" · a day for extra rounds":""}</div></div><div class="cnt">×2<small>XP</small></div></div>`
+    :nx?`<div class="fest"><span class="ic">${ic(nx)}</span><div><div class="t">${esc(nx.name)}</div><div class="d">${pretty(nx.date)} · double XP that day</div></div><div class="cnt">${dayDiff(nx.date,today)}<small>day${dayDiff(nx.date,today)===1?"":"s"}</small></div></div>`:"";
+  $("#fests").innerHTML=up.slice(0,10).map(e=>`<li><span class="n">${pretty(e.date)}</span><span>${ic(e)} ${esc(e.name)}</span><span class="k">${e.date===today?"today":dayDiff(e.date,today)+"d"}</span></li>`).join("")||`<li style="color:var(--dim)">The calendar loads with tonight's update.</li>`;}
+
+/* ================= devotee cards ================= */
+const CARDS=[
+ ["krishna","Sri Krishna","krsna","🪈","#5b7bff","The Supreme Personality of Godhead in Gaudiya theology. The cowherd boy of Vrindavan, whose flute calls every soul home."],
+ ["radha","Srimati Radharani","krsna","🌸","#ff8fb8","Krishna's dearest beloved, worshipped in the Gaudiya tradition as his internal pleasure potency. Her home was Barsana."],
+ ["balarama","Lord Balarama","krsna","🌾","#ffffff","Krishna's elder brother, carrying a plough. He killed the donkey demon Dhenukasura in the Talavana forest."],
+ ["rama","Lord Rama","ram","🏹","#6fc49a","Prince of Ayodhya and the ideal king. He kept his father's word by going into exile for fourteen years."],
+ ["sita","Sita Devi","ram","🌷","#ff8fb8","Daughter of King Janaka, found as a baby in a furrow of the earth. Her faithfulness to Rama never wavered in Ravana's Lanka."],
+ ["lakshmana","Lakshmana","ram","🗡️","#ffd27a","Rama's younger brother, who left everything to serve Rama and Sita through all fourteen years of exile."],
+ ["narasimha","Lord Narasimha","bhag","🦁","#f29a2e","Half man, half lion, he appeared at dusk on a threshold to slay Hiranyakashipu without breaking any of Brahma's boons."],
+ ["vishnu","Lord Vishnu","bhag","🐚","#5b7bff","The four-armed Lord holding conch, disc, club and lotus. All the avatars of the Bhagavatam descend from him."],
+ ["shiva","Lord Shiva","bhag","🔱","#8fa8ff","Described in the Bhagavatam as the greatest Vaishnava. He drank the poison from the churning of the ocean to protect the world."],
+ ["brahma","Lord Brahma","bhag","🏵️","#f29a2e","The four-headed creator, born on a lotus from Vishnu's navel. He once stole Krishna's calves and cowherd boys to test him."],
+ ["ganga","Ganga Devi","bhag","🌊","#8fa8ff","The holy river, said to flow from Lord Vishnu's foot. Bhishma was her son."],
+ ["lakshmi","Lakshmi Devi","bhag","🌺","#ff8fb8","The goddess of fortune, eternal consort of Vishnu, who emerged from the churning of the milk ocean."],
+ ["garuda","Garuda","bhag","🦅","#ffd27a","The great eagle who carries Lord Vishnu. Snakes fear him."],
+ ["chaitanya","Chaitanya Mahaprabhu","iskcon","🥁","#ffd27a","Born in 1486 in Navadvipa, he spread the congregational chanting of the holy names across Bengal and Orissa."],
+ ["matsya","Matsya","bhag","🐟","#3fc1c9","The fish avatar, who saved King Satyavrata, the seven sages and the Vedas from a great flood."],
+ ["kurma","Kurma","bhag","🐢","#6fc49a","The tortoise avatar, who held Mount Mandara on his back while the devas and asuras churned the ocean of milk."],
+ ["varaha","Varaha","bhag","🐗","#b98cff","The boar avatar, who lifted the earth out of the cosmic ocean on his tusks and defeated the demon Hiranyaksha."],
+ ["vamana","Vamana","bhag","☂️","#ffd27a","The dwarf brahmin who asked King Bali for three steps of land, then covered the universe in two."],
+ ["nityananda","Nityananda Prabhu","iskcon","🌕","#c78bff","Chaitanya's closest associate, famous for his mercy, even towards the drunkards Jagai and Madhai."],
+ ["prahlada","Prahlada","bhag","🧒","#e0566a","Son of the demon king Hiranyakashipu, he never stopped remembering Vishnu. Lord Nrisimha burst from a pillar to protect him."],
+ ["dhruva","Dhruva","bhag","⭐","#8fa8ff","Stung by his stepmother's words, five-year-old Dhruva went to the forest to find the Lord. He was given the pole star as his abode."],
+ ["hanuman","Hanuman","ram","🐒","#f29a2e","Rama's greatest servant. He leapt to Lanka, found Sita, and carried a whole mountain of healing herbs back for Lakshmana."],
+ ["draupadi","Draupadi","mbh","🪷","#e0566a","When the Kauravas tried to disrobe her in their court, she called out to Krishna, and her sari became endless."],
+ ["arjuna","Arjuna","gita","🐎","#f29a2e","The archer who heard the Bhagavad Gita from Krishna, his friend and charioteer, on the field of Kurukshetra."],
+ ["bhishma","Bhishma","mbh","🛡️","#c78bff","The Kuru grandsire who vowed lifelong celibacy. On his bed of arrows he fixed his mind on Krishna before leaving his body."],
+ ["vidura","Vidura","mbh","🍲","#6fc49a","Dhritarashtra's wise half-brother. Krishna chose to eat at Vidura's simple home instead of Duryodhana's palace."],
+ ["kunti","Kunti","bhag","🙏","#ffd27a","Mother of the Pandavas. She prayed to Krishna for more difficulties, because in difficulty she remembered him."],
+ ["yashoda","Yashoda","krsna","🪢","#ffd27a","Krishna's mother in Vraja. Every rope she tied him with came up two fingers short, until he let her love bind him."],
+ ["sudama","Sudama","krsna","🍚","#6fc49a","Krishna's poor childhood friend, who brought him a handful of flat rice. Krishna ate it with love and secretly made him rich."],
+ ["gajendra","Gajendra","bhag","🐘","#8fa8ff","The elephant king caught by a crocodile. When his strength gave out, he prayed, and Vishnu came on Garuda to free him."],
+ ["ambarisha","Ambarisha","bhag","🌙","#c78bff","A king devoted to Ekadashi. When the angry sage Durvasa attacked him, the Sudarshana chakra chased Durvasa across the universe."],
+ ["narada","Narada Muni","bhag","🎶","#8fa8ff","The wandering sage with the vina, who guided Prahlada, Dhruva and even Vyasa."],
+ ["shukadeva","Shukadeva","bhag","📜","#ffd27a","Vyasa's son, who spoke the whole Srimad Bhagavatam to King Parikshit beside the Ganges."],
+ ["parikshit","Parikshit","bhag","👑","#f29a2e","The king who spent his last seven days hearing the Bhagavatam, and became the example of perfect hearing."],
+ ["jatayu","Jatayu","ram","🪶","#e0566a","The aged vulture who fought Ravana to save Sita. He died in Rama's arms after telling him which way she was taken."],
+ ["shabari","Shabari","ram","🫐","#6fc49a","An old forest devotee who waited years to serve Rama. Popular retellings say she tasted each berry first so she could offer him only the sweet ones."],
+ ["vibhishana","Vibhishana","ram","🏰","#8fa8ff","Ravana's brother, who left him to take shelter of Rama and was crowned king of Lanka after the war."],
+ ["haridasa","Haridasa Thakura","iskcon","📿","#ffd27a","Born into a Muslim family, he chanted 300,000 holy names a day. Chaitanya honoured him as the teacher of the holy name."],
+ ["rupa","Rupa Goswami","iskcon","📖","#c78bff","Once a minister of the Bengal sultan, he became one of the Six Goswamis and wrote the Bhakti-rasamrita-sindhu."],
+ ["prabhupada","Srila Prabhupada","iskcon","🚢","#f29a2e","Sailed to America at 69 with a trunk of books, and founded ISKCON in New York in 1966."]];
+const BOOKNAME={gita:"Bhagavad Gita",mbh:"Mahabharata",ram:"Ramayana",bhag:"Bhagavatam",krsna:"Krishna Book",iskcon:"ISKCON & Gaudiya"};
+function cardHTML(c,gold,click,owned=true,n=0){return `<${click?"button":"div"} class="dcard ${gold?"gold":""} ${owned?"":"locked"}" style="--hue:${c[4]}55" ${click?`data-card="${c[0]}" id="card-${c[0]}"`:""}>
+  ${n>1?`<span class="x">×${n}</span>`:""}<span class="em">${owned?c[3]:"?"}</span><span class="nm">${owned?esc(c[1]):"Undiscovered"}</span><span class="bk">${esc(BOOKNAME[c[2]])}</span></${click?"button":"div"}>`;}
+function drawCard(goldChance){const own=progress.cards||{},un=CARDS.filter(c=>!own[c[0]]);const c=(un.length&&Math.random()<.75)?un[Math.random()*un.length|0]:CARDS[Math.random()*CARDS.length|0];
+  const gold=Math.random()<goldChance,prev=own[c[0]];progress.cards={...own,[c[0]]:{n:(prev?.n||0)+1,gold:!!(prev?.gold||gold)}};return {c,gold,dupe:!!prev};}
+const COLLS=[
+ ["vraja","Radha & Krishna","#ff7fae",["krishna","radha","balarama","yashoda","sudama"]],
+ ["avatars","Avatars of Vishnu","#5b7bff",["vishnu","matsya","kurma","varaha","narasimha","vamana","rama"]],
+ ["devas","Devas & Devis","#3fc1c9",["shiva","brahma","lakshmi","ganga","garuda","narada"]],
+ ["ramayana","Ramayana","#6fc49a",["sita","lakshmana","hanuman","jatayu","shabari","vibhishana"]],
+ ["bharata","Mahabharata & Gita","#e0566a",["arjuna","draupadi","bhishma","vidura","kunti"]],
+ ["bhakti","Bhagavatam devotees","#b98cff",["prahlada","dhruva","gajendra","ambarisha","shukadeva","parikshit"]],
+ ["acharyas","Gaudiya acharyas","#f29a2e",["chaitanya","nityananda","haridasa","rupa","prabhupada"]]];
+let curColl="vraja";
+function checkColls(){progress.collsDone=progress.collsDone||{};const own=progress.cards||{};
+  COLLS.forEach(([id,nm,hue,ids])=>{if(!progress.collsDone[id]&&ids.every(k=>own[k])){progress.collsDone[id]=localDate();progress.coins=coinBal()+500;
+    const pick=ids[Math.random()*ids.length|0];own[pick].gold=true;progress.cards={...own};save();
+    setTimeout(()=>{toast(`🏆 Collection complete: ${nm}! +500 🪙 and a gold ${CARDS.find(c=>c[0]===pick)[1]}`);burstAt($("#cardCount"));},2800);}});}
+function renderAlbum(){const own=progress.cards||{},n=Object.keys(own).length;$("#cardCount").textContent=`${n}/${CARDS.length}`;checkColls();
+  $("#colls").innerHTML=COLLS.map(([id,nm,hue,ids])=>{const have=ids.filter(k=>own[k]).length;return `<button role="tab" aria-selected="${id===curColl}" data-coll="${id}" id="coll-${id}" style="--hue:${hue}"><span class="cn">${progress.collsDone?.[id]?"🏆 ":""}${esc(nm)}</span><span class="cp">${have}/${ids.length} cards</span><span class="mini-bar"><i style="width:${have/ids.length*100}%"></i></span></button>`;}).join("");
+  const [id,nm,hue,ids]=COLLS.find(c=>c[0]===curColl),have=ids.filter(k=>own[k]).length,golds=ids.filter(k=>own[k]?.gold).length;
+  $("#collHead").innerHTML=`<div class="row"><b style="font-family:var(--f-display);font-weight:400;font-size:1.2rem;color:${hue}">${esc(nm)}</b><span class="eyebrow">${have}/${ids.length} · ${golds} gold${progress.collsDone?.[id]?" · complete ✓":" · finish for 500 🪙"}</span></div>`;
+  $("#album").innerHTML=ids.map(k=>{const c=CARDS.find(x=>x[0]===k);return cardHTML(c,own[k]?.gold,!!own[k],!!own[k],own[k]?.n||0);}).join("")+`<div id="cardInfo" style="grid-column:1/-1"></div>`;}
+$("#colls").addEventListener("click",e=>{const b=e.target.closest("[data-coll]");if(!b)return;curColl=b.dataset.coll;renderAlbum();});
+$("#album").addEventListener("click",e=>{const b=e.target.closest("[data-card]");if(!b)return;const c=CARDS.find(x=>x[0]===b.dataset.card),o=(progress.cards||{})[c[0]],pinned=(progress.showcase||[]).includes(c[0]);
+  $("#cardInfo").innerHTML=`<div class="note"><b>${c[3]} ${esc(c[1])}</b> · <span class="eyebrow">${esc(BOOKNAME[c[2]])}${o?.gold?" · gold":""}${o?.n>1?` · ×${o.n}`:""}</span><br>${esc(c[5])}<div class="jbtns" style="justify-content:flex-start;margin-top:8px"><button class="btn ghost" id="pinBtn">${pinned?"Unpin from profile":"📌 Pin to profile showcase"}</button></div></div>`;
+  $("#pinBtn").onclick=()=>{let sc=(progress.showcase||[]).filter(x=>x!==c[0]);if(!pinned){sc.unshift(c[0]);sc=sc.slice(0,6);}progress.showcase=sc;save();toast(pinned?"Unpinned":"Pinned to your profile");$("#pinBtn").textContent=pinned?"📌 Pin to profile showcase":"Unpin from profile";};});
+
+/* ================= sunday boss ================= */
+function bossPool(){const ws=localDate(new Date(Date.now()-6*864e5)),today=localDate(),out=[];
+  PACKS.filter(p=>p.date>=ws&&p.date<=today).forEach(p=>(p.questions||[]).forEach(q=>{if(BOOKNAME[q.book])out.push([q.q,q.options,q.answer|0,q.note||"",BOOKNAME[q.book]]);}));
+  days.filter(d=>d.date>=ws&&d.date<today&&d.question).forEach(d=>out.push([d.question,d.options,d.answer|0,d.title+": "+String(d.fact).split("\n")[0],"This week's scrolls"]));
+  if(out.length<10){const extra=shuffle(Object.values(BOOKS).flatMap(b=>b.qs.map(q=>[...q,b.name])));while(out.length<10&&extra.length)out.push(extra.pop());}
+  return out;}
+function renderBoss(){const isSun=new Date().getDay()===0,wk=weekKey(),done=(progress.boss||{})[wk];
+  const till=(7-new Date().getDay())%7;
+  $("#bossPanel").innerHTML=`<div class="row"><div><div class="eyebrow">Sunday boss quiz</div><h2 style="margin:4px 0 0">The Guardian of the Week</h2></div><div class="fest" style="padding:6px 10px;border:none;background:none"><div class="cnt">${isSun?"🐉":till}<small>${isSun?"today":"days"}</small></div></div></div>
+   <p style="margin:8px 0 12px;font-size:.98rem">Ten hard questions drawn from this week's scrolls and fresh packs. Double XP per answer, and a guaranteed devotee card with a 25% gold chance.</p>
+   ${isSun?(done!=null?`<div class="note">You scored <b>${done}/10</b> this week. You can practise again, but XP and the card only count on your first attempt. A new boss rises next Sunday.</div><div class="jbtns" style="justify-content:flex-start"><button class="btn ghost" id="bossGo">Practise again</button></div>`
+     :`<button class="btn" id="bossGo">Face the boss</button>`):`<div class="eyebrow">The boss wakes on Sunday. Study this week's scrolls.</div>`}`;
+  const g=$("#bossGo");if(g)g.onclick=()=>{enterGame();quizGame("boss");};}
+
+/* ================= bhakti wrapped ================= */
+let wrPeriod="month",wrIdx=0;
+function wrappedSlides(){const now=new Date(),pref=wrPeriod==="month"?localDate(now).slice(0,7):String(now.getFullYear());const inP=d=>d.startsWith(pref);
+  const J=Object.entries(progress.japa||{}).filter(([d,v])=>inP(d)&&v>0).sort(),total=J.reduce((a,[,v])=>a+v,0),best=J.slice().sort((a,b)=>b[1]-a[1])[0];
+  let ls=0,run=0,prev=null;J.forEach(([d])=>{run=prev&&dayDiff(d,prev)===1?run+1:1;ls=Math.max(ls,run);prev=d;});
+  const scrolls=Object.keys(progress.unlocked||{}).filter(inP).length,aw=Object.values(progress.awards||{}).filter(inP).length;
+  const fav=Object.entries(progress.qbook||{}).sort((a,b)=>b[1]-a[1])[0],cards=Object.values(progress.cards||{}),golds=cards.filter(c=>c.gold).length;
+  const label=wrPeriod==="month"?now.toLocaleDateString(undefined,{month:"long"}):String(now.getFullYear());
+  return {label,slides:[
+   ["Rounds chanted",fmt(total),total?`That's ${fmt(total*108)} mantras in ${label}.`:"Your story starts with the first round."],
+   ["Holy names",fmt(total*108*16),"Each mantra holds sixteen names."],
+   ["Best day",best?`${best[1]}`:"–",best?`rounds on ${pretty(best[0])}`:"No rounds logged yet."],
+   ["Longest streak",`${ls}`,`day${ls===1?"":"s"} in a row`],
+   ["Seals broken",`${scrolls}`,`scroll${scrolls===1?"":"s"} opened in ${label}`],
+   ["Favourite scripture",fav?BOOKNAME[fav[0]]||"–":"–",fav?`${fav[1]} quiz round${fav[1]===1?"":"s"} played`:"Play a book quiz to find out."],
+   ["Devotee cards",`${cards.length}/${CARDS.length}`,golds?`including ${golds} gold ✨`:"No gold yet. Keep drawing."],
+   ["Rewards unlocked",`${aw}`,`in ${label} · ${fmt(progress.xp||0)} XP total`]]};}
+function renderWrapped(){const {label,slides}=wrappedSlides();wrIdx=Math.max(0,Math.min(wrIdx,slides.length-1));const [k,v,s]=slides[wrIdx];
+  $("#wrTitle").textContent=`Your ${label}`;$("#wrSlide").innerHTML=`<div class="k">${esc(k)}</div><div class="v">${esc(v)}</div><div class="s">${esc(s)}</div>`;
+  const el=$("#wrSlide");el.style.animation="none";void el.offsetWidth;el.style.animation="";
+  $("#wrDots").innerHTML=slides.map((_,i)=>`<i class="${i===wrIdx?"on":""}"></i>`).join("");$("#wrPrev").disabled=wrIdx===0;$("#wrNext").textContent=wrIdx===slides.length-1?"Start over ↺":"Next ›";}
+$("#wrPrev").onclick=()=>{wrIdx--;renderWrapped();};$("#wrNext").onclick=()=>{const n=wrappedSlides().slides.length;wrIdx=wrIdx>=n-1?0:wrIdx+1;renderWrapped();};
+[["#wrM","month"],["#wrY","year"]].forEach(([id,p])=>$(id).onclick=()=>{wrPeriod=p;wrIdx=0;$("#wrM").setAttribute("aria-selected",p==="month");$("#wrY").setAttribute("aria-selected",p==="year");renderWrapped();});
+
+/* ================= sanga leaderboard ================= */
+let myId=null,SANGA=[],userCap=null;
+async function renderBoard(){if(!document.getElementById("board"))return;const wk=weekKey();$("#sgWeek").textContent="from "+pretty(wk);
+  let rows=SANGA.filter(r=>r.week===wk);if(myId&&!rows.find(r=>r.id===myId))rows.push({id:myId,rounds:weekRounds(),xp:progress.xp||0});
+  rows.forEach(r=>{if(r.id===myId){r.rounds=weekRounds();r.xp=progress.xp||0;}});rows.sort((a,b)=>b.rounds-a.rounds||b.xp-a.xp);
+  let names={};try{if(userCap&&rows.length)names=await userCap.profiles(rows.map(r=>r.id));}catch(e){}
+  $("#board").innerHTML=rows.length?rows.map((r,i)=>`<li class="${r.id===myId?"me":""}"><span class="p">${["🥇","🥈","🥉"][i]||i+1}</span><span class="nm">${esc((names[r.id]&&names[r.id].name)||(r.id===myId?"You":"Devotee"))}${r.id===myId?" (you)":""}</span><span class="v">${fmt(r.rounds)} rounds</span></li>`).join("")
+    :`<li><span class="p">🪔</span><span class="nm">Chant a round to join this week's board.</span><span class="v"></span></li>`;}
+
+/* ================= bag: freezes, restores, passes, hints, chests, bazaar ================= */
+const ITEMS={freeze:["🧊","Streak freeze","Protects your japa streak for one missed day. Used automatically."],restore:["🔁","Streak restore","Brings back a streak you lost in the last 3 days."],pass:["🎟️","Free pass","Opens a sealed scroll without answering."],hint:["💡","Hint","Removes two wrong answers from a question."]};
+const SHOP=[["freeze",120],["restore",250],["pass",80],["hint",40]];
+const inv=()=>progress.inv||(progress.inv={freeze:1,hint:3,pass:0,restore:0});
+const coins=()=>Math.max(0,(progress.xp||0)-(progress.spent||0));
+function give(k,n=1){const I=inv();I[k]=(I[k]||0)+n;progress.inv={...I};}
+function useItem(k){const I=inv();if(!(I[k]>0))return false;I[k]--;progress.inv={...I};save();renderBag();return true;}
+function openChest(why){const r=Math.random();let loot;
+  if(r<.33){const x=25+(Math.random()*26|0);loot=["xp",x,`${x} bonus XP`];}
+  else if(r<.58){give("hint",2);loot=["hint",2,"2 hints"];}
+  else if(r<.73){give("freeze");loot=["freeze",1,"a streak freeze"];}
+  else if(r<.85){give("pass");loot=["pass",1,"a free pass"];}
+  else if(r<.92){give("restore");loot=["restore",1,"a streak restore"];}
+  else{const c=drawCard(.15);loot=["card",c,`the ${c.gold?"GOLD ":""}${c.c[1]} card`];renderAlbum();}
+  toast(`🎁 Chest opened (${why}): ${loot[2]}!`);if(loot[0]==="xp")setTimeout(()=>addXP(loot[1],"chest",true),900);else save();renderBag();}
+function streakRestorable(){const J=progress.japa||{},F=progress.frozen||{};const has=d=>J[d]>0||F[d];
+  const y=new Date();y.setDate(y.getDate()-1);if(has(localDate(y))||jStreak()>0&&J[localDate()]>0&&has(localDate(y)))return null;
+  const miss=[];const d=new Date(y);for(let k=0;k<3;k++){if(has(localDate(d)))break;miss.push(localDate(d));d.setDate(d.getDate()-1);}
+  return has(localDate(d))&&miss.length&&miss.length<=3?miss:null;}
+function autoFreeze(){const J=progress.japa||{},F=progress.frozen||{};const has=d=>J[d]>0||F[d];const y=new Date();y.setDate(y.getDate()-1);
+  const miss=[];const d=new Date(y);while(!has(localDate(d))&&miss.length<14){miss.push(localDate(d));d.setDate(d.getDate()-1);}
+  if(!miss.length||!has(localDate(d))||!Object.keys(J).length)return;if(miss.length>(inv().freeze||0))return;
+  miss.forEach(m=>{F[m]=true;inv().freeze--;});progress.frozen={...F};progress.inv={...inv()};save();setTimeout(()=>toast(`🧊 ${miss.length} streak freeze${miss.length>1?"s":""} used. Your streak is safe.`),1200);}
+function renderBag(){const I=inv(),rs=streakRestorable();
+  $("#bag").innerHTML=Object.entries(ITEMS).map(([k,[ic,nm,d]])=>`<div class="item"><span class="ic">${ic}</span><b>${I[k]||0}</b><span class="nm">${nm}</span><span class="d">${d}</span></div>`).join("");
+  $("#coins").textContent=fmt(coins());
+  $("#shop").innerHTML=SHOP.map(([k,p])=>`<button class="btn ${coins()>=p?"":"ghost"}" data-buy="${k}" id="buy-${k}" ${coins()>=p?"":"disabled"}>${ITEMS[k][0]} ${ITEMS[k][1]} · ${p}</button>`).join("");
+  $("#restoreBox").innerHTML=rs?`<div class="note">🔁 Your japa streak broke ${rs.length} day${rs.length>1?"s":""} ago. <button class="linkbtn" id="doRestore">${(I.restore||0)>0?"Use a streak restore":"Buy a restore in the bazaar"}</button></div>`:"";
+  const dr=$("#doRestore");if(dr)dr.onclick=()=>{if(!useItem("restore")){toast("You have no streak restores yet.");return;}progress.frozen={...(progress.frozen||{}),...Object.fromEntries(rs.map(d=>[d,true]))};save();renderJapa();renderBag();toast("🔁 Streak restored!");burstAt($("#jRounds"));};}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-buy]");if(!b)return;const [k,p]=SHOP.find(s=>s[0]===b.dataset.buy);if(coins()<p){toast("Not enough XP to spend yet.");return;}
+  progress.spent=(progress.spent||0)+p;give(k);save();renderBag();toast(`${ITEMS[k][0]} Bought a ${ITEMS[k][1].toLowerCase()}.`);});
+function hintOn(container,ans){if(!useItem("hint")){toast("No hints left. Earn them from chests or the bazaar.");return false;}
+  const wrong=[...container.querySelectorAll(".opt")].filter(o=>+o.dataset.i!==ans&&!o.classList.contains("wrong"));shuffle(wrong).slice(0,2).forEach(o=>{o.classList.add("wrong");});return true;}
+
+/* ================= coins: every reward = coins + 1 photocard + 1 random power-up ================= */
+const coinBal=()=>progress.coins||0;
+const comboMult=()=>Math.min(2,1+jStreak()*0.05);             // japa streak boosts coins, up to ×2
+let rewardQ=[],rewardBusy=false;
+function earn(base,why){const fe=todayEvent();let c=Math.round(base*comboMult()*(fe?2:1));progress.coins=coinBal()+c;progress.coinsAll=(progress.coinsAll||0)+c;
+  const card=drawCard(.08);const roll=Math.random();let item;
+  if(roll<.35){give("hint",2);item="💡💡 2 hints";}else if(roll<.6){give("freeze");item="🧊 streak freeze";}else if(roll<.8){give("pass");item="🎟️ free pass";}
+  else if(roll<.9){give("restore");item="🔁 streak restore";}else{const b=15+(Math.random()*16|0);progress.xp=(progress.xp||0)+b;item=`⭐ ${b} bonus XP`;}
+  save();renderAlbum();renderBag();renderDhamHUD();renderRank();
+  rewardQ.push({c,why,card,item});pumpRewards();}
+function pumpRewards(){if(rewardBusy||!rewardQ.length)return;rewardBusy=true;const r=rewardQ.shift(),el=$("#rewardPop");
+  el.innerHTML=`<div class="rp-h">${esc(r.why)}</div><div class="rp-row"><span class="rp-coin">+${fmt(r.c)} 🪙</span>${cardHTML(r.card.c,r.card.gold,false)}<span class="rp-item">${r.item}</span></div><div class="rp-s">${r.card.dupe?"Duplicate":"New"} card: <b>${esc(r.card.c[1])}</b>${r.card.gold?" ✨ GOLD":""}</div>`;
+  el.classList.add("on");burstAt(el);setTimeout(()=>{el.classList.remove("on");setTimeout(()=>{rewardBusy=false;pumpRewards();},350);},2600);}
+function tradeDupes(){const own=progress.cards||{};let n=0;Object.values(own).forEach(c=>{if(c.n>1){n+=c.n-1;c.n=1;}});if(!n){toast("No duplicate cards to trade yet.");return;}
+  progress.cards={...own};progress.coins=coinBal()+n*30;save();renderAlbum();renderDhamHUD();toast(`Traded ${n} duplicate card${n>1?"s":""} for ${n*30} 🪙`);}
+/* daily Sudarshana spin: one free spin per day */
+const WHEEL=[["50 🪙",()=>{progress.coins=coinBal()+50;}],["💡 3 hints",()=>give("hint",3)],["150 🪙",()=>{progress.coins=coinBal()+150;}],["🧊 freeze",()=>give("freeze")],["🎟️ pass",()=>give("pass")],["25 🪙",()=>{progress.coins=coinBal()+25;}],["🔁 restore",()=>give("restore")],["300 🪙 JACKPOT",()=>{progress.coins=coinBal()+300;}]];
+function spinWheel(){if(progress.spun===localDate()){toast("You've spun today. Come back tomorrow.");return;}const k=(Math.random()<.04)?7:Math.random()*7|0;progress.spun=localDate();
+  const cv=$("#wheel"),t0=performance.now(),turns=4+Math.random(),target=turns*Math.PI*2+(Math.PI*2-(k+.5)/WHEEL.length*Math.PI*2);
+  const anim=t=>{const p=Math.min(1,(t-t0)/2600),e=1-Math.pow(1-p,3);drawWheel(target*e);if(p<1&&!RM)requestAnimationFrame(anim);else{drawWheel(target);WHEEL[k][1]();save();renderBag();renderDhamHUD();toast(`🎡 You won ${WHEEL[k][0]}!`);burstAt(cv);renderSpin();}};requestAnimationFrame(anim);}
+function drawWheel(rot=0){const cv=$("#wheel");if(!cv||cv.offsetParent===null)return;const [x,w,h]=fit(cv),cx=w/2,cy=h/2,R=Math.min(w,h)/2-10,n=WHEEL.length;x.clearRect(0,0,w,h);
+  for(let i=0;i<n;i++){const a0=rot+i/n*Math.PI*2-Math.PI/2,a1=a0+Math.PI*2/n;x.fillStyle=i===7?"#ffd27a":i%2?"#f29a2e":"#231e37";x.beginPath();x.moveTo(cx,cy);x.arc(cx,cy,R,a0,a1);x.closePath();x.fill();
+    x.save();x.translate(cx,cy);x.rotate((a0+a1)/2);x.fillStyle=i===7||i%2?"#1a1208":"#ecdfc3";x.font="600 11px 'DM Mono',monospace";x.textAlign="right";x.fillText(WHEEL[i][0],R-10,4);x.restore();}
+  x.strokeStyle="#ffd27a";x.lineWidth=3;x.beginPath();x.arc(cx,cy,R,0,7);x.stroke();x.fillStyle="#0d0b17";x.beginPath();x.arc(cx,cy,16,0,7);x.fill();x.stroke();
+  x.fillStyle="#ffd27a";x.beginPath();x.moveTo(cx-9,cy-R-8);x.lineTo(cx+9,cy-R-8);x.lineTo(cx,cy-R+10);x.closePath();x.fill();}
+function renderSpin(){const done=progress.spun===localDate();$("#spinBtn").disabled=done;$("#spinBtn").textContent=done?"Spun today ✓":"Spin the wheel";}
+/* daily dham donations: your dham earns coins from pilgrims each day */
+function collectDonations(){if(progress.donated===localDate())return;const v=dhamValue();if(!v)return;const c=Math.max(5,Math.round(v*0.02));progress.coins=coinBal()+c;progress.donated=localDate();save();
+  setTimeout(()=>toast(`🛕 Pilgrims visited your dham overnight: +${fmt(c)} 🪙 in donations`),2200);}
+
+/* ================= My Dham: isometric builder ================= */
+const DITEMS={
+ // grounds
+ grass:["ground","Grass","🟩",5,{top:"#4f8a4a"}],garden:["ground","Flower garden","🌼",15,{top:"#4f8a4a",dots:["#ffd27a","#ff8fb8","#ffffff"]}],
+ road:["ground","Sand path","🟫",8,{top:"#c9a56a"}],marble:["ground","Marble courtyard","⬜",30,{top:"#e8e3da",grid:true}],
+ water:["ground","Lotus pond","🌊",25,{top:"#3b6fb6",lotus:true}],kund:["ground","Sacred kund","💧",90,{top:"#2d5fa8",steps:true}],
+ // trees
+ tulsi:["object","Tulsi on a pedestal","🌿",40,{kind:"tulsi"}],kadamba:["object","Kadamba tree","🌳",70,{kind:"tree",c:"#3f7d3a",fruit:"#f2a33a"}],
+ banyan:["object","Banyan tree","🌲",120,{kind:"tree",c:"#2f6a35",big:true}],
+ // buildings
+ kutir:["object","Bhajan kutir","🛖",150,{kind:"hut"}],goshala:["object","Goshala","🏚️",250,{kind:"barn"}],
+ lamp:["object","Deepa lamp post","🪔",35,{kind:"lamp"}],gate:["object","Gopuram gate","⛩️",900,{kind:"gate"}],
+ temple:["object","Village temple","🛕",600,{kind:"temple"}],grand:["object","Grand Radha-Krishna temple","🏯",1500,{kind:"grand"}],
+ govardhan:["object","Govardhan Hill","⛰️",1200,{kind:"hill"}],ratha:["object","Ratha Yatra chariot","🎪",1000,{kind:"ratha"}],
+ // beings
+ cow:["object","Cow","🐄",80,{kind:"cow"}],calf:["object","Calf","🐮",50,{kind:"cow",small:true}],peacock:["object","Peacock","🦚",120,{kind:"peacock"}],
+ parrot:["object","Parrot","🦜",40,{kind:"bird"}],devotee:["object","Devotee","🧘",60,{kind:"person",c:"#f29a2e"}],
+ cowherd:["object","Cowherd boy","🧑‍🌾",70,{kind:"person",c:"#ffd27a",stick:true}],kirtan:["object","Kirtan party","🎶",200,{kind:"kirtan"}]};
+const SIZES=[[6,0],[8,500],[10,1500],[12,4000]];
+const dham=()=>progress.dham||(progress.dham={size:6,tiles:{}});
+function dhamValue(){let v=0;Object.values(dham().tiles).forEach(t=>{if(t.g)v+=DITEMS[t.g][3];if(t.o)v+=DITEMS[t.o][3];});return v;}
+let dSel="grass",dTool="place",dhamCat="ground";
+function renderDhamHUD(){try{renderHeader();}catch(e){}if(!$("#dCoins"))return;$("#dCoins").textContent=fmt(coinBal());$("#dValue").textContent=fmt(dhamValue());$("#dMult").textContent="×"+comboMult().toFixed(2);
+  const lvl2=dhamValue()<500?"Village":dhamValue()<3000?"Holy village":dhamValue()<10000?"Tirtha town":"Dham";$("#dLevel").textContent=lvl2;}
+function renderDhamShop(){const cats={ground:"Grounds",nature:"Trees",build:"Buildings",beings:"Cows & people"};
+  const catOf=k=>DITEMS[k][0]==="ground"?"ground":["tulsi","kadamba","banyan"].includes(k)?"nature":["cow","calf","peacock","parrot","devotee","cowherd","kirtan"].includes(k)?"beings":"build";
+  $("#dCats").innerHTML=Object.entries(cats).map(([k,n])=>`<button role="tab" aria-selected="${dhamCat===k}" data-cat="${k}">${n}</button>`).join("");
+  $("#dShop").innerHTML=Object.entries(DITEMS).filter(([k])=>catOf(k)===dhamCat).map(([k,[ty,nm,ic,p]])=>`<button class="ditem ${dSel===k&&dTool==="place"?"on":""} ${coinBal()<p?"poor":""}" data-item="${k}" id="di-${k}"><span class="ic">${ic}</span><span class="nm">${nm}</span><span class="p">${p} 🪙</span></button>`).join("");
+  const nx=SIZES.find(s=>s[0]>dham().size);$("#dExpand").textContent=nx?`Expand to ${nx[0]}×${nx[0]} · ${nx[1]} 🪙`:"Max size reached";$("#dExpand").disabled=!nx;
+  document.querySelectorAll("#dTools button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tool===dTool));}
+$("#dCats").addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if(!b)return;dhamCat=b.dataset.cat;renderDhamShop();});
+$("#dShop").addEventListener("click",e=>{const b=e.target.closest("[data-item]");if(!b)return;dSel=b.dataset.item;dTool="place";renderDhamShop();$("#dHint").textContent=`Tap a tile to place: ${DITEMS[dSel][1]} (${DITEMS[dSel][3]} 🪙)`;});
+$("#dTools").addEventListener("click",e=>{const b=e.target.closest("[data-tool]");if(!b)return;dTool=b.dataset.tool;renderDhamShop();$("#dHint").textContent=dTool==="remove"?"Tap something to pick it up. You get a full refund.":`Tap a tile to place: ${DITEMS[dSel][1]}`;});
+$("#dExpand").addEventListener("click",()=>{const nx=SIZES.find(s=>s[0]>dham().size);if(!nx)return;if(coinBal()<nx[1]){toast(`You need ${nx[1]-coinBal()} more 🪙 to expand.`);return;}progress.coins-=nx[1];dham().size=nx[0];progress.dham={...dham()};save();renderDham();toast(`Your dham grew to ${nx[0]}×${nx[0]}!`);});
+let dGeo=null;
+function isoGeo(w,h){const n=dham().size,tw=Math.min((w-20)/n,(h-60)/(n*.5+1.2)*1)*1,th=tw/2;return {n,tw,th,ox:w/2,oy:30+th*0.6};}
+const isoPt=(g,i,j)=>[g.ox+(i-j)*g.tw/2,g.oy+(i+j)*g.th/2];
+function prism(x,X,Y,w2,h2,hgt,top,left,right){ // diamond footprint centred at X,Y (ground), height hgt
+  x.fillStyle=left;x.beginPath();x.moveTo(X-w2,Y);x.lineTo(X,Y+h2);x.lineTo(X,Y+h2-hgt);x.lineTo(X-w2,Y-hgt);x.closePath();x.fill();
+  x.fillStyle=right;x.beginPath();x.moveTo(X+w2,Y);x.lineTo(X,Y+h2);x.lineTo(X,Y+h2-hgt);x.lineTo(X+w2,Y-hgt);x.closePath();x.fill();
+  x.fillStyle=top;x.beginPath();x.moveTo(X,Y-h2-hgt);x.lineTo(X+w2,Y-hgt);x.lineTo(X,Y+h2-hgt);x.lineTo(X-w2,Y-hgt);x.closePath();x.fill();}
+function pyramid(x,X,Y,w2,h2,hgt,left,right){x.fillStyle=left;x.beginPath();x.moveTo(X-w2,Y);x.lineTo(X,Y+h2);x.lineTo(X,Y-hgt);x.closePath();x.fill();x.fillStyle=right;x.beginPath();x.moveTo(X+w2,Y);x.lineTo(X,Y+h2);x.lineTo(X,Y-hgt);x.closePath();x.fill();}
+function flag(x,X,Y,t){x.strokeStyle="#8a7a5a";x.lineWidth=1.2;x.beginPath();x.moveTo(X,Y);x.lineTo(X,Y-12);x.stroke();const wv=RM?0:Math.sin(t/250+X)*2;x.fillStyle="#f29a2e";x.beginPath();x.moveTo(X,Y-12);x.lineTo(X+9,Y-9+wv);x.lineTo(X,Y-6);x.fill();}
+function drawObj(x,k,X,Y,g,t){const s=g.tw/64,d=DITEMS[k][4],bob=RM?0:Math.sin(t/400+X*.1)*1;
+  const w2=g.tw/2,h2=g.th/2;
+  switch(d.kind){
+  case "tulsi":prism(x,X,Y,w2*.3,h2*.3,10*s,"#e8d9b8","#b59c74","#cfb88f");for(let i=0;i<7;i++){x.fillStyle=i%2?"#4fa864":"#5cc97f";x.beginPath();x.arc(X+Math.cos(i)*5*s,Y-16*s-Math.sin(i*2)*4*s,4*s,0,7);x.fill();}break;
+  case "tree":{const r=(d.big?22:15)*s;x.fillStyle="#6b4a2a";x.fillRect(X-2*s,Y-(d.big?22:16)*s,4*s,(d.big?22:16)*s);x.fillStyle=d.c;x.beginPath();x.arc(X,Y-(d.big?30:24)*s,r,0,7);x.fill();
+    x.fillStyle="rgba(255,255,255,.08)";x.beginPath();x.arc(X-r*.3,Y-(d.big?34:28)*s,r*.5,0,7);x.fill();if(d.fruit){x.fillStyle=d.fruit;for(let i=0;i<6;i++){x.beginPath();x.arc(X+Math.cos(i*1.7)*r*.6,Y-24*s+Math.sin(i*2.3)*r*.5,2.2*s,0,7);x.fill();}}break;}
+  case "hut":prism(x,X,Y,w2*.6,h2*.6,14*s,"#d6b98a","#a8875a","#c4a372");pyramid(x,X,Y-14*s,w2*.7,h2*.7,16*s,"#b08a3e","#d0aa55");x.fillStyle="#2a1f18";x.fillRect(X+2*s,Y-8*s,5*s,8*s);break;
+  case "barn":prism(x,X,Y,w2*.85,h2*.85,12*s,"#cdb98f","#9f7a4f","#b98f5f");pyramid(x,X,Y-12*s,w2*.9,h2*.9,10*s,"#8f3e2a","#a84a32");break;
+  case "lamp":x.fillStyle="#8a7a5a";x.fillRect(X-1*s,Y-22*s,2*s,22*s);{const f=RM?0:Math.sin(t/150+X)*.8;const gl=x.createRadialGradient(X,Y-24*s,0,X,Y-24*s,10*s);gl.addColorStop(0,"rgba(255,220,140,.9)");gl.addColorStop(1,"rgba(242,154,46,0)");x.fillStyle=gl;x.beginPath();x.arc(X,Y-24*s,10*s,0,7);x.fill();x.fillStyle="#fff1c9";x.beginPath();x.ellipse(X,Y-25*s-f,1.6*s,3*s,0,0,7);x.fill();}break;
+  case "gate":prism(x,X-w2*.45,Y,w2*.18,h2*.18,26*s,"#e7d6b0","#b8a582","#d2bf97");prism(x,X+w2*.45,Y,w2*.18,h2*.18,26*s,"#e7d6b0","#b8a582","#d2bf97");
+    prism(x,X,Y-26*s,w2*.75,h2*.3,6*s,"#f0b25a","#c27a2a","#d98f3a");pyramid(x,X,Y-32*s,w2*.6,h2*.25,16*s,"#c27a2a","#e09a45");flag(x,X,Y-48*s,t);break;
+  case "temple":prism(x,X,Y,w2*.7,h2*.7,16*s,"#efe2c4","#c9b48a","#ddc9a0");x.fillStyle="#2a1f18";x.fillRect(X+2*s,Y-10*s,5*s,9*s);
+    x.fillStyle="#f2e3c0";x.beginPath();x.moveTo(X-w2*.5,Y-16*s);x.quadraticCurveTo(X-w2*.45,Y-38*s,X,Y-48*s);x.quadraticCurveTo(X+w2*.45,Y-38*s,X+w2*.5,Y-16*s);x.fill();
+    x.fillStyle="#ffd27a";x.beginPath();x.arc(X,Y-50*s,3*s,0,7);x.fill();flag(x,X,Y-52*s,t);break;
+  case "grand":prism(x,X,Y,w2*.92,h2*.92,20*s,"#f5ecd8","#cdb98f","#e4d2ab");
+    [[-.5,30],[.5,30],[0,52]].forEach(([o,hh])=>{const cx2=X+o*w2*.9;x.fillStyle="#fbf3e2";x.beginPath();x.moveTo(cx2-w2*.25,Y-20*s);x.quadraticCurveTo(cx2-w2*.22,Y-(20+hh*.7)*s,cx2,Y-(20+hh)*s);x.quadraticCurveTo(cx2+w2*.22,Y-(20+hh*.7)*s,cx2+w2*.25,Y-20*s);x.fill();x.fillStyle="#ffd27a";x.beginPath();x.arc(cx2,Y-(22+hh)*s,2.6*s,0,7);x.fill();});
+    flag(x,X,Y-74*s,t);x.fillStyle="#2a1f18";x.beginPath();x.moveTo(X-4*s,Y-2*s);x.lineTo(X-4*s,Y-11*s);x.arc(X,Y-11*s,4*s,Math.PI,0);x.lineTo(X+4*s,Y-2*s);x.fill();break;
+  case "hill":x.fillStyle="#7b6146";x.beginPath();x.ellipse(X,Y-4*s,w2*.95,h2*.95+10*s,0,Math.PI,0);x.fill();x.fillStyle="#8d7253";x.beginPath();x.ellipse(X-6*s,Y-12*s,w2*.55,22*s,0,Math.PI,0);x.fill();
+    x.fillStyle="#4f8a4a";[[-14,-18],[8,-24],[18,-10],[-4,-30]].forEach(([a,b])=>{x.beginPath();x.arc(X+a*s,Y+b*s,4*s,0,7);x.fill();});break;
+  case "ratha":prism(x,X,Y-6*s,w2*.55,h2*.55,10*s,"#c94a3a","#8a2e24","#a8382c");x.fillStyle="#3a2a1a";[[-.4,0],[.4,0]].forEach(([o])=>{x.beginPath();x.ellipse(X+o*w2,Y-2*s,5*s,6*s,0,0,7);x.fill();});
+    pyramid(x,X,Y-16*s,w2*.45,h2*.45,26*s,"#d9a62a","#f2c54a");x.fillStyle="#2d5fa8";x.fillRect(X-w2*.3,Y-20*s,w2*.6,4*s);flag(x,X,Y-42*s,t);break;
+  case "cow":{const sc=d.small?.7:1;x.fillStyle="#f4efe6";x.beginPath();x.ellipse(X,Y-8*s*sc+bob,9*s*sc,5*s*sc,0,0,7);x.fill();x.fillStyle="#d9cfc0";x.beginPath();x.ellipse(X+9*s*sc,Y-11*s*sc+bob,3.5*s*sc,3*s*sc,0,0,7);x.fill();
+    x.fillStyle="#8a6a4a";x.fillRect(X-6*s*sc,Y-4*s*sc,1.5*s,4*s*sc);x.fillRect(X+5*s*sc,Y-4*s*sc,1.5*s,4*s*sc);x.fillStyle="#b07040";x.beginPath();x.ellipse(X-2*s*sc,Y-9*s*sc+bob,3*s*sc,2*s*sc,0,0,7);x.fill();break;}
+  case "peacock":x.fillStyle="#2a8a7a";for(let i=-3;i<=3;i++){x.save();x.translate(X-3*s,Y-6*s);x.rotate(-Math.PI/2+i*.28);x.beginPath();x.ellipse(0,-9*s,2.4*s,9*s,0,0,7);x.fill();x.fillStyle="#ffd27a";x.beginPath();x.arc(0,-16*s,1.4*s,0,7);x.fill();x.fillStyle="#2a8a7a";x.restore();}
+    x.fillStyle="#2a5ab0";x.beginPath();x.ellipse(X+2*s,Y-6*s+bob,3.5*s,5*s,0,0,7);x.fill();x.beginPath();x.arc(X+3*s,Y-12*s+bob,2*s,0,7);x.fill();break;
+  case "bird":x.fillStyle="#4fbf5f";x.beginPath();x.ellipse(X,Y-10*s+bob*2,3.5*s,4.5*s,0,0,7);x.fill();x.fillStyle="#e0566a";x.beginPath();x.arc(X+2.5*s,Y-13*s+bob*2,1.4*s,0,7);x.fill();break;
+  case "person":{x.fillStyle=d.c;x.beginPath();x.moveTo(X-5*s,Y);x.lineTo(X+5*s,Y);x.lineTo(X,Y-14*s);x.fill();x.fillStyle="#c68a5a";x.beginPath();x.arc(X,Y-16*s+bob,3.2*s,0,7);x.fill();
+    x.fillStyle="#fff";x.fillRect(X-.5*s,Y-18.5*s+bob,1*s,2*s);if(d.stick){x.strokeStyle="#8a6a4a";x.lineWidth=1.2*s;x.beginPath();x.moveTo(X+5*s,Y);x.lineTo(X+7*s,Y-18*s);x.stroke();}break;}
+  case "kirtan":[[-8,"#f29a2e"],[0,"#ffffff"],[8,"#ffd27a"]].forEach(([o,c],i)=>{const b2=RM?0:Math.sin(t/200+i)*1.5;x.fillStyle=c;x.beginPath();x.moveTo(X+o*s-4*s,Y);x.lineTo(X+o*s+4*s,Y);x.lineTo(X+o*s,Y-12*s);x.fill();x.fillStyle="#c68a5a";x.beginPath();x.arc(X+o*s,Y-14*s+b2,2.8*s,0,7);x.fill();});
+    x.fillStyle="#8a4a2a";x.beginPath();x.ellipse(X,Y-6*s,4*s,2*s,0,0,7);x.fill();break;}}
+let dhamRAF=0,dHover=null;
+function drawDham(t=performance.now()){const cv=$("#dhamCv");if(!cv||cv.offsetParent===null)return;const [x,w,h]=fit(cv);const g=isoGeo(w,h);dGeo=g;const D=dham();x.clearRect(0,0,w,h);
+  // sky glow
+  const sk=x.createLinearGradient(0,0,0,h);sk.addColorStop(0,"rgba(242,154,46,.08)");sk.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=sk;x.fillRect(0,0,w,h);
+  // base slab
+  const c0=isoPt(g,0,0),c1=isoPt(g,g.n,0),c2=isoPt(g,g.n,g.n),c3=isoPt(g,0,g.n);x.fillStyle="#3a2c22";x.beginPath();x.moveTo(c3[0],c3[1]);x.lineTo(c2[0],c2[1]);x.lineTo(c2[0],c2[1]+10);x.lineTo(c3[0],c3[1]+10);x.closePath();x.fill();
+  x.fillStyle="#4a3a2c";x.beginPath();x.moveTo(c1[0],c1[1]);x.lineTo(c2[0],c2[1]);x.lineTo(c2[0],c2[1]+10);x.lineTo(c1[0],c1[1]+10);x.closePath();x.fill();
+  for(let s2=0;s2<=2*(g.n-1);s2++)for(let i=0;i<g.n;i++){const j=s2-i;if(j<0||j>=g.n)continue;const T=D.tiles[i+","+j]||{},[X,Y]=isoPt(g,i+.5,j+.5),gd=T.g?DITEMS[T.g][4]:{top:C.stone2};
+    x.fillStyle=gd.top;x.beginPath();x.moveTo(X,Y-g.th/2);x.lineTo(X+g.tw/2,Y);x.lineTo(X,Y+g.th/2);x.lineTo(X-g.tw/2,Y);x.closePath();x.fill();
+    x.strokeStyle=T.g?"rgba(0,0,0,.15)":"rgba(236,223,195,.08)";x.lineWidth=1;x.stroke();
+    if(gd.dots){const r=seeded(i*31+j);gd.dots.forEach(c=>{for(let k=0;k<3;k++){x.fillStyle=c;x.beginPath();x.arc(X+(r()-.5)*g.tw*.6,Y+(r()-.5)*g.th*.6,1.6,0,7);x.fill();}});}
+    if(gd.grid){x.strokeStyle="rgba(0,0,0,.08)";x.beginPath();x.moveTo(X-g.tw/4,Y-g.th/4);x.lineTo(X+g.tw/4,Y+g.th/4);x.moveTo(X+g.tw/4,Y-g.th/4);x.lineTo(X-g.tw/4,Y+g.th/4);x.stroke();}
+    if(gd.lotus){const rp=RM?0:(t/900+i+j)%1;x.strokeStyle=`rgba(255,255,255,${.3*(1-rp)})`;x.beginPath();x.ellipse(X,Y,g.tw*.2*rp+2,g.th*.2*rp+1,0,0,7);x.stroke();x.fillStyle="#ff8fb8";x.beginPath();x.arc(X+g.tw*.12,Y-g.th*.05,2.4,0,7);x.fill();x.fillStyle="#4fa864";x.beginPath();x.ellipse(X-g.tw*.1,Y+g.th*.1,3.5,2,0,0,7);x.fill();}
+    if(gd.steps){x.strokeStyle="rgba(232,227,218,.7)";x.lineWidth=1.5;x.beginPath();x.moveTo(X,Y-g.th/2+3);x.lineTo(X+g.tw/2-5,Y);x.lineTo(X,Y+g.th/2-3);x.lineTo(X-g.tw/2+5,Y);x.closePath();x.stroke();}
+    if(dHover&&dHover[0]===i&&dHover[1]===j){x.fillStyle=dTool==="remove"?"rgba(224,86,106,.35)":"rgba(255,210,122,.35)";x.beginPath();x.moveTo(X,Y-g.th/2);x.lineTo(X+g.tw/2,Y);x.lineTo(X,Y+g.th/2);x.lineTo(X-g.tw/2,Y);x.closePath();x.fill();}
+    if(T.o)drawObj(x,T.o,X,Y+g.th*.1,g,t);}
+  if(!Object.keys(D.tiles).length){x.fillStyle="#9d93b2";x.font="12px 'DM Mono',monospace";x.textAlign="center";x.fillText("Pick something from the shop below, then tap a tile",w/2,h-12);}
+  if(!RM&&curTab==="dham"){cancelAnimationFrame(dhamRAF);dhamRAF=requestAnimationFrame(drawDham);}}
+function tileAt(px,py){const g=dGeo;if(!g)return null;const a=(px-g.ox)/(g.tw/2),b=(py-g.oy)/(g.th/2),i=Math.floor((a+b)/2),j=Math.floor((b-a)/2);return i>=0&&j>=0&&i<g.n&&j<g.n?[i,j]:null;}
+$("#dhamCv").addEventListener("pointermove",e=>{const r=e.target.getBoundingClientRect();dHover=tileAt(e.clientX-r.left,e.clientY-r.top);});
+$("#dhamCv").addEventListener("pointerleave",()=>dHover=null);
+$("#dhamCv").addEventListener("click",e=>{const r=e.target.getBoundingClientRect(),tl=tileAt(e.clientX-r.left,e.clientY-r.top);if(!tl)return;dHover=tl;const key=tl.join(","),D=dham(),T={...(D.tiles[key]||{})};
+  if(dTool==="remove"){if(T.o){progress.coins=coinBal()+DITEMS[T.o][3];toast(`Picked up ${DITEMS[T.o][1]} · +${DITEMS[T.o][3]} 🪙 refund`);delete T.o;}else if(T.g){progress.coins=coinBal()+DITEMS[T.g][3];toast(`Cleared ${DITEMS[T.g][1]} · +${DITEMS[T.g][3]} 🪙`);delete T.g;}else return;}
+  else{const it=DITEMS[dSel],price=it[3];if(it[0]==="object"&&T.g==="water"||it[0]==="object"&&T.g==="kund"){toast("You can't build on water.");return;}
+    if(it[0]==="ground"){if(T.g===dSel)return;if(coinBal()<price){toast(`You need ${price-coinBal()} more 🪙. Earn coins by chanting, quizzes and games.`);return;}if(T.g)progress.coins+=DITEMS[T.g][3];if(T.o&&(dSel==="water"||dSel==="kund")){toast("Pick up what's on this tile first.");return;}T.g=dSel;}
+    else{if(T.o){toast("This tile is taken. Use Pick up first.");return;}if(coinBal()<price){toast(`You need ${price-coinBal()} more 🪙. Earn coins by chanting, quizzes and games.`);return;}if(!T.g)T.g="grass",progress.coins-=DITEMS.grass[3];T.o=dSel;}
+    progress.coins-=price;const [X,Y]=isoPt(dGeo,tl[0]+.5,tl[1]+.5);FX.burst(r.left+X,r.top+Y,30);}
+  D.tiles[key]=T;if(!T.g&&!T.o)delete D.tiles[key];progress.dham={...D};save();renderDhamHUD();renderDhamShop();checkAwards();});
+function renderDham(){if(!$("#dhamCv"))return;renderDhamHUD();renderDhamShop();renderSpin();drawDham();drawWheel();}
+
+function coinsFor(xp,why){const w=why.toLowerCase();
+  if(w.includes("reflex")||w.includes("tiles"))return 20;if(w.includes("full round"))return 30;
+  if(w.includes("round"))return w.includes("logged")?10*Math.max(1,Math.round(xp/5)):10;
+  if(w.includes("goal"))return 50;if(w.includes("seal"))return xp>=30?60:40;if(w.includes("free pass"))return 10;
+  if(w.includes("boss"))return Math.round(xp/8)*16;if(/\/\d+ in/.test(w))return Math.round(xp/4)*8;
+  if(w.includes("flawless"))return 40;if(w.includes("run")||w.includes("snake"))return 25;if(w.includes("tiles")||w.includes("reflex"))return 20;
+  return Math.max(10,Math.round(xp));}
+$("#spinBtn").addEventListener("click",spinWheel);$("#tradeBtn").addEventListener("click",tradeDupes);
+AWARDS.push(
+ ["dham1","🧱","First Brick","Place something in your dham",p=>Object.keys(p.dham?.tiles||{}).length>=1],
+ ["dhamT","🛕","Temple Founder","Build a temple in your dham",p=>Object.values(p.dham?.tiles||{}).some(t=>t.o==="temple"||t.o==="grand")],
+ ["dhamG","🏯","Grand Darshan","Build the grand Radha-Krishna temple",p=>Object.values(p.dham?.tiles||{}).some(t=>t.o==="grand")],
+ ["dhamC","🐄","Goshala Keeper","Keep 5 cows and calves",p=>Object.values(p.dham?.tiles||{}).filter(t=>t.o==="cow"||t.o==="calf").length>=5],
+ ["dhamV","🏙️","Tirtha Town","Reach a dham value of 3,000",p=>dhamValue()>=3000],
+ ["dhamX","🗺️","Growing Dham","Expand your dham",p=>(p.dham?.size||6)>6],
+ ["spin","🎡","Wheel Turner","Spin the Sudarshana wheel",p=>!!p.spun],
+ ["rich","🪙","Lakshmi's Blessing","Earn 5,000 coins in total",p=>(p.coinsAll||0)>=5000],
+ ["fest","🌼","Festival Devotee","Chant on a festival day",p=>anyJapaOn("festival")],
+ ["eka","🌙","Ekadashi Japa","Chant on an Ekadashi",p=>anyJapaOn("ekadashi")],
+ ["tulsi30","🌿","Green Thumb","Chant on 30 different days",p=>daysChanted()>=30],
+ ["stop5","🛕","Vraja Pilgrim","Reach Keshi Ghat on the parikrama",p=>jLife()>=108],
+ ["lap","👣","Parikrama Complete","Finish a full lap of Vraja",p=>jLife()>=LAP],
+ ["dome","🕌","Dome Raised","Build your temple's dome",p=>jLife()>=324],
+ ["temple","🚩","Temple Complete","Raise the temple flag",p=>jLife()>=1008],
+ ["card1","🎴","First Card","Draw your first card",p=>Object.keys(p.cards||{}).length>=1],
+ ["card10","🗂️","Collector","Collect 10 different cards",p=>Object.keys(p.cards||{}).length>=10],
+ ["cardgod","🪈","Darshan","Collect Krishna and Radha",p=>!!(p.cards?.krishna&&p.cards?.radha)],
+ ["cardall","🏆","Full Album","Collect every card",p=>Object.keys(p.cards||{}).length>=CARDS.length],
+ ["gold","✨","Golden Touch","Draw a gold card",p=>Object.values(p.cards||{}).some(c=>c.gold)],
+ ["boss","🐉","Boss Challenger","Face a Sunday boss",p=>Object.keys(p.boss||{}).length>=1],
+ ["bossP","🏅","Boss Slayer","Score 10/10 on a Sunday boss",p=>Object.values(p.boss||{}).some(v=>v>=10)],
+ ["frozen","🧊","Saved by Ice","Have a streak freeze save your streak",p=>Object.keys(p.frozen||{}).length>=1],
+ ["shopper","🛍️","Bazaar Visitor","Buy something in the bazaar",p=>(p.spent||0)>0]);
+
+/* ---------- welcome, account, tour, profile ---------- */
+const AVATARS=["🙏","🪷","🦚","🐄","🪈","🌸","📿","🪔","🌿","🐘","🦢","☀️"];
+const TOUR=[
+ ["🪔","Welcome to the vault","A daily companion for chanting, studying the scriptures and uncovering hidden ISKCON history. Here's a 60-second tour."],
+ ["🔒","A sealed scroll every evening","At 6 pm a new scroll appears, locked behind a question about yesterday's. Answer it to break the seal and read tonight's secret."],
+ ["📿","Your japa counter","Chant right on the mala, bead by bead, or log rounds you chanted on your own beads. Set a daily goal and keep your streak alive."],
+ ["🌿","Watch things grow","Your tulsi grows with every day you chant. Each round walks you through Vraja and lays another stone of your temple."],
+ ["📜","Learn and collect","Scripture quizzes renew every evening. The Sunday boss tests your week. Every reward drops a photocard for your library's collections."],
+ ["🪙","Coins build your dham","Everything you do earns coins. Spend them in My Dham on temples, kunds, cows, peacocks and kirtan parties."],
+ ["🧊","Power-ups","Streak freezes save a missed day, restores bring a lost streak back, hints remove wrong answers, and free passes open a seal."],
+ ["📊","Your chart data","Track rounds, mantras, streaks and milestones, see your monthly Wrapped, and back up your progress from your profile."]];
+let tourI=0,tourThen=null;
+function openSheet(id){["welcome","signup","tour","profile"].forEach(k=>$("#"+k).hidden=k!==id);document.body.style.overflow=id?"hidden":"";}
+function closeSheets(){openSheet(null);document.body.style.overflow="";}
+function renderTour(){const [ic,t,x]=TOUR[tourI];$("#tourArt").textContent=ic;$("#tourArt").style.animation="none";void $("#tourArt").offsetWidth;$("#tourArt").style.animation="";
+  $("#tourStep").textContent=`${tourI+1} of ${TOUR.length}`;$("#tourTitle").textContent=t;$("#tourText").textContent=x;
+  $("#tourDots").innerHTML=TOUR.map((_,i)=>`<i class="${i===tourI?"on":""}"></i>`).join("");$("#tourNext").textContent=tourI===TOUR.length-1?"Let's go ›":"Next ›";}
+function startTour(then){tourI=0;tourThen=then;openSheet("tour");renderTour();}
+function endTour(){progress.toured=true;save();const f=tourThen;tourThen=null;if(f)f();else closeSheets();}
+$("#tourNext").onclick=()=>{if(tourI<TOUR.length-1){tourI++;renderTour();}else endTour();};
+$("#tourSkip").onclick=endTour;
+let avSel="🙏";
+function renderAvPick(){$("#avPick").innerHTML=AVATARS.map(a=>`<button type="button" aria-pressed="${a===avSel}" aria-label="Avatar ${a}">${a}</button>`).join("");}
+$("#avPick").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;avSel=b.textContent;renderAvPick();});
+function openSignup(edit){const P=progress.profile||{};avSel=P.avatar||"🙏";$("#fName").value=P.name||"";$("#fGoal").value=progress.goal||16;$("#fBook").value=P.book||"gita";$("#fTemple").value=P.temple||"";
+  $("#signForm button[type=submit]").textContent=edit?"Save changes":"Create my profile";renderAvPick();openSheet("signup");setTimeout(()=>$("#fName").focus(),300);}
+$("#signForm").addEventListener("submit",e=>{e.preventDefault();const name=$("#fName").value.trim();if(!name){$("#fName").focus();return;}
+  const fresh=!progress.profile;if(fresh&&window.Native?.isNative&&!progress.reminder)setReminderFrom("18:00");progress.profile={name,avatar:avSel,book:$("#fBook").value,temple:$("#fTemple").value.trim(),joined:progress.profile?.joined||localDate()};
+  const g=Math.floor(+$("#fGoal").value);if(g>=1&&g<=192)progress.goal=g;save();renderHeader();renderJapa();
+  if(fresh){if(!progress.toured)startTour(()=>{closeSheets();welcomeGift();});else{closeSheets();welcomeGift();}}else{closeSheets();openProfile();toast("Profile saved");}});
+function welcomeGift(){if(progress.gifted)return;progress.gifted=true;progress.coins=coinBal()+200;give("hint",3);give("freeze");save();
+  setTimeout(()=>{toast("🎁 Welcome gift: 200 🪙, 3 hints and a streak freeze!");burstAt($("#coinPill"));renderHeader();renderBag();},600);}
+function renderHeader(){$("#hdrCoins").textContent=fmt(coinBal());$("#avatarBtn").textContent=progress.profile?.avatar||"🙏";}
+let openProfile=function(){const P=progress.profile;if(!P){openSignup(false);return;}renderHeader();
+  $("#pfAv").textContent=P.avatar;$("#pfName").textContent=P.name;$("#pfRank").textContent=`${RANKS[lvl(progress.xp||0)][1]} · ${fmt(progress.xp||0)} XP`;
+  $("#pfMeta").textContent=[P.temple,`joined ${pretty(P.joined)}`,`loves the ${BOOKNAME[P.book]||"scriptures"}`].filter(Boolean).join(" · ");
+  const J=progress.japa||{},best=Math.max(0,...Object.values(J));
+  $("#pfStats").innerHTML=[["Rounds all-time",fmt(jLife())],["Japa streak",`${jStreak()} days`],["Coins",fmt(coinBal())],["Cards",`${Object.keys(progress.cards||{}).length}/${CARDS.length}`],["Best day",`${best} rounds`],["Dham value",fmt(dhamValue())]].map(([l,v])=>`<div class="tile4"><div class="l">${l}</div><div class="v">${v}</div></div>`).join("");
+  const sc=(progress.showcase||[]).filter(k=>progress.cards?.[k]);
+  $("#pfShow").innerHTML=sc.length?sc.map(k=>{const c=CARDS.find(x=>x[0]===k);return cardHTML(c,progress.cards[k].gold,false);}).join(""):`<p style="color:var(--dim);grid-column:1/-1;margin:0">No cards pinned yet. Open a card in Learn → Photocard library and pin it.</p>`;
+  const A=progress.awards||{},latest=Object.entries(A).sort((a,b)=>a[1]<b[1]?1:-1).slice(0,6);
+  $("#pfAwards").innerHTML=latest.length?latest.map(([id,d])=>{const a=AWARDS.find(x=>x[0]===id);return a?`<div class="aw on"><div class="m">${a[1]}</div><div class="t">${esc(a[2])}</div><div class="d">${pretty(d)}</div></div>`:"";}).join(""):`<p style="color:var(--dim);margin:0">Your rewards will show up here.</p>`;
+  openSheet("profile");};
+$("#avatarBtn").onclick=()=>openProfile();$("#pfClose").onclick=closeSheets;$("#pfEdit").onclick=()=>openSignup(true);$("#pfTour").onclick=()=>startTour(()=>openProfile());
+$("#coinPill").onclick=()=>{closeSheets();showTab("dham");};
+$("#wTour").onclick=()=>startTour(()=>progress.profile?closeSheets():openSignup(false));
+$("#wGo").onclick=()=>{if(progress.profile)closeSheets();else openSignup(false);};
+function showWelcome(){const P=progress.profile;
+  if(P){$("#wSub").textContent=`Hare Krishna, ${P.name}. ${todayEvent()?`Today is ${todayEvent().name}. Double coins all day!`:"Your scroll and your japa are waiting."}`;$("#wGo").textContent="Enter the vault";$("#wTour").textContent="Replay the tour";}
+  openSheet("welcome");drawWelcome();}
+function drawWelcome(t=performance.now()){const cv=$("#welcomeArt");if(!cv||$("#welcome").hidden)return;const [x,w,h]=fit(cv),cx=w/2,cy=h*.18;x.clearRect(0,0,w,h);
+  const rot=RM?0:t/12000;[[18,Math.min(w,h)*.42,.5],[12,Math.min(w,h)*.3,-.8],[24,Math.min(w,h)*.55,.3]].forEach(([n,R,dir],ri)=>{for(let i=0;i<n;i++){const a=i/n*Math.PI*2+rot*dir;x.save();x.translate(cx+Math.cos(a)*R*.0,cy);x.rotate(a);x.translate(0,-R);
+    x.globalAlpha=.10+ri*.03;x.beginPath();x.moveTo(0,-26);x.quadraticCurveTo(14,0,0,26);x.quadraticCurveTo(-14,0,0,-26);x.fillStyle=[C.saffron,C.gold,"#ff7fae"][ri];x.fill();x.restore();}});
+  x.globalAlpha=1;if(!RM)requestAnimationFrame(drawWelcome);}
+
+/* ---------- phone: reminders, backup, share, back button ---------- */
+const N=window.Native||{};
+async function renderReminder(){if(!N.reminderStatus)return;const st=await N.reminderStatus();
+  if(!st.supported){$("#remStatus").textContent="Reminders work in the installed app.";return;}
+  if(st.on){$("#remTime").value=`${pad(st.hour??18)}:${pad(st.minute??0)}`;$("#remStatus").textContent=`On, every day at ${pad(st.hour??18)}:${pad(st.minute??0)}.`;}
+  else $("#remStatus").textContent=st.granted?"Off.":"Off. The app will ask to send notifications.";}
+async function setReminderFrom(v){const [h,m]=(v||"18:00").split(":").map(Number);const r=await N.setReminder?.(h,m);
+  if(r?.ok){progress.reminder=`${pad(h)}:${pad(m)}`;save();toast(`🔔 Reminder set for ${pad(h)}:${pad(m)} every day`);}
+  else if(r?.why==="denied")toast("Notifications are blocked. Turn them on in Android Settings → Apps → Parampara Vault.");
+  renderReminder();}
+$("#remSave").onclick=()=>setReminderFrom($("#remTime").value);
+$("#remOff").onclick=async()=>{await N.cancelReminder?.();progress.reminder="off";save();toast("Reminder turned off");renderReminder();};
+$("#bkSave").onclick=async()=>{try{await N.flush?.();await N.backup();toast("Backup ready. Save it somewhere safe.");}catch(e){toast("Couldn't make the backup. Try again.");}};
+$("#bkFile").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const t=await f.text();await N.restore(t);toast("Progress restored. Reopening…");setTimeout(()=>location.reload(),900);}catch(err){toast("That file isn't a Parampara Vault backup.");}e.target.value="";};
+$("#shareApp").onclick=async()=>{const r=await N.share?.("Parampara Vault","Chant, learn the scriptures and build your dham with me on Parampara Vault 🪷");if(r==="copied")toast("Link copied");};
+$("#appVer").textContent=`Parampara Vault ${N.version?("v"+N.version):""} · progress saved on this phone`;
+window.__onBack=()=>{if(!$("#profile").hidden||!$("#tour").hidden||!$("#signup").hidden){if(!$("#signup").hidden&&!progress.profile)return false;closeSheets();return true;}
+  if(!$("#welcome").hidden){$("#wGo").click();return true;}
+  if(!$("#game").hidden){closeGame();return true;}
+  if(curTab!=="today"){showTab("today");return true;}return false;};
+window.__onOpenScroll=()=>{closeSheets();showTab("today");};
+const _openProfile=openProfile;openProfile=function(){_openProfile();renderReminder();};
+
+/* ---------- theme ---------- */
+let mode="auto";try{mode=localStorage.getItem("vaultMode")||"auto";}catch(e){}
+$("#modeBtn").addEventListener("click",()=>{mode={auto:"light",light:"dark",dark:"auto"}[mode];try{localStorage.setItem("vaultMode",mode);}catch(e){}applyMode(mode);toast(mode==="auto"?"Theme follows your device":mode==="light"?"Light mode":"Dark mode");});
+matchMedia("(prefers-color-scheme: light)").addEventListener?.("change",()=>applyMode(mode));
+new MutationObserver(()=>applyMode(mode)).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+applyMode(mode);
+
+/* ---------- boot ---------- */
+function renderAll(){collectDonations();renderDham();renderFest();renderAlbum();renderBoss();renderWrapped();renderBoard();if(progress.mode==="log"){$("#mChant").setAttribute("aria-selected",false);$("#mLog").setAttribute("aria-selected",true);$("#modeChant").hidden=true;$("#modeLog").hidden=false;}renderJapa();checkAwards(true);renderBooks();renderRank();renderArchive();renderStage();}
+let startTab="today";try{startTab=localStorage.getItem("vaultTab")||"today";}catch(e){}if(location.hash.slice(1)&&document.querySelector(`.tab[data-tab="${location.hash.slice(1)}"]`))startTab=location.hash.slice(1);
+showTab(startTab);renderJapa();renderAwards();renderBooks();renderAlbum();renderBoss();renderFest();renderWrapped();renderBag();drawArt();addEventListener("resize",()=>{drawArt();drawTulsi();drawMap();drawTemple();});renderRank();requestAnimationFrame(sealLoop);
+(async()=>{db=await claude.use("db");const user=await claude.use("user");
+  if(!db){showWelcome();$("#stage").innerHTML=`<h2>The vault can't open here</h2><p style="color:var(--dim)">Open this page while signed in to Claude to see your scrolls.</p>`;return;}
+  try{const uid=user?await user.id():null;if(uid){myId=uid;userCap=user;progRef=db.doc(`data/users/${uid}/vault/progress`);sangaRef=db.doc(`sanga/${uid}`);const p=await progRef.get();if(p.exists)progress={unlocked:{},xp:0,best:{},...p.data()};else{inv();save();}}}catch(e){}
+  autoFreeze();renderHeader();showWelcome();
+  db.doc("events/calendar").onSnapshot(s=>{EVENTS=(s.exists&&s.data().items)||[];renderFest();checkAwards(true);},()=>{});
+  db.collection("sanga").onSnapshot(s=>{SANGA=s.docs.map(d=>({id:d.id,...d.data()}));renderBoard();},()=>{});
+  db.collection("packs").orderBy("date").onSnapshot(s=>{PACKS=s.docs.map(d=>d.data()).filter(p=>p&&p.date);mergePacks();renderBooks();},()=>{});
+  db.collection("days").orderBy("date").onSnapshot(s=>{const before=days.map(d=>d.date).join();days=s.docs.map(d=>d.data()).filter(d=>d&&d.date);if(days.map(d=>d.date).join()!==before)renderAll();},
+    ()=>{$("#stage").innerHTML=`<h2>The vault is stuck</h2><p style="color:var(--dim)">Couldn't load the scrolls. Reload the page to try again.</p>`;});})();
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "appId": "org.paramparavault.app",
+  "appName": "Parampara Vault",
+  "webDir": "www",
+  "backgroundColor": "#0d0b17",
+  "android": {
+    "backgroundColor": "#0d0b17",
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "launchAutoHide": true,
+      "backgroundColor": "#0d0b17",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_lotus",
+      "iconColor": "#F29A2E"
+    }
+  }
+}
