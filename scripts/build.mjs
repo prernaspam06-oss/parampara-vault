@@ -1,5 +1,5 @@
 // Builds the web bundle into www/ for Capacitor.
-import { build } from "esbuild";
+import { build, transform } from "esbuild";
 import { cpSync, mkdirSync, readFileSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -17,7 +17,7 @@ await build({
   bundle: true,
   minify: true,
   format: "iife",
-  target: ["chrome92"],
+  target: ["chrome69"],
   outfile: join(out, "shim.js"),
   define: { __APP_CONFIG__: JSON.stringify(cfg) },
   logLevel: "warning",
@@ -38,6 +38,16 @@ for (const [pkg, files] of faces) {
 }
 writeFileSync(join(out, "fonts", "fonts.css"), css);
 
-cpSync(join(root, "src/index.html"), join(out, "index.html"));
+// Transpile the page's inline scripts so older Android WebViews (Chrome 69+) can run them.
+let html = readFileSync(join(root, "src/index.html"), "utf8");
+const parts = html.split(/(<script>)([\s\S]*?)(<\/script>)/);
+for (let i = 0; i < parts.length; i++) {
+  if (parts[i] === "<script>") {
+    const r = await transform(parts[i + 1], { loader: "js", target: "chrome69", minify: false });
+    parts[i + 1] = r.code;
+    i += 2;
+  }
+}
+writeFileSync(join(out, "index.html"), parts.join(""));
 if (existsSync(join(root, "src/assets"))) cpSync(join(root, "src/assets"), join(out, "assets"), { recursive: true });
 console.log("Built www/ (version " + cfg.version + ")");
