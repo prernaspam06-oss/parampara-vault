@@ -4,7 +4,7 @@
 
 A bhakti companion for Android: chant your japa, break a sealed scroll of hidden history every evening, take scripture quizzes, collect devotee photocards and build your own dham.
 
-**[⬇ Download the latest APK](https://github.com/r1thawani/parampara-vault/releases/latest)**
+**[⬇ Download the latest APK](https://github.com/prernaspam06-oss/parampara-vault/releases/latest)**
 
 ## Install on an Android phone
 
