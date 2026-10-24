@@ -14,6 +14,7 @@ import { App } from "@capacitor/app";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { SCROLLS, PACKS, EVENTS } from "./content/bank.js";
+import { STUDY, STUDY_BOOKS } from "./content/study.js";
 
 const CFG = __APP_CONFIG__;
 const isNative = Capacitor.isNativePlatform();
@@ -61,9 +62,15 @@ function saveProgress(data) {
 }
 
 /* ---------- content: bundled bank + optional remote top-up ---------- */
-let remote = { days: [], packs: [], events: [] };
+let remote = { days: [], packs: [], events: [], study: [] };
 try { remote = { ...remote, ...JSON.parse(ls.get(K.remote) || "{}") }; } catch {}
-const listeners = { days: new Set(), packs: new Set(), events: new Set() };
+const listeners = { days: new Set(), packs: new Set(), events: new Set(), study: new Set() };
+function contentStudy() {
+  const m = new Map();
+  for (const st of [...STUDY, ...(remote.study || [])]) if (st && st.book && st.n && Array.isArray(st.cards)) m.set(st.book + ":" + st.n, st);
+  return [...m.values()];
+}
+window.STUDY_BOOKS = STUDY_BOOKS;
 
 function contentDays() {
   const today = scrollDay(), n = Math.max(0, daysBetween(start, today)), out = new Map();
@@ -94,6 +101,7 @@ function emit(kind) {
     try {
       if (kind === "days") fn(snapOf(contentDays()));
       else if (kind === "packs") fn(snapOf(contentPacks()));
+      else if (kind === "study") fn(snapOf(contentStudy()));
       else fn({ exists: true, data: () => ({ items: contentEvents() }) });
     } catch (e) { console.error(e); }
   }
@@ -104,9 +112,9 @@ async function fetchRemote() {
     const r = await fetch(CFG.remoteContentUrl + "?t=" + Date.now(), { cache: "no-store" });
     if (!r.ok) return;
     const j = await r.json();
-    remote = { days: j.days || [], packs: j.packs || [], events: j.events || [] };
+    remote = { days: j.days || [], packs: j.packs || [], events: j.events || [], study: j.study || [] };
     ls.set(K.remote, JSON.stringify(remote));
-    emit("days"); emit("packs"); emit("events");
+    emit("days"); emit("packs"); emit("events"); emit("study");
   } catch {}
 }
 // Refresh when the day rolls over while the app stays open, and when it comes back to the front.
@@ -133,7 +141,7 @@ const db = {
       orderBy() { return q; }, where() { return q; }, limit() { return q; },
       async get() { return snapOf(path === "days" ? contentDays() : path === "packs" ? contentPacks() : []); },
       onSnapshot(next) {
-        if (path === "days" || path === "packs") { listeners[path].add(next); emit(path); return () => listeners[path].delete(next); }
+        if (path === "days" || path === "packs" || path === "study") { listeners[path].add(next); emit(path); return () => listeners[path].delete(next); }
         next(snapOf([])); return () => {};
       },
     };

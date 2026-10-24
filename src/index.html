@@ -324,6 +324,29 @@ body{background:radial-gradient(90% 50% at 100% 0%,var(--violet),transparent 70%
 .book .t{font-family:var(--f-display);font-size:1.12rem;line-height:1.1}
 .book .d{font-family:var(--f-mono);font-size:.7rem;color:var(--dim)}
 .book .s{font-family:var(--f-mono);font-size:.7rem;color:var(--hue)}
+.studycta{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:16px;border-radius:16px;
+  background:linear-gradient(135deg,var(--indigo),var(--violet));color:#fff;box-shadow:0 8px 24px rgba(80,60,200,.25)}
+.studycta .ic{font-size:2rem}.studycta b{display:block;font-family:var(--f-display);font-weight:400;font-size:1.3rem;line-height:1.1}
+.studycta span span{font-size:.88rem;opacity:.9}.studycta .go{font-size:1.8rem}
+.studycta:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px}
+.chips button{all:unset;cursor:pointer;flex:0 0 auto;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--stone-2);font-family:var(--f-mono);font-size:.78rem;color:var(--leaf)}
+.chips button[aria-pressed="true"]{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.chips button:focus-visible{outline:2px solid var(--gold)}
+.chlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px;margin-top:10px}
+.chlist button{all:unset;box-sizing:border-box;cursor:pointer;aspect-ratio:1;max-width:100%;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  background:var(--stone-2);border:1px solid var(--line);font-family:var(--f-display);font-size:1.4rem;color:var(--leaf);position:relative}
+.chlist button small{font-family:var(--f-mono);font-size:.55rem;color:var(--dim)}
+.chlist button.done{border-color:var(--tulsi);background:rgba(111,196,154,.12)}
+.chlist button.soon{opacity:.35;cursor:default}
+.chlist button:focus-visible{outline:2px solid var(--gold)}
+.flash{perspective:900px;margin:14px 0;cursor:pointer;-webkit-user-select:none;user-select:none}
+.flash .in{position:relative;min-height:220px;transition:transform .45s;transform-style:preserve-3d}
+.flash.flip .in{transform:rotateY(180deg)}
+.flash .f,.flash .b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;padding:22px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:10px}
+.flash .f{background:linear-gradient(150deg,var(--indigo),var(--violet));color:#fff;font-family:var(--f-display);font-size:1.35rem;line-height:1.25}
+.flash .b{background:var(--stone-2);border:2px solid var(--indigo);transform:rotateY(180deg);font-size:1.08rem;line-height:1.45}
+.flash .hint{font-family:var(--f-mono);font-size:.68rem;opacity:.75;letter-spacing:.08em;text-transform:uppercase}
 .qprog{display:flex;gap:6px;margin:12px 0}
 .qprog i{flex:1;height:4px;border-radius:4px;background:var(--stone-2)}
 .qprog i.ok{background:var(--tulsi)} .qprog i.no{background:var(--kumkum)} .qprog i.now{background:var(--saffron)}
@@ -487,6 +510,7 @@ input,textarea,.fact,.note{user-select:text;-webkit-user-select:text}
 
   <!-- LEARN -->
   <div class="tab" data-tab="learn" hidden>
+    <button class="studycta" id="studyOpen"><span class="ic">📖</span><span><b>Study room</b><span>Pick a chapter: summary, flashcards and a quiz that changes every time</span></span><span class="go">›</span></button>
     <section class="panel boss" id="bossPanel" aria-label="Sunday boss quiz"></section>
     <section>
       <h3 class="sec-h">Scripture quiz room · pick a book</h3>
@@ -1098,6 +1122,65 @@ $("#jMinus").addEventListener("click",()=>{progress.goal=Math.max(1,(progress.go
 $("#jPlus").addEventListener("click",()=>{progress.goal=Math.min(192,(progress.goal||16)+1);save();renderJapa();});
 addEventListener("resize",()=>drawMala());
 
+/* ---------- Study room: chapter summaries, flashcards, changing quizzes ---------- */
+let STUDYSETS=[];const SB=()=>window.STUDY_BOOKS||{gita:{name:"Bhagavad Gita",unit:"Chapter",total:18}};let studyBook="gita";
+const studyKey=(b,n)=>b+":"+n;const studied=()=>progress.studied||(progress.studied={});
+$("#studyOpen").addEventListener("click",()=>{enterGame();studyHome();});
+function studyHome(){const books=SB(),bk=books[studyBook]||books.gita,have=STUDYSETS.filter(x=>x.book===studyBook),S=studied();
+  const done=have.filter(x=>S[studyKey(x.book,x.n)]?.quiz>=4).length;
+  $("#game").innerHTML=`<div class="row"><div><div class="eyebrow">Study room</div><h2 style="margin:4px 0 0">Pick a ${esc(bk.unit.toLowerCase())}</h2></div><div class="jstat"><b>${done}</b><span>mastered</span></div></div>
+   <div class="chips" id="sBooks">${Object.entries(books).map(([k,b])=>`<button aria-pressed="${k===studyBook}" data-b="${k}" id="sb-${k}">${esc(b.name)} · ${STUDYSETS.filter(x=>x.book===k).length}</button>`).join("")}</div>
+   <div class="chlist" id="sList">${Array.from({length:bk.total},(_,i)=>i+1).map(n=>{const st=have.find(x=>x.n===n),m=S[studyKey(studyBook,n)];
+     return st?`<button class="${m?.quiz>=4?"done":""}" data-n="${n}" id="sc-${n}" aria-label="${esc(bk.unit)} ${n}: ${esc(st.title)}">${n}<small>${m?.quiz!=null?m.quiz+"/5":"open"}</small></button>`:`<button class="soon" disabled aria-label="${esc(bk.unit)} ${n}, coming soon">${n}<small>soon</small></button>`;}).join("")}</div>
+   <p class="eyebrow" style="margin:12px 0 0">${have.length} of ${bk.total} ready · new study sets arrive in the evenings · green = quiz score 4 or 5</p>
+   <div class="row" style="margin-top:14px"><button class="btn ghost" id="back">Back</button></div>`;
+  $("#back").onclick=closeGame;
+  $("#sBooks").onclick=e=>{const b=e.target.closest("[data-b]");if(!b)return;studyBook=b.dataset.b;studyHome();};
+  $("#sList").onclick=e=>{const b=e.target.closest("[data-n]");if(!b)return;studyChapter(studyBook,+b.dataset.n,"summary");};}
+function studyChapter(book,n,mode){const st=STUDYSETS.find(x=>x.book===book&&x.n===n);if(!st)return studyHome();const bk=SB()[book],key=studyKey(book,n),S=studied();
+  if(mode==="summary"&&!S[key]?.read){S[key]={...(S[key]||{}),read:true};progress.studied={...S};save();setTimeout(()=>addXP(5,`Read ${bk.unit} ${n} summary`),400);}
+  const head=`<div class="row"><div style="min-width:0"><div class="eyebrow">${esc(bk.name)} · ${esc(bk.unit)} ${n}</div><h2 style="margin:4px 0 0">${esc(st.title)}</h2></div></div>
+   <div class="seg" style="grid-template-columns:repeat(3,1fr)" id="sModes"><button aria-selected="${mode==="summary"}" data-m="summary">📜 Summary</button><button aria-selected="${mode==="cards"}" data-m="cards">🃏 Flashcards</button><button aria-selected="${mode==="quiz"}" data-m="quiz">❓ Quiz</button></div>`;
+  const foot=`<div class="row" style="margin-top:16px"><button class="btn ghost" id="sBack">‹ All ${esc(bk.unit.toLowerCase())}s</button>${n<bk.total&&STUDYSETS.some(x=>x.book===book&&x.n===n+1)?`<button class="btn ghost" id="sNext">${esc(bk.unit)} ${n+1} ›</button>`:""}</div>`;
+  const wire=()=>{$("#sModes").onclick=e=>{const b=e.target.closest("[data-m]");if(b)studyChapter(book,n,b.dataset.m);};$("#sBack").onclick=studyHome;const nx=$("#sNext");if(nx)nx.onclick=()=>studyChapter(book,n+1,"summary");scrollTo(0,0);};
+  if(mode==="summary"){$("#game").innerHTML=head+`<div class="fact" style="margin-top:14px">${paras(st.summary)}</div>
+     <h3 class="sec-h" style="margin-top:14px">Key points</h3><ul class="earnlist">${st.cards.map(([f,b])=>`<li><b>${esc(f)}:</b> ${esc(b)}</li>`).join("")}</ul>
+     <div class="jbtns" style="justify-content:flex-start;margin-top:14px"><button class="btn" id="goCards">Practise with flashcards ›</button></div>`+foot;wire();$("#goCards").onclick=()=>studyChapter(book,n,"cards");return;}
+  if(mode==="cards"){let deck=shuffle(st.cards.map((c,i)=>i)),i=0,known=0,again=[];
+    const draw=()=>{if(i>=deck.length){if(again.length){deck=shuffle(again);again=[];i=0;toast("Round 2: the cards you missed");}
+        else{$("#sCard").outerHTML=`<div class="note center" id="sCard" style="margin:14px 0"><b>Deck complete! 🎉</b><br>You know all ${st.cards.length} cards in this ${esc(bk.unit.toLowerCase())}.</div>`;$("#sBtns").innerHTML=`<button class="btn" id="goQuiz">Take the quiz ›</button><button class="btn ghost" id="redo">Shuffle again</button>`;
+          $("#goQuiz").onclick=()=>studyChapter(book,n,"quiz");$("#redo").onclick=()=>studyChapter(book,n,"cards");
+          if(!S[key]?.cards){S[key]={...(S[key]||{}),cards:true};progress.studied={...S};save();addXP(10,`Flashcards: ${bk.unit} ${n}`);}return;}}
+      const [f,b]=st.cards[deck[i]];$("#sCard").className="flash";$("#sCard").innerHTML=`<div class="in"><div class="f"><span class="hint">tap to flip</span>${esc(f)}</div><div class="b"><span class="hint" style="color:var(--dim)">answer</span>${esc(b)}</div></div>`;
+      $("#sCount").textContent=`Card ${Math.min(i+1,deck.length)} of ${deck.length}${again.length?` · ${again.length} to repeat`:""}`;};
+    $("#game").innerHTML=head+`<div class="eyebrow center" style="margin-top:12px" id="sCount"></div><div class="flash" id="sCard" role="button" tabindex="0" aria-label="Flashcard, tap to flip"></div>
+      <div class="jbtns" id="sBtns"><button class="btn ghost" id="sAgain">↺ Again</button><button class="btn" id="sKnow">✓ I knew it</button></div>`+foot;wire();
+    $("#sCard").onclick=()=>{$("#sCard").classList.toggle("flip");window.Native?.tap?.();};
+    $("#sKnow").onclick=()=>{known++;i++;draw();};$("#sAgain").onclick=()=>{again.push(deck[i]);i++;draw();};draw();return;}
+  // quiz: mixes written questions with questions built from the flashcards; different every time
+  const backs=st.cards.map(c=>c[1]);
+  const fromCards=st.cards.map(([f,b])=>[`“${f}” — which is correct?`,[b,...shuffle(backs.filter(x=>x!==b)).slice(0,3)],`From the ${bk.unit.toLowerCase()}'s key points.`]).filter(q=>q[1].length>=3);
+  const pool=shuffle([...st.qa,...fromCards]),qs=pool.slice(0,5),res=[];let qi=0,score=0;
+  const show=()=>{const [q,opts,note]=qs[qi],order=shuffle(opts.map((_,j)=>j)),K="ABCD";
+    $("#game").innerHTML=head+`<div class="qprog">${qs.map((_,j)=>`<i class="${j<qi?(res[j]?"ok":"no"):j===qi?"now":""}"></i>`).join("")}</div>
+      <p class="q">${esc(q)}</p><div class="opts" id="qo">${order.map((j,k)=>`<button class="opt" data-i="${j}" id="qo${j}"><span class="k">${K[k]}</span><span>${esc(opts[j])}</span></button>`).join("")}</div>
+      <div id="qnote"></div><div class="row" style="margin-top:14px"><button class="btn ghost" id="qhint">💡 Hint (${inv().hint||0})</button><span id="qnext"></span></div>`+foot;wire();
+    $("#qhint").onclick=()=>{if(res.length>qi)return;if(hintOn($("#qo"),0))$("#qhint").disabled=true;};
+    $("#qo").onclick=e=>{const b=e.target.closest(".opt");if(!b||res.length>qi)return;const ok=+b.dataset.i===0;res.push(ok);
+      document.querySelectorAll("#qo .opt").forEach(o=>{o.style.pointerEvents="none";if(+o.dataset.i===0)o.classList.add("right");});
+      if(ok){score++;burstAt(b);}else{b.classList.add("wrong");b.style.opacity="1";}
+      $("#qnote").innerHTML=`<div class="note"><b style="color:${ok?"var(--tulsi)":"var(--kumkum)"}">${ok?"Correct.":"Not quite."}</b> ${esc(note)}</div>`;
+      $("#qnext").innerHTML=`<button class="btn" id="nx">${qi<4?"Next":"See results"}</button>`;$("#nx").onclick=()=>{qi++;qi<5?show():finish();};};};
+  const finish=()=>{const prev=S[key]?.quiz;S[key]={...(S[key]||{}),quiz:Math.max(prev||0,score)};progress.studied={...S};
+    const qa=progress.qa||{right:0,total:0};progress.qa={right:qa.right+score,total:qa.total+5};save();
+    $("#game").innerHTML=head+`<div class="center" style="margin-top:14px"><div class="big" style="font-size:3.2rem">${score}/5</div><h2>${score===5?"Perfect!":score>=4?"Mastered 🌿":score>=2?"Getting there":"Try the flashcards first"}</h2>
+      <p style="color:var(--dim)">Every quiz picks different questions, so try again for a new set.</p></div>
+      <div class="qprog">${res.map(r=>`<i class="${r?"ok":"no"}"></i>`).join("")}</div>
+      <div class="jbtns"><button class="btn" id="again">New quiz ↺</button><button class="btn ghost" id="toCards">Flashcards</button></div>`+foot;wire();
+    $("#again").onclick=()=>studyChapter(book,n,"quiz");$("#toCards").onclick=()=>studyChapter(book,n,"cards");
+    if(score===5)burstAt($("#game .big"));if(score)addXP(score*4,`${score}/5 in ${bk.name} ${bk.unit} ${n}`);};
+  show();}
+
 function setBest(k,v,lowerIsBetter){const b=progress.best||{},nb=b[k]==null||(lowerIsBetter?v<b[k]:v>b[k]);if(nb)progress.best={...b,[k]:v};return nb;}
 
 function snakeGame(){stopGame();const g=$("#game"),N=15;
@@ -1562,6 +1645,9 @@ function coinsFor(xp,why){const w=why.toLowerCase();
   return Math.max(10,Math.round(xp));}
 $("#spinBtn").addEventListener("click",spinWheel);$("#tradeBtn").addEventListener("click",tradeDupes);
 AWARDS.push(
+ ["study1","📖","First Chapter","Read a chapter summary in the Study room",p=>Object.values(p.studied||{}).some(x=>x.read)],
+ ["study5","🧠","Chapter Master","Score 4+ on 5 chapter quizzes",p=>Object.values(p.studied||{}).filter(x=>(x.quiz||0)>=4).length>=5],
+ ["gita18","🪔","Whole Gita","Score 4+ on all 18 Gita chapter quizzes",p=>Array.from({length:18},(_,i)=>p.studied?.["gita:"+(i+1)]).every(x=>(x?.quiz||0)>=4)],
  ["dham1","🧱","First Brick","Place something in your dham",p=>Object.keys(p.dham?.tiles||{}).length>=1],
  ["dhamT","🛕","Temple Founder","Build a temple in your dham",p=>Object.values(p.dham?.tiles||{}).some(t=>t.o==="temple"||t.o==="grand")],
  ["dhamG","🏯","Grand Darshan","Build the grand Radha-Krishna temple",p=>Object.values(p.dham?.tiles||{}).some(t=>t.o==="grand")],
@@ -1684,6 +1770,7 @@ try{showTab(startTab);}catch(e){console.error(e);}try{renderJapa();}catch(e){con
   try{autoFreeze();}catch(e){console.error(e);}try{renderHeader();}catch(e){console.error(e);}try{showWelcome();}catch(e){console.error(e);}
   db.doc("events/calendar").onSnapshot(s=>{EVENTS=(s.exists&&s.data().items)||[];renderFest();checkAwards(true);},()=>{});
   db.collection("sanga").onSnapshot(s=>{SANGA=s.docs.map(d=>({id:d.id,...d.data()}));renderBoard();},()=>{});
+  db.collection("study").onSnapshot(s=>{STUDYSETS=s.docs.map(d=>d.data()).filter(Boolean);},()=>{});
   db.collection("packs").orderBy("date").onSnapshot(s=>{PACKS=s.docs.map(d=>d.data()).filter(p=>p&&p.date);mergePacks();renderBooks();},()=>{});
   db.collection("days").orderBy("date").onSnapshot(s=>{const before=days.map(d=>d.date).join();days=s.docs.map(d=>d.data()).filter(d=>d&&d.date);if(days.map(d=>d.date).join()!==before)renderAll();},
     ()=>{$("#stage").innerHTML=`<h2>The vault is stuck</h2><p style="color:var(--dim)">Couldn't load the scrolls. Reload the page to try again.</p>`;});})();
